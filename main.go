@@ -1,8 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"regexp"
+	"os"
 )
 
 type StateInfo struct {
@@ -56,10 +57,12 @@ func init() {
 }
 
 func main() {
-	for k, _ := range transitionTable[6] {
-		matched, err := regexp.MatchString(k, "00")
-		fmt.Println(err)
-		fmt.Println(matched)
+	fl, err := os.Open("lexpositivegrading.src")
+	if err != nil {
+		panic(err)
 	}
-	fmt.Println(transitionTable[6])
+	reader := bufio.NewReader(fl)
+	for r, _, err := reader.ReadRune(); err == nil; r, _, err = reader.ReadRune() {
+		fmt.Println(string(r))
+	}
 }
