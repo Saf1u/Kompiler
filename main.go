@@ -46,9 +46,20 @@ func init() {
 	transitionTable[15][`>`] = StateInfo{17, true, "NotEqualToken"}
 	transitionTable[15][`=`] = StateInfo{16, true, "LessThanEqualToken"}
 	transitionTable[19][`=`] = StateInfo{20, true, "GreaterThanEqualToken"}
-	transitionTable[21][`\*`] = StateInfo{24, false, "GreaterThanEqualToken"}
+	transitionTable[21][`\*`] = StateInfo{24, false, "invalidComment"}
+	transitionTable[24][`[^\*]`] = StateInfo{24, false, "invalidComment"}
+	transitionTable[24][`\*`] = StateInfo{25, false, "invalidComment"}
+	transitionTable[25][`[^\\]`] = StateInfo{24, false, "invalidComment"}
+	transitionTable[25][`\\`] = StateInfo{26, true, "Comment"}
+	transitionTable[21][`\\`] = StateInfo{22, false, "invalidComment"}
+	transitionTable[22][`[^\n]`] = StateInfo{23, true, "Comment"}
 }
 
 func main() {
-	//regexp.MatchString
+	for k, _ := range transitionTable[6] {
+		matched, err := regexp.MatchString(k, "00")
+		fmt.Println(err)
+		fmt.Println(matched)
+	}
+	fmt.Println(transitionTable[6])
 }
