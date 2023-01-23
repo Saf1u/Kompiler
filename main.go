@@ -87,9 +87,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	reader := bytes.NewReader(data)
+	fileByteSize := len(data)
 	lastSuccesfulState := StateInfo{}
 	lastSuccesfulCharIndex := -1
+	lc := -1
+	reader := bytes.NewReader(data)
 	for r, _, err := reader.ReadRune(); err == nil; r, _, err = reader.ReadRune() {
 		state := transitionTable[current.State]
 		moved := false
@@ -99,35 +101,41 @@ func main() {
 				panic(err)
 			}
 			if match {
-				//if match, _ = regexp.MatchString(`\s`, string(r)); !match {
-				token = append(token, r)
-				//}
-				moved = true
-				current = v
+				if v.State != 0 {
+					token = append(token, r)
+				}
 				if v.Final {
 					lastSuccesfulState = v
-					lastSuccesfulCharIndex = len(token)
+					lastSuccesfulCharIndex = (fileByteSize - reader.Len())
+					lc = len(token)
 				}
+				moved = true
+				current = v
 				break
 			}
 		}
 		if !moved {
-			if len(token) == 0 {
-				fmt.Println("Token Type:", "invalidCharacter")
-				fmt.Println("Token:", string(r))
+			size := len(token)
+			if size == 0 {
+				fmt.Println("[Token Type:", "invalidCharacter", "Token:", string(r), "]")
+			} else {
+				lexeme := string(token)
+				if lc != -1 {
+					lexeme = string(token[0:lc])
+					fmt.Println("[Token Type:", lastSuccesfulState.Type, "Token:", lexeme, "]")
+				} else {
+					fmt.Println("[Token Type:", current.Type, "Token:", lexeme, "]")
+				}
 			}
-			if lastSuccesfulCharIndex != -1 {
-				lexeme := string(token[0:lastSuccesfulCharIndex])
-				fmt.Println("Token Type:", lastSuccesfulState.Type)
-				fmt.Println("Token:", lexeme)
-			}
-			if len(token) > 1 {
-				reader.Seek(-1, io.SeekCurrent)
+
+			if size >= 1 {
+				reader.Seek(int64(lastSuccesfulCharIndex), io.SeekStart)
 			}
 
 			current = StateInfo{}
 			token = []rune{}
 			lastSuccesfulCharIndex = -1
+			lc = -1
 		}
 	}
 }
