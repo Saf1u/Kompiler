@@ -125,6 +125,7 @@ func main() {
 					fmt.Println("[Token Type:", lastSuccesfulState.Type, "Token:", lexeme, "]")
 				} else {
 					fmt.Println("[Token Type:", current.Type, "Token:", lexeme, "]")
+					//always useless as >0 always leads to a success state from state 0
 				}
 			}
 
