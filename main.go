@@ -16,6 +16,7 @@ type StateInfo struct {
 }
 
 var transitionTable map[int]map[string]StateInfo
+var nestedComments int
 
 func init() {
 	transitionTable = make(map[int]map[string]StateInfo)
@@ -109,6 +110,13 @@ func main() {
 				if v.State != 0 {
 					token = append(token, r)
 				}
+				if r == '*' && v.State == 24 {
+					nestedComments++
+				}
+				if r == '*' && v.State == 25&&token[len(token)-2]=='/' {
+					nestedComments++
+				}
+
 				if v.Final {
 					lastSuccesfulState = v
 					lastSuccesfulCharIndex = (fileByteSize - reader.Len())
