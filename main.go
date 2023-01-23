@@ -91,9 +91,13 @@ func main() {
 	lastSuccesfulState := StateInfo{}
 	lastSuccesfulCharIndex := -1
 	lc := -1
-	lineNum:=0
+	lineNum := 1
 	reader := bytes.NewReader(data)
+	realOffset := 0
 	for r, _, err := reader.ReadRune(); err == nil; r, _, err = reader.ReadRune() {
+		if fileByteSize-reader.Len() > realOffset {
+			realOffset++
+		}
 		state := transitionTable[current.State]
 		moved := false
 		for k, v := range state {
@@ -118,14 +122,14 @@ func main() {
 		if !moved {
 			size := len(token)
 			if size == 0 {
-				fmt.Print("[Token Type:", "invalidCharacter", "Token:", string(r)," lineNum:",lineNum, "] ")
+				fmt.Print("[Token Type:", "invalidCharacter", "Token:", string(r), " lineNum:", lineNum, "] ")
 			} else {
 				lexeme := string(token)
 				if lc != -1 {
 					lexeme = string(token[0:lc])
-					fmt.Println("[Token Type:", lastSuccesfulState.Type, "Token:", lexeme," lineNum:",lineNum, "] ")
+					fmt.Print("[Token Type:", lastSuccesfulState.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
 				} else {
-					fmt.Println("[Token Type:", current.Type, "Token:", lexeme," lineNum:",lineNum, "] ")
+					fmt.Print("[Token Type:", current.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
 					//always useless as >0 always leads to a success state from state 0
 				}
 			}
@@ -138,6 +142,10 @@ func main() {
 			token = []rune{}
 			lastSuccesfulCharIndex = -1
 			lc = -1
+		}
+		if r == '\n' && fileByteSize-reader.Len() >= realOffset {
+			fmt.Println()
+			lineNum++
 		}
 	}
 
