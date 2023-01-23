@@ -1,0 +1,317 @@
+[Token Type:CommentToken:/* sort the array */ lineNum:1] 
+[Token Type:IDTokenToken:function lineNum:2] [Token Type:IDTokenToken:bubbleSort lineNum:2] [Token Type:closedParanthesisToken:( lineNum:2] [Token Type:IDTokenToken:arr lineNum:2] [Token Type:columnToken:: lineNum:2] [Token Type:IDTokenToken:integer lineNum:2] [Token Type:closeSquareBracketToken:[ lineNum:2] [Token Type:openSquareracketToken:] lineNum:2] [Token Type:invalidCharacterToken:, lineNum:2] [Token Type:IDTokenToken:size lineNum:2] [Token Type:columnToken:: lineNum:2] [Token Type:IDTokenToken:integer lineNum:2] [Token Type:openParenthesisToken:) lineNum:2] [Token Type:LambdaTokenToken:=> lineNum:2] [Token Type:IDTokenToken:void lineNum:2] 
+[Token Type:openCurlyBracketToken:{ lineNum:3] 
+[Token Type:IDTokenToken:localvar lineNum:4] [Token Type:IDTokenToken:n lineNum:4] [Token Type:columnToken:: lineNum:4] [Token Type:IDTokenToken:integer lineNum:4] [Token Type:invalidCharacterToken:; lineNum:4] 
+[Token Type:IDTokenToken:localvar lineNum:5] [Token Type:IDTokenToken:i lineNum:5] [Token Type:columnToken:: lineNum:5] [Token Type:IDTokenToken:integer lineNum:5] [Token Type:invalidCharacterToken:; lineNum:5] 
+[Token Type:IDTokenToken:localvar lineNum:6] [Token Type:IDTokenToken:j lineNum:6] [Token Type:columnToken:: lineNum:6] [Token Type:IDTokenToken:integer lineNum:6] [Token Type:invalidCharacterToken:; lineNum:6] 
+[Token Type:IDTokenToken:localvar lineNum:7] [Token Type:IDTokenToken:temp lineNum:7] [Token Type:columnToken:: lineNum:7] [Token Type:IDTokenToken:integer lineNum:7] [Token Type:invalidCharacterToken:; lineNum:7] 
+[Token Type:IDTokenToken:n lineNum:8] [Token Type:assignmentToken:= lineNum:8] [Token Type:IDTokenToken:size lineNum:8] [Token Type:invalidCharacterToken:; lineNum:8] 
+[Token Type:IDTokenToken:i lineNum:9] [Token Type:assignmentToken:= lineNum:9] [Token Type:IntegerTokenToken:0 lineNum:9] [Token Type:invalidCharacterToken:; lineNum:9] 
+[Token Type:IDTokenToken:j lineNum:10] [Token Type:assignmentToken:= lineNum:10] [Token Type:IntegerTokenToken:0 lineNum:10] [Token Type:invalidCharacterToken:; lineNum:10] 
+[Token Type:IDTokenToken:temp lineNum:11] [Token Type:assignmentToken:= lineNum:11] [Token Type:IntegerTokenToken:0 lineNum:11] [Token Type:invalidCharacterToken:; lineNum:11] 
+[Token Type:IDTokenToken:while lineNum:12] [Token Type:closedParanthesisToken:( lineNum:12] [Token Type:IDTokenToken:i lineNum:12] [Token Type:lessThanToken:< lineNum:12] [Token Type:IDTokenToken:n lineNum:12] [Token Type:minusToken:- lineNum:12] [Token Type:IntegerTokenToken:1 lineNum:12] [Token Type:openParenthesisToken:) lineNum:12] [Token Type:openCurlyBracketToken:{ lineNum:12] 
+[Token Type:IDTokenToken:while lineNum:13] [Token Type:closedParanthesisToken:( lineNum:13] [Token Type:IDTokenToken:j lineNum:13] [Token Type:lessThanToken:< lineNum:13] [Token Type:IDTokenToken:n lineNum:13] [Token Type:minusToken:- lineNum:13] [Token Type:IDTokenToken:i lineNum:13] [Token Type:minusToken:- lineNum:13] [Token Type:IntegerTokenToken:1 lineNum:13] [Token Type:openParenthesisToken:) lineNum:13] [Token Type:openCurlyBracketToken:{ lineNum:13] 
+[Token Type:IDTokenToken:if lineNum:14] [Token Type:closedParanthesisToken:( lineNum:14] [Token Type:IDTokenToken:arr lineNum:14] [Token Type:closeSquareBracketToken:[ lineNum:14] [Token Type:IDTokenToken:j lineNum:14] [Token Type:openSquareracketToken:] lineNum:14] [Token Type:greaterThanToken:> lineNum:14] [Token Type:IDTokenToken:arr lineNum:14] [Token Type:closeSquareBracketToken:[ lineNum:14] [Token Type:IDTokenToken:j lineNum:14] [Token Type:plusToken:+ lineNum:14] [Token Type:IntegerTokenToken:1 lineNum:14] [Token Type:openSquareracketToken:] lineNum:14] [Token Type:openParenthesisToken:) lineNum:14] 
+[Token Type:IDTokenToken:then lineNum:15] [Token Type:openCurlyBracketToken:{ lineNum:15] 
+
+[Token Type:CommentToken:// swap temp and arr[i]
+ lineNum:17] [Token Type:IDTokenToken:temp lineNum:17] [Token Type:assignmentToken:= lineNum:17] [Token Type:IDTokenToken:arr lineNum:17] [Token Type:closeSquareBracketToken:[ lineNum:17] [Token Type:IDTokenToken:j lineNum:17] [Token Type:openSquareracketToken:] lineNum:17] [Token Type:invalidCharacterToken:; lineNum:17] 
+[Token Type:IDTokenToken:arr lineNum:18] [Token Type:closeSquareBracketToken:[ lineNum:18] [Token Type:IDTokenToken:j lineNum:18] [Token Type:openSquareracketToken:] lineNum:18] [Token Type:assignmentToken:= lineNum:18] [Token Type:IDTokenToken:arr lineNum:18] [Token Type:closeSquareBracketToken:[ lineNum:18] [Token Type:IDTokenToken:j lineNum:18] [Token Type:plusToken:+ lineNum:18] [Token Type:IntegerTokenToken:1 lineNum:18] [Token Type:openSquareracketToken:] lineNum:18] [Token Type:invalidCharacterToken:; lineNum:18] 
+[Token Type:IDTokenToken:arr lineNum:19] [Token Type:closeSquareBracketToken:[ lineNum:19] [Token Type:IDTokenToken:j lineNum:19] [Token Type:plusToken:+ lineNum:19] [Token Type:IntegerTokenToken:1 lineNum:19] [Token Type:openSquareracketToken:] lineNum:19] [Token Type:assignmentToken:= lineNum:19] [Token Type:IDTokenToken:temp lineNum:19] [Token Type:invalidCharacterToken:; lineNum:19] 
+[Token Type:closeCurlyBracketToken:} lineNum:20] [Token Type:IDTokenToken:else lineNum:20] [Token Type:invalidCharacterToken:; lineNum:20] 
+[Token Type:IDTokenToken:j lineNum:21] [Token Type:assignmentToken:= lineNum:21] [Token Type:IDTokenToken:j lineNum:21] [Token Type:plusToken:+ lineNum:21] [Token Type:IntegerTokenToken:1 lineNum:21] [Token Type:invalidCharacterToken:; lineNum:21] 
+[Token Type:closeCurlyBracketToken:} lineNum:22] [Token Type:invalidCharacterToken:; lineNum:22] 
+[Token Type:IDTokenToken:i lineNum:23] [Token Type:assignmentToken:= lineNum:23] [Token Type:IDTokenToken:i lineNum:23] [Token Type:plusToken:+ lineNum:23] [Token Type:IntegerTokenToken:1 lineNum:23] [Token Type:invalidCharacterToken:; lineNum:23] 
+[Token Type:closeCurlyBracketToken:} lineNum:24] [Token Type:invalidCharacterToken:; lineNum:24] 
+[Token Type:closeCurlyBracketToken:} lineNum:25] 
+
+[Token Type:CommentToken:/* print the array */ lineNum:27] 
+[Token Type:IDTokenToken:function lineNum:28] [Token Type:IDTokenToken:printArray lineNum:28] [Token Type:closedParanthesisToken:( lineNum:28] [Token Type:IDTokenToken:arr lineNum:28] [Token Type:columnToken:: lineNum:28] [Token Type:IDTokenToken:integer lineNum:28] [Token Type:closeSquareBracketToken:[ lineNum:28] [Token Type:openSquareracketToken:] lineNum:28] [Token Type:invalidCharacterToken:, lineNum:28] [Token Type:IDTokenToken:size lineNum:28] [Token Type:columnToken:: lineNum:28] [Token Type:IDTokenToken:integer lineNum:28] [Token Type:openParenthesisToken:) lineNum:28] [Token Type:LambdaTokenToken:=> lineNum:28] [Token Type:IDTokenToken:void lineNum:28] 
+[Token Type:openCurlyBracketToken:{ lineNum:29] 
+[Token Type:IDTokenToken:localvar lineNum:30] [Token Type:IDTokenToken:n lineNum:30] [Token Type:columnToken:: lineNum:30] [Token Type:IDTokenToken:integer lineNum:30] [Token Type:invalidCharacterToken:; lineNum:30] 
+[Token Type:IDTokenToken:localvar lineNum:31] [Token Type:IDTokenToken:i lineNum:31] [Token Type:columnToken:: lineNum:31] [Token Type:IDTokenToken:integer lineNum:31] [Token Type:invalidCharacterToken:; lineNum:31] 
+[Token Type:IDTokenToken:n lineNum:32] [Token Type:assignmentToken:= lineNum:32] [Token Type:IDTokenToken:size lineNum:32] [Token Type:invalidCharacterToken:; lineNum:32] 
+[Token Type:IDTokenToken:i lineNum:33] [Token Type:assignmentToken:= lineNum:33] [Token Type:IntegerTokenToken:0 lineNum:33] [Token Type:invalidCharacterToken:; lineNum:33] 
+[Token Type:IDTokenToken:while lineNum:34] [Token Type:closedParanthesisToken:( lineNum:34] [Token Type:IDTokenToken:i lineNum:34] [Token Type:lessThanToken:< lineNum:34] [Token Type:IDTokenToken:n lineNum:34] [Token Type:openParenthesisToken:) lineNum:34] [Token Type:openCurlyBracketToken:{ lineNum:34] 
+[Token Type:IDTokenToken:write lineNum:35] [Token Type:closedParanthesisToken:( lineNum:35] [Token Type:IDTokenToken:arr lineNum:35] [Token Type:closeSquareBracketToken:[ lineNum:35] [Token Type:IDTokenToken:i lineNum:35] [Token Type:openSquareracketToken:] lineNum:35] [Token Type:openParenthesisToken:) lineNum:35] [Token Type:invalidCharacterToken:; lineNum:35] 
+[Token Type:IDTokenToken:i lineNum:36] [Token Type:assignmentToken:= lineNum:36] [Token Type:IDTokenToken:i lineNum:36] [Token Type:plusToken:+ lineNum:36] [Token Type:IntegerTokenToken:1 lineNum:36] [Token Type:invalidCharacterToken:; lineNum:36] 
+[Token Type:closeCurlyBracketToken:} lineNum:37] [Token Type:invalidCharacterToken:; lineNum:37] 
+[Token Type:closeCurlyBracketToken:} lineNum:38] 
+
+
+[Token Type:CommentToken:// main funtion to test above
+ lineNum:41] [Token Type:IDTokenToken:function lineNum:41] [Token Type:IDTokenToken:main lineNum:41] [Token Type:closedParanthesisToken:( lineNum:41] [Token Type:openParenthesisToken:) lineNum:41] [Token Type:LambdaTokenToken:=> lineNum:41] [Token Type:IDTokenToken:void lineNum:41] 
+[Token Type:openCurlyBracketToken:{ lineNum:42] 
+[Token Type:IDTokenToken:localvar lineNum:43] [Token Type:IDTokenToken:arr lineNum:43] [Token Type:columnToken:: lineNum:43] [Token Type:IDTokenToken:integer lineNum:43] [Token Type:closeSquareBracketToken:[ lineNum:43] [Token Type:IntegerTokenToken:7 lineNum:43] [Token Type:openSquareracketToken:] lineNum:43] [Token Type:invalidCharacterToken:; lineNum:43] 
+[Token Type:IDTokenToken:arr lineNum:44] [Token Type:closeSquareBracketToken:[ lineNum:44] [Token Type:IntegerTokenToken:0 lineNum:44] [Token Type:openSquareracketToken:] lineNum:44] [Token Type:assignmentToken:= lineNum:44] [Token Type:IntegerTokenToken:64 lineNum:44] [Token Type:invalidCharacterToken:; lineNum:44] 
+[Token Type:IDTokenToken:arr lineNum:45] [Token Type:closeSquareBracketToken:[ lineNum:45] [Token Type:IntegerTokenToken:1 lineNum:45] [Token Type:openSquareracketToken:] lineNum:45] [Token Type:assignmentToken:= lineNum:45] [Token Type:IntegerTokenToken:34 lineNum:45] [Token Type:invalidCharacterToken:; lineNum:45] 
+[Token Type:IDTokenToken:arr lineNum:46] [Token Type:closeSquareBracketToken:[ lineNum:46] [Token Type:IntegerTokenToken:2 lineNum:46] [Token Type:openSquareracketToken:] lineNum:46] [Token Type:assignmentToken:= lineNum:46] [Token Type:IntegerTokenToken:25 lineNum:46] [Token Type:invalidCharacterToken:; lineNum:46] 
+[Token Type:IDTokenToken:arr lineNum:47] [Token Type:closeSquareBracketToken:[ lineNum:47] [Token Type:IntegerTokenToken:3 lineNum:47] [Token Type:openSquareracketToken:] lineNum:47] [Token Type:assignmentToken:= lineNum:47] [Token Type:IntegerTokenToken:12 lineNum:47] [Token Type:invalidCharacterToken:; lineNum:47] 
+[Token Type:IDTokenToken:arr lineNum:48] [Token Type:closeSquareBracketToken:[ lineNum:48] [Token Type:IntegerTokenToken:4 lineNum:48] [Token Type:openSquareracketToken:] lineNum:48] [Token Type:assignmentToken:= lineNum:48] [Token Type:IntegerTokenToken:22 lineNum:48] [Token Type:invalidCharacterToken:; lineNum:48] 
+[Token Type:IDTokenToken:arr lineNum:49] [Token Type:closeSquareBracketToken:[ lineNum:49] [Token Type:IntegerTokenToken:5 lineNum:49] [Token Type:openSquareracketToken:] lineNum:49] [Token Type:assignmentToken:= lineNum:49] [Token Type:IntegerTokenToken:11 lineNum:49] [Token Type:invalidCharacterToken:; lineNum:49] 
+[Token Type:IDTokenToken:arr lineNum:50] [Token Type:closeSquareBracketToken:[ lineNum:50] [Token Type:IntegerTokenToken:6 lineNum:50] [Token Type:openSquareracketToken:] lineNum:50] [Token Type:assignmentToken:= lineNum:50] [Token Type:IntegerTokenToken:90 lineNum:50] [Token Type:invalidCharacterToken:; lineNum:50] 
+[Token Type:IDTokenToken:printarray lineNum:51] [Token Type:closedParanthesisToken:( lineNum:51] [Token Type:IDTokenToken:arr lineNum:51] [Token Type:invalidCharacterToken:, lineNum:51] [Token Type:IntegerTokenToken:7 lineNum:51] [Token Type:openParenthesisToken:) lineNum:51] [Token Type:invalidCharacterToken:; lineNum:51] 
+[Token Type:IDTokenToken:bubbleSort lineNum:52] [Token Type:closedParanthesisToken:( lineNum:52] [Token Type:IDTokenToken:arr lineNum:52] [Token Type:invalidCharacterToken:, lineNum:52] [Token Type:IntegerTokenToken:7 lineNum:52] [Token Type:openParenthesisToken:) lineNum:52] [Token Type:invalidCharacterToken:; lineNum:52] 
+[Token Type:IDTokenToken:printarray lineNum:53] [Token Type:closedParanthesisToken:( lineNum:53] [Token Type:IDTokenToken:arr lineNum:53] [Token Type:invalidCharacterToken:, lineNum:53] [Token Type:IntegerTokenToken:7 lineNum:53] [Token Type:openParenthesisToken:) lineNum:53] [Token Type:invalidCharacterToken:; lineNum:53] 
+[Token Type:closeCurlyBracketToken:} lineNum:54] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[Token Type:CommentToken:/*
+    classes
+    --------------------------------------
+|X| no class declaration
+| | class declaration
+| | multiple class declarations
+| | no data member declaration
+| | data member declaration
+| | multiple data member declaration
+| | no member function declaration
+| | member function declaration
+| | multiple member function declaration
+| | no member
+| | no inherited class
+| | one inherited class
+| | multiple inherited classes
+| | private member specifier
+| | public member specifier
+
+    functions: definitions
+    --------------------------------------
+| | no main function definition
+|X| main function definition
+| | no free function definition
+|X| free function definition
+|X| multiple free function definitions
+|X| no member function definition
+| | member function definition
+| | multiple member function definitions
+|X| return type: void
+| | return type: integer
+| | return type: float
+| | return type: id
+| | return type: array (not allowed)
+
+    functions: formal parameters
+    --------------------------------------
+|X| type: integer
+| | type: float
+| | type: id
+|X| type: 1-dim array 
+| | type: n-dim array
+| | type: array (with size)
+|X| type: array (without size)
+
+    functions: calls
+    --------------------------------------
+|X| free function call
+| | member function call
+| | parameters:0
+| | parameters:1
+|X| parameters:n
+|X| array parameter - 1-dim
+| | array parameter - n-dim
+| | array parameter - with size
+| | array parameter - without size
+| | function call as statement
+| | function call as expression factor
+| | expression as parameter
+
+    variable declaration
+    --------------------------------------
+|X| type: integer
+| | type: float
+| | type: string
+| | type: id
+|X| type: 1-dim array 
+| | type: n-dim array
+|X| type: array (with size)
+| | type: array (without size) (not allowed)
+
+    function body: local variable declarations
+    --------------------------------------
+| | no local variable declarations
+|X| local variable declarations
+| | intertwined statements and variable declarations
+
+    function body: statements
+    --------------------------------------
+| | no statement
+| | 1 statement
+|X| n statements
+|X| if statement
+|X| if: empty then or else blocks
+| | if: 1-statement then or else blocks
+|X| if: n-statements then or else blocks
+|X| while statement
+| | while: empty block
+| | while: 1-statement block
+|X| while: n-statement block
+| | read(<variable>) statement
+|X| write(<expr>) statement
+|X| return(<expr>) statement
+|X| assignment statement
+
+    variable + idnest
+    --------------------------------------
+|X| id
+| | id.id
+| | id.id(id)
+| | id(id).id
+| | id(id).id()
+| | id.id[id]
+| | id[id].id
+| | id[id].id[id]
+| | id.id[id][id]
+| | id[id][id].id
+| | id[id][id].id[id][id]
+| | id(id).id[id]
+| | id(id).id[id][id]
+| | expression as array index
+
+    expressions
+    --------------------------------------
+|X| single variable
+|X| involving addop
+| | involving multop
+|X| involving relop
+| | involving addop + multop
+|X| involving multop + relop
+| | involving addop + multop + relop
+| | involving parentheses
+| | involving nested parentheses
+| | involving not
+| | involving sign
+|X| involving literals
+| | involving variable + idnest
+|X| involving function calls
+| | involving all the above in one expression
+*/ lineNum:185] 
+[Token Type:invalidCharacterToken:@ lineNum:186] 

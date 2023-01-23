@@ -79,10 +79,15 @@ func init() {
 
 func main() {
 	current := StateInfo{}
-	fl, err := os.Open("lexpositivegrading.src")
+	fl, err := os.Open("main.src")
 	if err != nil {
 		panic(err)
 	}
+	outFile, err := os.OpenFile("outsrc", os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+
 	token := []rune{}
 	data, err := ioutil.ReadAll(fl)
 	if err != nil {
@@ -110,11 +115,19 @@ func main() {
 				if v.State != 0 {
 					token = append(token, r)
 				}
+				//nested comment logic
 				if r == '*' && v.State == 24 {
 					nestedComments++
 				}
-				if r == '*' && v.State == 25&&token[len(token)-2]=='/' {
+				if r == '*' && v.State == 25 && token[len(token)-2] == '/' {
 					nestedComments++
+					v.State = 24
+				}
+				if v.State == 26 {
+					nestedComments--
+					if nestedComments > 0 {
+						v.State = 24
+					}
 				}
 
 				if v.Final {
@@ -130,14 +143,14 @@ func main() {
 		if !moved {
 			size := len(token)
 			if size == 0 {
-				fmt.Print("[Token Type:", "invalidCharacter", "Token:", string(r), " lineNum:", lineNum, "] ")
+				fmt.Fprint(outFile, "[Token Type:", "invalidCharacter", "Token:", string(r), " lineNum:", lineNum, "] ")
 			} else {
 				lexeme := string(token)
 				if lc != -1 {
 					lexeme = string(token[0:lc])
-					fmt.Print("[Token Type:", lastSuccesfulState.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
+					fmt.Fprint(outFile, "[Token Type:", lastSuccesfulState.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
 				} else {
-					fmt.Print("[Token Type:", current.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
+					fmt.Fprint(outFile, "[Token Type:", current.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
 					//always useless as >0 always leads to a success state from state 0
 				}
 			}
@@ -152,7 +165,7 @@ func main() {
 			lc = -1
 		}
 		if r == '\n' && fileByteSize-reader.Len() >= realOffset {
-			fmt.Println()
+			fmt.Fprintln(outFile)
 			lineNum++
 		}
 	}
