@@ -15,66 +15,103 @@ type StateInfo struct {
 	Type  string
 }
 
+const (
+	INTEGER               = "intnum"
+	FLOAT                 = "floatnum"
+	ID                    = "id"
+	EQUAL                 = "eq"
+	NOT_EQUAL             = "noteq"
+	LESS_THAN             = "lt"
+	GREATER_THAN          = "gt"
+	LESS_THAN_OR_EQAUL    = "leq"
+	GREATER_THAN_OR_EQAUL = "geq"
+	PLUS                  = "plus"
+	MINUS                 = "minus"
+	MULTIPLICATION        = "mult"
+	DIVISION              = "div"
+	ASSIGN                = "assign"
+	OPEN_PARANTHESIS      = "openpar"
+	CLOSE_PARANTHESIS     = "closepar"
+	OPEN_CURL             = "opencubr"
+	CLOSE_CURL            = "closecubr"
+	OPEN_SQUARE           = "opensqbr"
+	CLOSE_SQUARE          = "closesqbr"
+	SEMI_COLON            = "semi"
+	COMMA                 = "comma"
+	DOT                   = "dot"
+	COLON                 = "colon"
+	RETURN_OP             = "returntype"
+	SCOPE_RES             = "scopeop"
+	INLINE_COMMENT        = "inlinecmt"
+	BLOCK_COMMENT         = "blockcmt"
+)
+
 var transitionTable map[int]map[string]StateInfo
-var nestedComments int
+var identifierLookUp = map[string]bool{
+	"integer": true, "float": true, "void": true, "class": true, "self": true, "isa": true, "while": true, "if": true, "then": true, "else": true, "read": true, "not": true,
+	"write": true, "return": true, "localvar": true, "constructor": true, "attribute": true, "function": true, "public": true, "private": true, "or": true, "and": true,
+}
 
 func init() {
 	transitionTable = make(map[int]map[string]StateInfo)
-	for i := 0; i <= 36; i++ {
+	for i := 0; i <= 38; i++ {
 		transitionTable[i] = map[string]StateInfo{}
 	}
 	transitionTable[0][`\s`] = StateInfo{0, false, "InvalidChar"}
-	transitionTable[0][`[a-zA-Z]`] = StateInfo{1, true, "IDToken"}
-	transitionTable[0][`0`] = StateInfo{2, true, "IntegerToken"}
-	transitionTable[0][`[1-9]`] = StateInfo{3, true, "IntegerToken"}
-	transitionTable[3][`[0-9]`] = StateInfo{3, true, "IntegerToken"}
+	transitionTable[0][`[a-zA-Z]`] = StateInfo{1, true, ID}
+	transitionTable[0][`0`] = StateInfo{2, true, INTEGER}
+	transitionTable[0][`[1-9]`] = StateInfo{3, true, INTEGER}
+	transitionTable[3][`[0-9]`] = StateInfo{3, true, INTEGER}
 	transitionTable[3][`\.`] = StateInfo{4, false, "InvalidNum"}
-	transitionTable[0][`\.`] = StateInfo{10, true, "DotToken"}
-	transitionTable[0][`:`] = StateInfo{11, true, "column"}
-	transitionTable[0][`}`] = StateInfo{32, true, "closeCurlyBracket"}
-	transitionTable[0][`{`] = StateInfo{33, true, "openCurlyBracket"}
-	transitionTable[0][`\[`] = StateInfo{34, true, "closeSquareBracket"}
-	transitionTable[0][`]`] = StateInfo{35, true, "openSquareracket"}
-	transitionTable[0][`\(`] = StateInfo{35, true, "closedParanthesis"}
-	transitionTable[0][`\)`] = StateInfo{36, true, "openParenthesis"}
-	transitionTable[0][`=`] = StateInfo{13, true, "assignment"}
-	transitionTable[0][`<`] = StateInfo{15, true, "lessThan"}
-	transitionTable[0][`>`] = StateInfo{19, true, "greaterThan"}
-	transitionTable[0][`/`] = StateInfo{21, true, "fslash"}
-	transitionTable[1][`[a-zA-Z]|[0-9]|_`] = StateInfo{1, true, "IDToken"}
+	transitionTable[0][`\.`] = StateInfo{10, true, DOT}
+	transitionTable[0][`:`] = StateInfo{11, true, COLON}
+	transitionTable[0][`}`] = StateInfo{32, true, CLOSE_CURL}
+	transitionTable[0][`{`] = StateInfo{33, true, OPEN_CURL}
+	transitionTable[0][`\[`] = StateInfo{34, true, OPEN_SQUARE}
+	transitionTable[0][`]`] = StateInfo{35, true, CLOSE_SQUARE}
+	transitionTable[0][`\(`] = StateInfo{35, true, OPEN_PARANTHESIS}
+	transitionTable[0][`\)`] = StateInfo{36, true, CLOSE_PARANTHESIS}
+	transitionTable[0][`;`] = StateInfo{37, true, SEMI_COLON}
+	transitionTable[0][`,`] = StateInfo{38, true, COMMA}
+	transitionTable[0][`=`] = StateInfo{13, true, ASSIGN}
+	transitionTable[0][`<`] = StateInfo{15, true, LESS_THAN}
+	transitionTable[0][`>`] = StateInfo{19, true, GREATER_THAN}
+	transitionTable[0][`/`] = StateInfo{21, true, DIVISION}
+	transitionTable[1][`[a-zA-Z]|[0-9]|_`] = StateInfo{1, true, ID}
 	transitionTable[2][`\.`] = StateInfo{4, false, "InvalidNum"}
-	transitionTable[4][`[0-9]`] = StateInfo{5, true, "floatToken"}
-	transitionTable[5][`[1-9]`] = StateInfo{5, true, "floatToken"}
+	transitionTable[4][`[0-9]`] = StateInfo{5, true, FLOAT}
+	transitionTable[5][`[1-9]`] = StateInfo{5, true, FLOAT}
 	transitionTable[5][`0`] = StateInfo{31, false, "InvalidfloatToken"}
-	transitionTable[31][`[1-9]`] = StateInfo{5, true, "floatToken"}
+	transitionTable[31][`[1-9]`] = StateInfo{5, true, FLOAT}
 	// i added normaltokens
-	transitionTable[0][`\+`] = StateInfo{28, true, "plus"}
-	transitionTable[0][`-`] = StateInfo{29, true, "minus"}
-	transitionTable[0][`\*`] = StateInfo{30, true, "multiply"}
+	transitionTable[0][`\+`] = StateInfo{28, true, PLUS}
+	transitionTable[0][`-`] = StateInfo{29, true, MINUS}
+	transitionTable[0][`\*`] = StateInfo{30, true, MULTIPLICATION}
 	//I renamed***
 	//transitionTable[27][`[0-9]`] = StateInfo{27, false, "InvalidNum"}
 	transitionTable[5][`e`] = StateInfo{6, false, "InvalidNum"}
 	//I renamed***
 	transitionTable[6][`[+|-]`] = StateInfo{7, false, "InvalidNum"}
-	transitionTable[6][`[1-9]`] = StateInfo{8, true, "floatToken"}
-	transitionTable[6][`0`] = StateInfo{9, true, "floatToken"}
-	transitionTable[7][`[1-9]`] = StateInfo{8, true, "floatToken"}
-	transitionTable[8][`[0-9]`] = StateInfo{8, true, "floatToken"}
-	transitionTable[7][`0`] = StateInfo{9, true, "FloatToken"}
-	transitionTable[11][`:`] = StateInfo{12, true, "ScopeResToken"}
-	transitionTable[13][`=`] = StateInfo{14, true, "EqualityToken"}
-	transitionTable[13][`>`] = StateInfo{18, true, "LambdaToken"}
-	transitionTable[15][`>`] = StateInfo{17, true, "NotEqualToken"}
-	transitionTable[15][`=`] = StateInfo{16, true, "LessThanEqualToken"}
-	transitionTable[19][`=`] = StateInfo{20, true, "GreaterThanEqualToken"}
+	transitionTable[6][`[1-9]`] = StateInfo{8, true, FLOAT}
+	transitionTable[6][`0`] = StateInfo{9, true, FLOAT}
+	transitionTable[7][`[1-9]`] = StateInfo{8, true, FLOAT}
+	transitionTable[8][`[0-9]`] = StateInfo{8, true, FLOAT}
+	transitionTable[7][`0`] = StateInfo{9, true, FLOAT}
+	transitionTable[11][`:`] = StateInfo{12, true, SCOPE_RES}
+	transitionTable[13][`=`] = StateInfo{14, true, EQUAL}
+	transitionTable[13][`>`] = StateInfo{18, true, RETURN_OP}
+	transitionTable[15][`>`] = StateInfo{17, true, NOT_EQUAL}
+	transitionTable[15][`=`] = StateInfo{16, true, LESS_THAN_OR_EQAUL}
+	transitionTable[19][`=`] = StateInfo{20, true, GREATER_THAN_OR_EQAUL}
 	transitionTable[21][`\*`] = StateInfo{24, false, "invalidComment"}
 	transitionTable[24][`[^\*]`] = StateInfo{24, false, "invalidComment"}
 	transitionTable[24][`\*`] = StateInfo{25, false, "invalidComment"}
 	transitionTable[25][`[^/]`] = StateInfo{24, false, "invalidComment"}
-	transitionTable[25][`/`] = StateInfo{26, true, "Comment"}
-	transitionTable[21][`/`] = StateInfo{22, false, "invalidComment"}
-	transitionTable[22][`[^\n]`] = StateInfo{22, false, "invalidComment"}
-	transitionTable[22][`\n`] = StateInfo{23, true, "Comment"}
+	transitionTable[25][`/`] = StateInfo{26, true, BLOCK_COMMENT}
+	transitionTable[21][`/`] = StateInfo{22, true, INLINE_COMMENT}
+	transitionTable[22][`[^\n]`] = StateInfo{22, true, INLINE_COMMENT}
+	//transitionTable[22][`\n`] = StateInfo{23, true, "Comment"}
+
 }
 
 type lexer struct {
@@ -121,7 +158,7 @@ func newLexer(sourceFile string, tokenFile string, errorFile string) *lexer {
 	defaultLexer.lastSuccesfulState = StateInfo{}
 	defaultLexer.lastSuccesfulCharIndex = -2
 	defaultLexer.charCount = -1
-	defaultLexer.lineNum = 0
+	defaultLexer.lineNum = 1
 	defaultLexer.reader = bytes.NewReader(data)
 	defaultLexer.realOffset = 0
 	return defaultLexer
@@ -130,7 +167,6 @@ func newLexer(sourceFile string, tokenFile string, errorFile string) *lexer {
 func (lex *lexer) nextToken() {
 	for r, _, err := lex.reader.ReadRune(); err == nil; r, _, err = lex.reader.ReadRune() {
 		if lex.fileSize-lex.reader.Len() > lex.realOffset {
-			//lex.realOffset++
 			lex.realOffset = lex.fileSize - lex.reader.Len()
 		}
 		state := transitionTable[lex.currentState.State]
@@ -175,14 +211,18 @@ func (lex *lexer) nextToken() {
 			}
 		}
 		if !lex.moved {
-			//panic(fmt.Sprint(string(lex.token), lex.lineNum))
 			size := len(lex.token)
 			if size == 0 {
-				fmt.Fprint(lex.outTokenFile, "[Token Type:", "invalidCharacter", "Token:", string(r), " lineNum:", lex.lineNum, "] ")
+				fmt.Fprint(lex.outTokenFile, "[", "invalidchar", ", ", string(r), ", ", lex.lineNum, "] ")
 			} else {
 				if lex.charCount != -1 {
 					lexeme := string(lex.token[0:lex.charCount])
-					fmt.Fprint(lex.outTokenFile, "[Token Type:", lex.lastSuccesfulState.Type, "Token:", lexeme, " lineNum:", lex.lineNum, "] ")
+					tokenType := lex.lastSuccesfulState.Type
+					_, exist := identifierLookUp[lexeme]
+					if tokenType == ID && exist {
+						tokenType = lexeme
+					}
+					fmt.Fprint(lex.outTokenFile, "[", tokenType, ", ", lexeme, ", ", lex.lineNum, "] ")
 				}
 			}
 
@@ -195,13 +235,12 @@ func (lex *lexer) nextToken() {
 			lex.lastSuccesfulCharIndex = -1
 			lex.charCount = -1
 		}
-		if r == '\n' && lex.fileSize-lex.reader.Len() >= lex.realOffset  {
+		if r == '\n' && lex.fileSize-lex.reader.Len() >= lex.realOffset {
 			if lex.currentState.State != 24 {
 				fmt.Fprintln(lex.outTokenFile)
 			}
 			lex.lineNum++
 		}
-		
 
 	}
 
@@ -211,98 +250,3 @@ func main() {
 	lex := newLexer("main.src", "outsrc", "errsrc")
 	lex.nextToken()
 }
-
-// func side() {
-// 	current := StateInfo{}
-// 	fl, err := os.Open("lexpositivegrading.src")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	outFile, err := os.OpenFile("outsrc", os.O_RDWR, 0755)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	token := []rune{}
-// 	data, err := ioutil.ReadAll(fl)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	fileByteSize := len(data)
-// 	lastSuccesfulState := StateInfo{}
-// 	lastSuccesfulCharIndex := -1
-// 	lc := -1
-// 	lineNum := 1
-// 	reader := bytes.NewReader(data)
-// 	realOffset := 0
-// 	for r, _, err := reader.ReadRune(); err == nil; r, _, err = reader.ReadRune() {
-// 		if fileByteSize-reader.Len() > realOffset {
-// 			realOffset++
-// 		}
-// 		state := transitionTable[current.State]
-// 		moved := false
-// 		for k, v := range state {
-// 			match, err := regexp.MatchString(k, string(r))
-// 			if err != nil {
-// 				panic(err)
-// 			}
-// 			if match {
-// 				if v.State != 0 {
-// 					token = append(token, r)
-// 				}
-// 				//nested comment logic
-// 				if r == '*' && v.State == 24 {
-// 					nestedComments++
-// 				}
-// 				if r == '*' && v.State == 25 && token[len(token)-2] == '/' {
-// 					nestedComments++
-// 					v.State = 24
-// 				}
-// 				if v.State == 26 {
-// 					nestedComments--
-// 					if nestedComments > 0 {
-// 						v.State = 24
-// 					}
-// 				}
-
-// 				if v.Final {
-// 					lastSuccesfulState = v
-// 					lastSuccesfulCharIndex = (fileByteSize - reader.Len())
-// 					lc = len(token)
-// 				}
-// 				moved = true
-// 				current = v
-// 				break
-// 			}
-// 		}
-// 		if !moved {
-// 			size := len(token)
-// 			if size == 0 {
-// 				fmt.Fprint(outFile, "[Token Type:", "invalidCharacter", "Token:", string(r), " lineNum:", lineNum, "] ")
-// 			} else {
-// 				lexeme := string(token)
-// 				if lc != -1 {
-// 					lexeme = string(token[0:lc])
-// 					fmt.Fprint(outFile, "[Token Type:", lastSuccesfulState.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
-// 				} else {
-// 					fmt.Fprint(outFile, "[Token Type:", current.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
-// 					//always useless as >0 always leads to a success state from state 0
-// 				}
-// 			}
-
-// 			if size >= 1 {
-// 				reader.Seek(int64(lastSuccesfulCharIndex), io.SeekStart)
-// 			}
-
-// 			current = StateInfo{}
-// 			token = []rune{}
-// 			lastSuccesfulCharIndex = -1
-// 			lc = -1
-// 		}
-// 		if r == '\n' && fileByteSize-reader.Len() >= realOffset {
-// 			fmt.Fprintln(outFile)
-// 			lineNum++
-// 		}
-// 	}
-
-// }
