@@ -1,17 +1,39 @@
-[blockcmt, /* sort the array */, 1] 
-[function, function, 2] [id, bubbleSort, 2] [openpar, (, 2] [id, arr, 2] [colon, :, 2] [integer, integer, 2] [opensqbr, [, 2] [closesqbr, ], 2] [comma, ,, 2] [id, size, 2] [colon, :, 2] [integer, integer, 2] [closepar, ), 2] [returntype, =>, 2] [void, void, 2] 
-[opencubr, {, 3] 
-[localvar, localvar, 4] [id, n, 4] [colon, :, 4] [integer, integer, 4] [semi, ;, 4] 
-[localvar, localvar, 5] [id, i, 5] [colon, :, 5] [integer, integer, 5] [semi, ;, 5] 
-[localvar, localvar, 6] [id, j, 6] [colon, :, 6] [integer, integer, 6] [semi, ;, 6] 
-[localvar, localvar, 7] [id, temp, 7] [colon, :, 7] [integer, integer, 7] [semi, ;, 7] 
-[id, n, 8] [assign, =, 8] [id, size, 8] [semi, ;, 8] 
-[id, i, 9] [assign, =, 9] [intnum, 0, 9] [semi, ;, 9] 
-[id, j, 10] [assign, =, 10] [intnum, 0, 10] [semi, ;, 10] 
-[id, temp, 11] [assign, =, 11] [intnum, 0, 11] [semi, ;, 11] 
-[while, while, 12] [openpar, (, 12] [id, i, 12] [lt, <, 12] [id, n, 12] [minus, -, 12] [intnum, 1, 12] [closepar, ), 12] [opencubr, {, 12] 
-[while, while, 13] [openpar, (, 13] [id, j, 13] [lt, <, 13] [id, n, 13] [minus, -, 13] [id, i, 13] [minus, -, 13] [intnum, 1, 13] [closepar, ), 13] [opencubr, {, 13] 
-[if, if, 14] [openpar, (, 14] [id, arr, 14] [opensqbr, [, 14] [id, j, 14] [closesqbr, ], 14] [gt, >, 14] [id, arr, 14] [opensqbr, [, 14] [id, j, 14] [plus, +, 14] [intnum, 1, 14] [closesqbr, ], 14] [closepar, ), 14] 
+[eq, ==, 1] [plus, +, 1] [or, or, 1] [openpar, (, 1] [semi, ;, 1] [integer, integer, 1] [while, while, 1] [localvar, localvar, 1] 
+[noteq, <>, 2] [minus, -, 2] [and, and, 2] [closepar, ), 2] [comma, ,, 2] [float, float, 2] [if, if, 2] [constructor, constructor, 2] 
+[lt, <, 3] [mult, *, 3] [not, not, 3] [opencubr, {, 3] [dot, ., 3] [void, void, 3] [then, then, 3] [attribute, attribute, 3] 
+[gt, >, 4] [div, /, 4] [closecubr, }, 4] [colon, :, 4] [class, class, 4] [else, else, 4] [function, function, 4] 
+[leq, <=, 5] [assign, =, 5] [opensqbr, [, 5] [returntype, =>, 5] [self, self, 5] [read, read, 5] [public, public, 5] 
+[geq, >=, 6] [closesqbr, ], 6] [scopeop, ::, 6] [isa, isa, 6] [write, write, 6] [private, private, 6] 
+[return, return, 7] 
+
+[intnum, 0, 9] 
+[intnum, 1, 10] 
+[intnum, 10, 11] 
+[intnum, 12, 12] 
+[intnum, 123, 13] 
+[intnum, 12345, 14] 
+
+[floatnum, 1.23, 16] 
+[floatnum, 12.34, 17] 
+[floatnum, 120.34e10, 18] 
+[floatnum, 12345.6789e-123, 19] 
+
+[id, abc, 21] 
+[id, abc1, 22] 
+[id, a1bc, 23] 
+[id, abc_1abc, 24] 
+[id, abc1_abc, 25] 
+
+[inlinecmt, // this is an inline comment, 27] 
+
+[blockcmt, /* this is a single line block comment */, 29] 
+
+[blockcmt, /* this is a \nmultiple line\nblock comment \n*/, 34] 
+
+[blockcmt, /* this is an imbricated \n/* block comment\n*/\n*/, 39] 
+
+
+4] [id, arr, 14] [opensqbr, [, 14] [id, j, 14] [plus, +, 14] [intnum, 1, 14] [closesqbr, ], 14] [closepar, ), 14] 
 [then, then, 15] [opencubr, {, 15] 
 [inlinecmt, // swap temp and arr[i], 16] 
 [id, temp, 17] [assign, =, 17] [id, arr, 17] [opensqbr, [, 17] [id, j, 17] [closesqbr, ], 17] [semi, ;, 17] 
