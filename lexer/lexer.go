@@ -261,6 +261,14 @@ func (lex *lexer) nextToken() *Token {
 		}
 
 	}
+	if lex.currentState.State == 24 {
+		token := &Token{}
+		token.LineNumber = lex.lineNum-1
+		token.TokenType = "unterminatedCmntBlock"
+		token.TokenValue = string(lex.token)
+		lex.currentState.State = 0
+		return token
+	}
 	return nil
 
 }
