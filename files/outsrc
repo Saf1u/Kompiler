@@ -1,0 +1,24 @@
+
+[eq, ==, 2] [plus, +, 2] [or, or, 2] [openpar, (, 2] [semi, ;, 2] [integer, integer, 2] [while, while, 2] [localvar, localvar, 2] 
+[noteq, <>, 3] [minus, -, 3] [and, and, 3] [closepar, ), 3] [comma, ,, 3] [float, float, 3] [if, if, 3] [constructor, constructor, 3] 
+[lt, <, 4] [mult, *, 4] [not, not, 4] [opencubr, {, 4] [dot, ., 4] [void, void, 4] [then, then, 4] [attribute, attribute, 4] 
+[gt, >, 5] [div, /, 5] [closecubr, }, 5] [colon, :, 5] [class, class, 5] [else, else, 5] [function, function, 5] 
+[leq, <=, 6] [assign, =, 6] [opensqbr, [, 6] [returntype, =>, 6] [self, self, 6] [read, read, 6] [public, public, 6] 
+[geq, >=, 7] [closesqbr, ], 7] [scopeop, ::, 7] [isa, isa, 7] [write, write, 7] [private, private, 7] 
+[return, return, 8] 
+
+[intnum, 0, 10] 
+[intnum, 1, 11] 
+[intnum, 10, 12] 
+[intnum, 12, 13] 
+[intnum, 123, 14] 
+[intnum, 12345, 15] 
+
+[floatnum, 1.23, 17] 
+[floatnum, 12.34, 18] 
+[floatnum, 120.34e10, 19] 
+[floatnum, 12345.6789e-123, 20] 
+
+
+
+[unterminatedCmntBlock, /*this is a \nmultiple line\n\n0.0e+0\n, 27] 

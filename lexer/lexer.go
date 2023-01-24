@@ -84,14 +84,10 @@ func init() {
 	transitionTable[5][`[1-9]`] = StateInfo{5, true, FLOAT}
 	transitionTable[5][`0`] = StateInfo{31, false, "InvalidfloatToken"}
 	transitionTable[31][`[1-9]`] = StateInfo{5, true, FLOAT}
-	// i added normaltokens
 	transitionTable[0][`\+`] = StateInfo{28, true, PLUS}
 	transitionTable[0][`-`] = StateInfo{29, true, MINUS}
 	transitionTable[0][`\*`] = StateInfo{30, true, MULTIPLICATION}
-	//I renamed***
-	//transitionTable[27][`[0-9]`] = StateInfo{27, false, "InvalidNum"}
 	transitionTable[5][`e`] = StateInfo{6, false, "InvalidNum"}
-	//I renamed***
 	transitionTable[6][`[+|-]`] = StateInfo{7, false, "InvalidNum"}
 	transitionTable[6][`[1-9]`] = StateInfo{8, true, FLOAT}
 	transitionTable[6][`0`] = StateInfo{9, true, FLOAT}
@@ -111,8 +107,7 @@ func init() {
 	transitionTable[25][`/`] = StateInfo{26, true, BLOCK_COMMENT}
 	transitionTable[21][`/`] = StateInfo{22, true, INLINE_COMMENT}
 	transitionTable[22][`[^\n]`] = StateInfo{22, true, INLINE_COMMENT}
-	//transitionTable[22][`\n`] = StateInfo{23, true, "Comment"}
-	lex = newLexer("lexpositivegrading.src", "outsrc", "errsrc")
+	lex = newLexer("files/lexpositivegrading.src", "files/outsrc", "files/errsrc")
 
 }
 
@@ -223,6 +218,7 @@ func (lex *lexer) nextToken() *Token {
 			size := len(lex.token)
 			if size == 0 {
 				fmt.Fprint(lex.outTokenFile, "[", "invalidchar", ", ", string(r), ", ", lex.lineNum, "] ")
+				fmt.Fprintln(lex.outErrorFile, "Lexical error: Invalid Character: \"", string(r), "\": line", lex.lineNum, ".")
 				token.TokenType = "invalidchar"
 				token.TokenValue = string(r)
 				token.LineNumber = lex.lineNum
@@ -261,11 +257,14 @@ func (lex *lexer) nextToken() *Token {
 		}
 
 	}
+	//handling non-terminated block comment
 	if lex.currentState.State == 24 {
 		token := &Token{}
-		token.LineNumber = lex.lineNum-1
+		token.LineNumber = lex.lineNum - 1
 		token.TokenType = "unterminatedCmntBlock"
 		token.TokenValue = string(lex.token)
+		fmt.Fprint(lex.outTokenFile, "[", token.TokenType, ", ", token.TokenValue, ", ", token.LineNumber, "] ")
+		fmt.Fprintln(lex.outErrorFile, "Lexical error: Invalid Comment: \"", string(lex.token), "\": line", token.LineNumber, ".")
 		lex.currentState.State = 0
 		return token
 	}
