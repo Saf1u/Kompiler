@@ -77,35 +77,64 @@ func init() {
 	transitionTable[22][`\n`] = StateInfo{23, true, "Comment"}
 }
 
-func main() {
-	current := StateInfo{}
-	fl, err := os.Open("main.src")
-	if err != nil {
-		panic(err)
-	}
-	outFile, err := os.OpenFile("outsrc", os.O_RDWR, 0755)
-	if err != nil {
-		panic(err)
-	}
+type lexer struct {
+	token                  []rune
+	reader                 *bytes.Reader
+	lastSuccesfulState     StateInfo
+	currentState           StateInfo
+	nestedComments         int
+	outTokenFile           *os.File
+	lastSuccesfulCharIndex int
+	charCount              int
+	outErrorFile           *os.File
+	lineNum                int
+	realOffset             int
+	fileSize               int
+	moved                  bool
+}
 
+func newLexer(sourceFile string, tokenFile string, errorFile string) *lexer {
+	defaultLexer := &lexer{}
+	defaultLexer.currentState = StateInfo{}
+	fl, err := os.Open(sourceFile)
+	if err != nil {
+		panic(err)
+	}
+	outFile, err := os.OpenFile(tokenFile, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		panic(err)
+	}
+	errFile, err := os.OpenFile(errorFile, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		panic(err)
+	}
 	token := []rune{}
 	data, err := ioutil.ReadAll(fl)
 	if err != nil {
 		panic(err)
 	}
-	fileByteSize := len(data)
-	lastSuccesfulState := StateInfo{}
-	lastSuccesfulCharIndex := -1
-	lc := -1
-	lineNum := 1
-	reader := bytes.NewReader(data)
-	realOffset := 0
-	for r, _, err := reader.ReadRune(); err == nil; r, _, err = reader.ReadRune() {
-		if fileByteSize-reader.Len() > realOffset {
-			realOffset++
+	data = append(data, '\n')
+	defaultLexer.outErrorFile = errFile
+	defaultLexer.outTokenFile = outFile
+	defaultLexer.token = token
+	defaultLexer.fileSize = len(data)
+	defaultLexer.lastSuccesfulState = StateInfo{}
+	defaultLexer.lastSuccesfulCharIndex = -2
+	defaultLexer.charCount = -1
+	defaultLexer.lineNum = 0
+	defaultLexer.reader = bytes.NewReader(data)
+	defaultLexer.realOffset = 0
+	return defaultLexer
+}
+
+func (lex *lexer) nextToken() {
+	for r, _, err := lex.reader.ReadRune(); err == nil; r, _, err = lex.reader.ReadRune() {
+		if lex.fileSize-lex.reader.Len() > lex.realOffset {
+			//lex.realOffset++
+			lex.realOffset = lex.fileSize - lex.reader.Len()
 		}
-		state := transitionTable[current.State]
-		moved := false
+		state := transitionTable[lex.currentState.State]
+		lex.moved = false
 		for k, v := range state {
 			match, err := regexp.MatchString(k, string(r))
 			if err != nil {
@@ -113,61 +142,167 @@ func main() {
 			}
 			if match {
 				if v.State != 0 {
-					token = append(token, r)
+					if r == '\n' {
+						lex.token = append(lex.token, '\\')
+						lex.token = append(lex.token, 'n')
+					} else {
+						lex.token = append(lex.token, r)
+					}
 				}
 				//nested comment logic
 				if r == '*' && v.State == 24 {
-					nestedComments++
+					lex.nestedComments++
 				}
-				if r == '*' && v.State == 25 && token[len(token)-2] == '/' {
-					nestedComments++
+				if r == '*' && v.State == 25 && lex.token[len(lex.token)-2] == '/' {
+					lex.nestedComments++
 					v.State = 24
 				}
 				if v.State == 26 {
-					nestedComments--
-					if nestedComments > 0 {
+					lex.nestedComments--
+					if lex.nestedComments > 0 {
 						v.State = 24
 					}
 				}
 
 				if v.Final {
-					lastSuccesfulState = v
-					lastSuccesfulCharIndex = (fileByteSize - reader.Len())
-					lc = len(token)
+					lex.lastSuccesfulState = v
+					lex.lastSuccesfulCharIndex = (lex.fileSize - lex.reader.Len())
+					lex.charCount = len(lex.token)
 				}
-				moved = true
-				current = v
+				lex.moved = true
+				lex.currentState = v
 				break
 			}
 		}
-		if !moved {
-			size := len(token)
+		if !lex.moved {
+			//panic(fmt.Sprint(string(lex.token), lex.lineNum))
+			size := len(lex.token)
 			if size == 0 {
-				fmt.Fprint(outFile, "[Token Type:", "invalidCharacter", "Token:", string(r), " lineNum:", lineNum, "] ")
+				fmt.Fprint(lex.outTokenFile, "[Token Type:", "invalidCharacter", "Token:", string(r), " lineNum:", lex.lineNum, "] ")
 			} else {
-				lexeme := string(token)
-				if lc != -1 {
-					lexeme = string(token[0:lc])
-					fmt.Fprint(outFile, "[Token Type:", lastSuccesfulState.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
-				} else {
-					fmt.Fprint(outFile, "[Token Type:", current.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
-					//always useless as >0 always leads to a success state from state 0
+				if lex.charCount != -1 {
+					lexeme := string(lex.token[0:lex.charCount])
+					fmt.Fprint(lex.outTokenFile, "[Token Type:", lex.lastSuccesfulState.Type, "Token:", lexeme, " lineNum:", lex.lineNum, "] ")
 				}
 			}
 
 			if size >= 1 {
-				reader.Seek(int64(lastSuccesfulCharIndex), io.SeekStart)
+				lex.reader.Seek(int64(lex.lastSuccesfulCharIndex), io.SeekStart)
 			}
 
-			current = StateInfo{}
-			token = []rune{}
-			lastSuccesfulCharIndex = -1
-			lc = -1
+			lex.currentState = StateInfo{}
+			lex.token = []rune{}
+			lex.lastSuccesfulCharIndex = -1
+			lex.charCount = -1
 		}
-		if r == '\n' && fileByteSize-reader.Len() >= realOffset {
-			fmt.Fprintln(outFile)
-			lineNum++
+		if r == '\n' && lex.fileSize-lex.reader.Len() >= lex.realOffset  {
+			if lex.currentState.State != 24 {
+				fmt.Fprintln(lex.outTokenFile)
+			}
+			lex.lineNum++
 		}
+		
+
 	}
 
 }
+
+func main() {
+	lex := newLexer("main.src", "outsrc", "errsrc")
+	lex.nextToken()
+}
+
+// func side() {
+// 	current := StateInfo{}
+// 	fl, err := os.Open("lexpositivegrading.src")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	outFile, err := os.OpenFile("outsrc", os.O_RDWR, 0755)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	token := []rune{}
+// 	data, err := ioutil.ReadAll(fl)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	fileByteSize := len(data)
+// 	lastSuccesfulState := StateInfo{}
+// 	lastSuccesfulCharIndex := -1
+// 	lc := -1
+// 	lineNum := 1
+// 	reader := bytes.NewReader(data)
+// 	realOffset := 0
+// 	for r, _, err := reader.ReadRune(); err == nil; r, _, err = reader.ReadRune() {
+// 		if fileByteSize-reader.Len() > realOffset {
+// 			realOffset++
+// 		}
+// 		state := transitionTable[current.State]
+// 		moved := false
+// 		for k, v := range state {
+// 			match, err := regexp.MatchString(k, string(r))
+// 			if err != nil {
+// 				panic(err)
+// 			}
+// 			if match {
+// 				if v.State != 0 {
+// 					token = append(token, r)
+// 				}
+// 				//nested comment logic
+// 				if r == '*' && v.State == 24 {
+// 					nestedComments++
+// 				}
+// 				if r == '*' && v.State == 25 && token[len(token)-2] == '/' {
+// 					nestedComments++
+// 					v.State = 24
+// 				}
+// 				if v.State == 26 {
+// 					nestedComments--
+// 					if nestedComments > 0 {
+// 						v.State = 24
+// 					}
+// 				}
+
+// 				if v.Final {
+// 					lastSuccesfulState = v
+// 					lastSuccesfulCharIndex = (fileByteSize - reader.Len())
+// 					lc = len(token)
+// 				}
+// 				moved = true
+// 				current = v
+// 				break
+// 			}
+// 		}
+// 		if !moved {
+// 			size := len(token)
+// 			if size == 0 {
+// 				fmt.Fprint(outFile, "[Token Type:", "invalidCharacter", "Token:", string(r), " lineNum:", lineNum, "] ")
+// 			} else {
+// 				lexeme := string(token)
+// 				if lc != -1 {
+// 					lexeme = string(token[0:lc])
+// 					fmt.Fprint(outFile, "[Token Type:", lastSuccesfulState.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
+// 				} else {
+// 					fmt.Fprint(outFile, "[Token Type:", current.Type, "Token:", lexeme, " lineNum:", lineNum, "] ")
+// 					//always useless as >0 always leads to a success state from state 0
+// 				}
+// 			}
+
+// 			if size >= 1 {
+// 				reader.Seek(int64(lastSuccesfulCharIndex), io.SeekStart)
+// 			}
+
+// 			current = StateInfo{}
+// 			token = []rune{}
+// 			lastSuccesfulCharIndex = -1
+// 			lc = -1
+// 		}
+// 		if r == '\n' && fileByteSize-reader.Len() >= realOffset {
+// 			fmt.Fprintln(outFile)
+// 			lineNum++
+// 		}
+// 	}
+
+// }
