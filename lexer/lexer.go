@@ -118,7 +118,7 @@ type lexer struct {
 	currentState           StateInfo
 	nestedComments         int
 	outTokenFile           *os.File
-	lastSuccesfulCharIndex int
+	lastSuccesfulFilePosition int
 	charCount              int
 	outErrorFile           *os.File
 	lineNum                int
@@ -159,7 +159,7 @@ func newLexer(sourceFile string, tokenFile string, errorFile string) *lexer {
 	defaultLexer.token = token
 	defaultLexer.fileSize = len(data)
 	defaultLexer.lastSuccesfulState = StateInfo{}
-	defaultLexer.lastSuccesfulCharIndex = -2
+	defaultLexer.lastSuccesfulFilePosition = -2
 	defaultLexer.charCount = -1
 	defaultLexer.lineNum = 1
 	defaultLexer.reader = bytes.NewReader(data)
@@ -182,6 +182,7 @@ func (lex *lexer) nextToken() *Token {
 			if match {
 				if v.State != 0 {
 					if r == '\n' {
+						//add new line as literal newline
 						lex.token = append(lex.token, '\\')
 						lex.token = append(lex.token, 'n')
 					} else {
@@ -202,10 +203,12 @@ func (lex *lexer) nextToken() *Token {
 						v.State = 24
 					}
 				}
+				//done logic
 
 				if v.Final {
+					//track last succesful character and position for future backtracking
 					lex.lastSuccesfulState = v
-					lex.lastSuccesfulCharIndex = (lex.fileSize - lex.reader.Len())
+					lex.lastSuccesfulFilePosition = (lex.fileSize - lex.reader.Len())
 					lex.charCount = len(lex.token)
 				}
 				lex.moved = true
@@ -216,6 +219,7 @@ func (lex *lexer) nextToken() *Token {
 		token := &Token{}
 		if !lex.moved {
 			size := len(lex.token)
+			//invalid character read
 			if size == 0 {
 				fmt.Fprint(lex.outTokenFile, "[", "invalidchar", ", ", string(r), ", ", lex.lineNum, "] ")
 				fmt.Fprintln(lex.outErrorFile, "Lexical error: Invalid Character: \"", string(r), "\": line", lex.lineNum, ".")
@@ -223,6 +227,7 @@ func (lex *lexer) nextToken() *Token {
 				token.TokenValue = string(r)
 				token.LineNumber = lex.lineNum
 			} else {
+				//winding succesful token by cutting off at last succesful read position
 				if lex.charCount != -1 {
 					lexeme := string(lex.token[0:lex.charCount])
 					tokenType := lex.lastSuccesfulState.Type
@@ -237,14 +242,17 @@ func (lex *lexer) nextToken() *Token {
 				}
 			}
 
+			//if backtracking, seek back to succesful position to progress read of non-succesful tokens
 			if size >= 1 {
-				lex.reader.Seek(int64(lex.lastSuccesfulCharIndex), io.SeekStart)
+				lex.reader.Seek(int64(lex.lastSuccesfulFilePosition), io.SeekStart)
 			}
-
+			
+			//refresh token and file history to prepare for next token read
 			lex.currentState = StateInfo{}
 			lex.token = []rune{}
-			lex.lastSuccesfulCharIndex = -1
+			lex.lastSuccesfulFilePosition = -1
 			lex.charCount = -1
+			
 		}
 		if r == '\n' && lex.fileSize-lex.reader.Len() >= lex.realOffset {
 			if lex.currentState.State != 24 {
