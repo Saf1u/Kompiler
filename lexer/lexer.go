@@ -113,19 +113,19 @@ func init() {
 }
 
 type lexer struct {
-	token                  []rune
-	reader                 *bytes.Reader
-	lastSuccesfulState     StateInfo
-	currentState           StateInfo
-	nestedComments         int
-	outTokenFile           *os.File
+	token                     []rune
+	reader                    *bytes.Reader
+	lastSuccesfulState        StateInfo
+	currentState              StateInfo
+	nestedComments            int
+	outTokenFile              *os.File
 	lastSuccesfulFilePosition int
-	charCount              int
-	outErrorFile           *os.File
-	lineNum                int
-	realOffset             int
-	fileSize               int
-	moved                  bool
+	charCount                 int
+	outErrorFile              *os.File
+	lineNum                   int
+	realOffset                int
+	fileSize                  int
+	moved                     bool
 }
 
 type Token struct {
@@ -222,8 +222,8 @@ func (lex *lexer) nextToken() *Token {
 			size := len(lex.token)
 			//invalid character read
 			if size == 0 {
-				fmt.Fprint(lex.outTokenFile, "[", "invalidchar", ", ", string(r), ", ", lex.lineNum, "] ")
-				fmt.Fprintln(lex.outErrorFile, "Lexical error: Invalid Character: \"", string(r), "\": line", lex.lineNum, ".")
+				fmt.Fprintf(lex.outTokenFile, "[%s, %s, %d]", "invalidchar", string(r), lex.lineNum)
+				fmt.Fprintf(lex.outErrorFile, "Lexical error: Invalid Character: \"%s\": line%d.\n", string(r), lex.lineNum)
 				token.TokenType = "invalidchar"
 				token.TokenValue = string(r)
 				token.LineNumber = lex.lineNum
@@ -236,7 +236,7 @@ func (lex *lexer) nextToken() *Token {
 					if tokenType == ID && exist {
 						tokenType = lexeme
 					}
-					fmt.Fprint(lex.outTokenFile, "[", tokenType, ", ", lexeme, ", ", lex.lineNum, "] ")
+					fmt.Fprintf(lex.outTokenFile, "[%s, %s, %d]", tokenType, lexeme, lex.lineNum)
 					token.TokenType = tokenType
 					token.TokenValue = lexeme
 					token.LineNumber = lex.lineNum
@@ -253,7 +253,7 @@ func (lex *lexer) nextToken() *Token {
 			lex.token = []rune{}
 			lex.lastSuccesfulFilePosition = -1
 			lex.charCount = -1
-			
+
 		}
 		if r == '\n' && lex.fileSize-lex.reader.Len() >= lex.realOffset {
 			if lex.currentState.State != 24 {
@@ -272,8 +272,8 @@ func (lex *lexer) nextToken() *Token {
 		token.LineNumber = lex.lineNum - 1
 		token.TokenType = "unterminatedCmntBlock"
 		token.TokenValue = string(lex.token)
-		fmt.Fprint(lex.outTokenFile, "[", token.TokenType, ", ", token.TokenValue, ", ", token.LineNumber, "] ")
-		fmt.Fprintln(lex.outErrorFile, "Lexical error: Invalid Comment: \"", string(lex.token), "\": line", token.LineNumber, ".")
+		fmt.Fprintf(lex.outTokenFile, "[%s, %s, %d]", token.TokenType, token.TokenValue, token.LineNumber)
+		fmt.Fprintf(lex.outErrorFile, "Lexical error: Invalid Comment: \"%s\": line%d.\n", string(lex.token), token.LineNumber)
 		lex.currentState.State = 0
 		return token
 	}
