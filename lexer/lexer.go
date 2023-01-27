@@ -55,7 +55,7 @@ var lex *lexer
 
 func init() {
 	transitionTable = make(map[int]map[string]StateInfo)
-	for i := 0; i <= 38; i++ {
+	for i := 0; i <= 39; i++ {
 		transitionTable[i] = map[string]StateInfo{}
 	}
 	transitionTable[0][`\s`] = StateInfo{0, false, "InvalidChar"}
@@ -70,7 +70,7 @@ func init() {
 	transitionTable[0][`{`] = StateInfo{33, true, OPEN_CURL}
 	transitionTable[0][`\[`] = StateInfo{34, true, OPEN_SQUARE}
 	transitionTable[0][`]`] = StateInfo{35, true, CLOSE_SQUARE}
-	transitionTable[0][`\(`] = StateInfo{35, true, OPEN_PARANTHESIS}
+	transitionTable[0][`\(`] = StateInfo{39, true, OPEN_PARANTHESIS}
 	transitionTable[0][`\)`] = StateInfo{36, true, CLOSE_PARANTHESIS}
 	transitionTable[0][`;`] = StateInfo{37, true, SEMI_COLON}
 	transitionTable[0][`,`] = StateInfo{38, true, COMMA}
@@ -84,6 +84,7 @@ func init() {
 	transitionTable[5][`[1-9]`] = StateInfo{5, true, FLOAT}
 	transitionTable[5][`0`] = StateInfo{31, false, "InvalidfloatToken"}
 	transitionTable[31][`[1-9]`] = StateInfo{5, true, FLOAT}
+	transitionTable[31][`0`] = StateInfo{31, false, "InvalidfloatToken"}
 	transitionTable[0][`\+`] = StateInfo{28, true, PLUS}
 	transitionTable[0][`-`] = StateInfo{29, true, MINUS}
 	transitionTable[0][`\*`] = StateInfo{30, true, MULTIPLICATION}
@@ -107,7 +108,7 @@ func init() {
 	transitionTable[25][`/`] = StateInfo{26, true, BLOCK_COMMENT}
 	transitionTable[21][`/`] = StateInfo{22, true, INLINE_COMMENT}
 	transitionTable[22][`[^\n]`] = StateInfo{22, true, INLINE_COMMENT}
-	lex = newLexer("files/lexpositivegrading.src", "files/outsrc", "files/errsrc")
+	lex = newLexer("files/main.src", "files/outsrc", "files/errsrc")
 
 }
 
@@ -246,7 +247,7 @@ func (lex *lexer) nextToken() *Token {
 			if size >= 1 {
 				lex.reader.Seek(int64(lex.lastSuccesfulFilePosition), io.SeekStart)
 			}
-			
+
 			//refresh token and file history to prepare for next token read
 			lex.currentState = StateInfo{}
 			lex.token = []rune{}
