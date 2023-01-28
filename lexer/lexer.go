@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -54,6 +55,13 @@ var identifierLookUp = map[string]bool{
 var lex *lexer
 
 func init() {
+	var file string
+	flag.StringVar(&file, "file", "", "file to tokenize")
+	flag.Parse()
+	if file == "" {
+		fmt.Fprintf(os.Stderr, "File not specified")
+		os.Exit(1)
+	}
 	transitionTable = make(map[int]map[string]StateInfo)
 	for i := 0; i <= 39; i++ {
 		transitionTable[i] = map[string]StateInfo{}
@@ -108,7 +116,7 @@ func init() {
 	transitionTable[25][`/`] = StateInfo{26, true, BLOCK_COMMENT}
 	transitionTable[21][`/`] = StateInfo{22, true, INLINE_COMMENT}
 	transitionTable[22][`[^\n]`] = StateInfo{22, true, INLINE_COMMENT}
-	lex = newLexer("files/main.src", "files/outsrc", "files/errsrc")
+	lex = newLexer(file, "files/outsrc", "files/errsrc")
 
 }
 
@@ -141,11 +149,11 @@ func newLexer(sourceFile string, tokenFile string, errorFile string) *lexer {
 	if err != nil {
 		panic(err)
 	}
-	outFile, err := os.OpenFile(tokenFile, os.O_RDWR|os.O_CREATE, 0755)
+	outFile, err := os.OpenFile(tokenFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		panic(err)
 	}
-	errFile, err := os.OpenFile(errorFile, os.O_RDWR|os.O_CREATE, 0755)
+	errFile, err := os.OpenFile(errorFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		panic(err)
 	}
