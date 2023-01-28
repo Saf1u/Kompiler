@@ -1,6 +1,6 @@
-[inlinecmt, // ====== struct declarations ====== //, 1]
-[class, class, 2][id, POLYNOMIAL, 2][opencubr, {, 2]
-[public, public, 3][function, function, 3][id, evaluate, 3][colon, :, 3][openpar, (, 3][id, x, 3][colon, :, 3][float, float, 3][closepar, ), 3][returntype, =>, 3][float, float, 3][semi, ;, 3]
+[id, a, 1][assign, =, 1][intnum, 0, 1][plus, +, 1][openpar, (, 1][id, a, 1][plus, +, 1][id, b, 1][closepar, ), 1][semi, ;, 1]
+, 6][id, ab, 6]
+ction, 3][id, evaluate, 3][colon, :, 3][openpar, (, 3][id, x, 3][colon, :, 3][float, float, 3][closepar, ), 3][returntype, =>, 3][float, float, 3][semi, ;, 3]
 [closecubr, }, 4][semi, ;, 4]
 
 [class, class, 6][id, LINEAR, 6][isa, isa, 6][id, POLYNOMIAL, 6][opencubr, {, 6]
