@@ -12,6 +12,9 @@ hello this a block comment
 hello this a block comment 
 */
 
+//
+/**/
+
 /* it is trash 
 /* let us rewrite this in rust gentlemen*/
 /*nestino */

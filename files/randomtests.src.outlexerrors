@@ -1,0 +1,1 @@
+Lexical error: Invalid Comment: "/*function calcualteAllWeight(masses:float[], size: integer)=>float{\n  localvar n  : integer;\n  n = size;\n  i = 0;\n  temp = 0;\n  while (i < n-1) { \n    masses[i]=masses[i]*1.002e+10\n    }\n i = i+1;\n}\n": line32.

@@ -6,8 +6,11 @@
 [blockcmt, /* hello this a block comment \nhello this a block comment \n*/, 10]
 [blockcmt, /* hello this a block comment \nhello this a block comment \n*/, 13]
 
-[blockcmt, /* it is trash \n/* let us rewrite this in rust gentlemen*/\n/*nestino */\n */, 18]
+[inlinecmt, //, 15]
+[blockcmt, /**/, 16]
 
-[blockcmt, /* it is trash \n/* let us rewrite this in rust gentlemen*/\n/*nestino */\n */, 23]
+[blockcmt, /* it is trash \n/* let us rewrite this in rust gentlemen*/\n/*nestino */\n */, 21]
 
-[unterminatedCmntBlock, /* unterminated block hello\n*\n 0.324\n, 27]
+[blockcmt, /* it is trash \n/* let us rewrite this in rust gentlemen*/\n/*nestino */\n */, 26]
+
+[unterminatedCmntBlock, /* unterminated block hello\n*\n 0.324\n, 30]
