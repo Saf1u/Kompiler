@@ -1,0 +1,37 @@
+[eq, ==, 1][plus, +, 1][or, or, 1][openpar, (, 1][semi, ;, 1][integer, integer, 1][while, while, 1][localvar, localvar, 1]
+[noteq, <>, 2][minus, -, 2][and, and, 2][closepar, ), 2][comma, ,, 2][float, float, 2][if, if, 2][constructor, constructor, 2]
+[lt, <, 3][mult, *, 3][not, not, 3][opencubr, {, 3][dot, ., 3][void, void, 3][then, then, 3][attribute, attribute, 3]
+[gt, >, 4][div, /, 4][closecubr, }, 4][colon, :, 4][class, class, 4][else, else, 4][function, function, 4]
+[leq, <=, 5][assign, =, 5][opensqbr, [, 5][returntype, =>, 5][self, self, 5][read, read, 5][public, public, 5]
+[geq, >=, 6][closesqbr, ], 6][scopeop, ::, 6][isa, isa, 6][write, write, 6][private, private, 6]
+[return, return, 7]
+
+[intnum, 0, 9]
+[intnum, 1, 10]
+[intnum, 10, 11]
+[intnum, 12, 12]
+[intnum, 123, 13]
+[intnum, 12345, 14]
+
+[floatnum, 1.23, 16]
+[floatnum, 12.34, 17]
+[floatnum, 120.34e10, 18]
+[floatnum, 12345.6789e-123, 19]
+
+[id, abc, 21]
+[id, abc1, 22]
+[id, a1bc, 23]
+[id, abc_1abc, 24]
+[id, abc1_abc, 25]
+
+[inlinecmt, // this is an inline comment, 27]
+
+[blockcmt, /* this is a single line block comment */, 29]
+
+[blockcmt, /* this is a \nmultiple line\nblock comment \n*/, 34]
+
+[blockcmt, /* this is an imbricated \n/* block comment\n*/\n*/, 39]
+
+
+
+

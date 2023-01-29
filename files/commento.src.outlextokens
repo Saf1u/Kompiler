@@ -1,0 +1,13 @@
+[inlinecmt, //inline commento test, 1]
+[inlinecmt, //inline commento test, 2]
+[blockcmt, /* hello this a block comment \nhello this a block comment \n*/, 5]
+[inlinecmt, //inline commento test, 6]
+[inlinecmt, //inline commento test, 7]
+[blockcmt, /* hello this a block comment \nhello this a block comment \n*/, 10]
+[blockcmt, /* hello this a block comment \nhello this a block comment \n*/, 13]
+
+[blockcmt, /* it is trash \n/* let us rewrite this in rust gentlemen*/\n/*nestino */\n */, 18]
+
+[blockcmt, /* it is trash \n/* let us rewrite this in rust gentlemen*/\n/*nestino */\n */, 23]
+
+[unterminatedCmntBlock, /* unterminated block hello\n*\n 0.324\n, 27]

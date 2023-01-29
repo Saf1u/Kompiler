@@ -14,10 +14,9 @@
 
 [intnum, 0, 15][floatnum, 12.34e10, 15]
 [floatnum, 12.34e0, 16][intnum, 10, 16]
-[floatnum, 12.34, 17][id, en, 17]
-[floatnum, 12.32000002e20, 18]
 
-[invalidchar, _, 20][id, abc, 20]
-[intnum, 1, 21][id, abc, 21]
-[invalidchar, _, 22][intnum, 1, 22][id, abc, 22]
+[invalidchar, _, 18][id, abc, 18]
+[intnum, 1, 19][id, abc, 19]
+[invalidchar, _, 20][intnum, 1, 20][id, abc, 20]
+
 

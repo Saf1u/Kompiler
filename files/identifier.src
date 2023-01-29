@@ -9,3 +9,13 @@ abcde1232
 
 ; =>=>::: [] <><>x<5 =====<=<
 ,,,,,,;,,,....
+
+==	+	or(	;integer while	localvar
+<>	-	and	)	,float	if 	constructor
+<	*	not	{	.void	then	attribute
+>	/		}	:class	else	function
+<=	=		[	=>	self	read	public
+>=			]	::	isa	write	private
+						return	
+
+%%%%%%%%%a fake comment%%%%%

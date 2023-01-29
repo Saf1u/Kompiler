@@ -66,6 +66,9 @@ func init() {
 	for i := 0; i <= 39; i++ {
 		transitionTable[i] = map[string]StateInfo{}
 	}
+	outfile := fmt.Sprint( file, ".outlextokens")
+	errfile := fmt.Sprint(file, ".outlexerrors")
+	//"files/outsrc", "files/errsrc"
 	transitionTable[0][`\s`] = StateInfo{0, false, "InvalidChar"}
 	transitionTable[0][`[a-zA-Z]`] = StateInfo{1, true, ID}
 	transitionTable[0][`0`] = StateInfo{2, true, INTEGER}
@@ -116,7 +119,7 @@ func init() {
 	transitionTable[25][`/`] = StateInfo{26, true, BLOCK_COMMENT}
 	transitionTable[21][`/`] = StateInfo{22, true, INLINE_COMMENT}
 	transitionTable[22][`[^\n]`] = StateInfo{22, true, INLINE_COMMENT}
-	lex = newLexer(file, "files/outsrc", "files/errsrc")
+	lex = newLexer(file, outfile, errfile)
 
 }
 
@@ -149,11 +152,11 @@ func newLexer(sourceFile string, tokenFile string, errorFile string) *lexer {
 	if err != nil {
 		panic(err)
 	}
-	outFile, err := os.OpenFile(tokenFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	outFile, err := os.OpenFile(tokenFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
 	if err != nil {
 		panic(err)
 	}
-	errFile, err := os.OpenFile(errorFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
 	if err != nil {
 		panic(err)
 	}

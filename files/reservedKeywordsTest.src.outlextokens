@@ -1,0 +1,5 @@
+[integer, integer, 1][float, float, 1][void, void, 1][class, class, 1][self, self, 1]
+[isa, isa, 2][while, while, 2][if, if, 2][then, then, 2][else, else, 2][read, read, 2][write, write, 2]
+[return, return, 3][localvar, localvar, 3][constructor, constructor, 3][attribute, attribute, 3][function, function, 3]
+[public, public, 4][private, private, 4]
+
