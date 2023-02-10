@@ -2,11 +2,11 @@
 <>	-	and	)	,	float	if 	constructor
 <	*	not	{	.	void	then	attribute
 >	/		}	:	class	else	function
-<=	=		[	=>	self	read	public
+<=	=		[	=>	self	re_ad	public
 >=			]	::	isa	write	private
 						return	
 
-0
+0.0
 1
 10
 12
@@ -17,7 +17,8 @@
 12.34	
 120.34e10	
 12345.6789e-123	
-
+0.0e+0
+1.23@4
 abc 	
 abc1
 a1bc	
