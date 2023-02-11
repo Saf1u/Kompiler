@@ -2,7 +2,7 @@ package lexer
 
 import (
 	"bytes"
-	"flag"
+	"compiler/configmap"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -55,18 +55,12 @@ var identifierLookUp = map[string]bool{
 var lex *lexer
 
 func init() {
-	var file string
-	flag.StringVar(&file, "file", "", "file to tokenize")
-	flag.Parse()
-	if file == "" {
-		fmt.Fprintf(os.Stderr, "File not specified")
-		os.Exit(1)
-	}
+	file := configmap.Get("file")
 	transitionTable = make(map[int]map[string]StateInfo)
 	for i := 0; i <= 39; i++ {
 		transitionTable[i] = map[string]StateInfo{}
 	}
-	outfile := fmt.Sprint( file, ".outlextokens")
+	outfile := fmt.Sprint(file, ".outlextokens")
 	errfile := fmt.Sprint(file, ".outlexerrors")
 	//"files/outsrc", "files/errsrc"
 	transitionTable[0][`\s`] = StateInfo{0, false, "InvalidChar"}

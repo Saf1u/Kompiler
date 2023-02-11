@@ -1,8 +1,10 @@
 package syntaxanalyzer
 
 import (
+	"compiler/configmap"
 	"compiler/lexer"
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -37,20 +39,40 @@ func (s *Stack) tokenizeAndreversePush(str string) {
 type Syntaxanalyzer struct {
 	stack          *Stack
 	derivationBase string
+	derivationFile *os.File
 }
 
 func (s *Syntaxanalyzer) Top() string {
 	return s.stack.Top()
 }
 func (s *Syntaxanalyzer) Pop() string {
-	return s.stack.Top()
+	char := s.stack.Pop()
+	if !nonTerminal[char] && char != "&epsilon"  {
+		s.derivationBase = fmt.Sprint(s.derivationBase, char)
+	}
+	return char
 }
 func (s *Syntaxanalyzer) Push(str string) {
 	s.stack.Push(str)
+	s.writeDerivation(str)
+}
+func (s *Syntaxanalyzer) writeDerivation(str string) {
+	derivation := strings.Join(s.stack.container, " ")
+	derivation = fmt.Sprint(derivation, s.derivationBase)
+	for _, char := range derivation {
+		s.derivationFile.WriteString(string(char))
+	}
+	s.derivationFile.WriteString("\n")
 }
 
 func NewSyntaxAnalyzer() *Syntaxanalyzer {
-	return &Syntaxanalyzer{stack: newStack()}
+	file := configmap.Get("file")
+	derivationFile := fmt.Sprint(file, ".derivation")
+	fl, err := os.OpenFile(derivationFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	return &Syntaxanalyzer{stack: newStack(), derivationBase: "", derivationFile: fl}
 }
 
 func (s *Syntaxanalyzer) Parse() {
