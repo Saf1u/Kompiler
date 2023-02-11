@@ -39,6 +39,16 @@ type Syntaxanalyzer struct {
 	derivationBase string
 }
 
+func (s *Syntaxanalyzer) Top() string {
+	return s.stack.Top()
+}
+func (s *Syntaxanalyzer) Pop() string {
+	return s.stack.Top()
+}
+func (s *Syntaxanalyzer) Push(str string) {
+	s.stack.Push(str)
+}
+
 func NewSyntaxAnalyzer() *Syntaxanalyzer {
 	return &Syntaxanalyzer{stack: newStack()}
 }
@@ -54,17 +64,17 @@ func (s *Syntaxanalyzer) Parse() {
 	if token.TokenType == "self" {
 		realtype = "id"
 	}
-	for s.stack.Top() != "$" {
-		x := s.stack.Top()
+	for s.Top() != "$" {
+		x := s.Top()
 		if !nonTerminal[x] {
 			if realtype == x {
-				s.stack.Pop()
+				s.Pop()
 				token = lexer.NextToken()
 				for token != nil && (token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT) {
 					token = lexer.NextToken()
 				}
 				if token == nil {
-					s.stack.Pop()
+					s.Pop()
 					break
 				}
 				realtype = token.TokenType
@@ -73,7 +83,7 @@ func (s *Syntaxanalyzer) Parse() {
 				}
 			} else {
 				if x == "&epsilon" {
-					s.stack.Pop()
+					s.Pop()
 				} else {
 					fmt.Println(token)
 					fmt.Println(x)
@@ -83,9 +93,9 @@ func (s *Syntaxanalyzer) Parse() {
 		} else {
 
 			if parseTable[x][realtype] != "" {
-				s.stack.Pop()
+				s.Pop()
 
-				s.stack.Push(parseTable[x][realtype])
+				s.Push(parseTable[x][realtype])
 			} else {
 				fmt.Println(token)
 				fmt.Println(x)
@@ -93,7 +103,7 @@ func (s *Syntaxanalyzer) Parse() {
 			}
 		}
 	}
-	if s.stack.Top() != "$" {
+	if s.Top() != "$" {
 		panic("no dolla")
 	} else {
 		fmt.Println("succesful parse")
