@@ -6,10 +6,10 @@ import (
 	"os"
 )
 
-var conf map[string]string
+var conf map[string]interface{}
 
 func init() {
-	conf = make(map[string]string)
+	conf = make(map[string]interface{})
 	var file string
 	flag.StringVar(&file, "file", "", "file to tokenize")
 	flag.Parse()
@@ -18,12 +18,13 @@ func init() {
 		os.Exit(1)
 	}
 	set("file", file)
+	set("printDerivation", true)
 }
 
-func set(key string, value string) {
+func set(key string, value interface{}) {
 	conf[key] = value
 }
 
-func Get(key string) string {
+func Get(key string) interface{} {
 	return conf[key]
 }

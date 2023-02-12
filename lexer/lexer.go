@@ -55,7 +55,7 @@ var identifierLookUp = map[string]bool{
 var lex *lexer
 
 func init() {
-	file := configmap.Get("file")
+	file := configmap.Get("file").(string)
 	transitionTable = make(map[int]map[string]StateInfo)
 	for i := 0; i <= 39; i++ {
 		transitionTable[i] = map[string]StateInfo{}

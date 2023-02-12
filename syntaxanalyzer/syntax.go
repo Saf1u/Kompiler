@@ -8,71 +8,93 @@ import (
 	"strings"
 )
 
-type Stack struct {
-	container []string
+type SpecialStack struct {
+	container       []string
+	secondContainer []string
+	traceDerivation bool
 }
 
-func newStack() *Stack {
-	return &Stack{make([]string, 0)}
+func newStack(trace bool) *SpecialStack {
+	return &SpecialStack{make([]string, 0), make([]string, 0), trace}
 }
 
-func (s *Stack) Push(str string) {
+func (s *SpecialStack) Push(str string) {
 	s.tokenizeAndreversePush(str)
 }
-func (s *Stack) Pop() string {
+func (s *SpecialStack) Pop(actualtoken string) string {
 	top := s.container[len(s.container)-1]
 	s.container = s.container[:len(s.container)-1]
+	if s.traceDerivation {
+		if actualtoken != "&epsilon" && actualtoken != "" {
+			s.secondContainer = append(s.secondContainer, actualtoken)
+		}
+	}
+
 	return top
 }
-func (s *Stack) Top() string {
+func (s *SpecialStack) Top() string {
 	top := s.container[len(s.container)-1]
 	return top
 }
 
-func (s *Stack) tokenizeAndreversePush(str string) {
+func (s *SpecialStack) tokenizeAndreversePush(str string) {
 	rhs := strings.Split(str, " ")
 	for i := len(rhs) - 1; i >= 0; i-- {
 		s.container = append(s.container, rhs[i])
 	}
+
 }
 
 type Syntaxanalyzer struct {
-	stack          *Stack
-	derivationBase string
-	derivationFile *os.File
+	stack           *SpecialStack
+	derivationFile  *os.File
+	traceDerivation bool
 }
 
 func (s *Syntaxanalyzer) Top() string {
 	return s.stack.Top()
 }
-func (s *Syntaxanalyzer) Pop() string {
-	char := s.stack.Pop()
-	if !nonTerminal[char] && char != "&epsilon"  {
-		s.derivationBase = fmt.Sprint(s.derivationBase, char)
+func (s *Syntaxanalyzer) Pop(actualtoken string) string {
+	char := s.stack.Pop(actualtoken)
+	if s.traceDerivation {
+		s.writeDerivation(actualtoken)
 	}
 	return char
 }
 func (s *Syntaxanalyzer) Push(str string) {
 	s.stack.Push(str)
-	s.writeDerivation(str)
+	if s.traceDerivation {
+		s.writeDerivation(str)
+	}
 }
 func (s *Syntaxanalyzer) writeDerivation(str string) {
-	derivation := strings.Join(s.stack.container, " ")
-	derivation = fmt.Sprint(derivation, s.derivationBase)
-	for _, char := range derivation {
-		s.derivationFile.WriteString(string(char))
+	if str == "" {
+		return
+	}
+	reverseStack := make([]string, 0)
+	for i := len(s.stack.container) - 1; i > 0; i-- {
+		reverseStack = append(reverseStack, s.stack.container[i])
+	}
+	derivation := strings.Join(reverseStack, " ")
+	derivation = fmt.Sprint(strings.Join(s.stack.secondContainer, " "), " ", derivation)
+	for i := 0; i < len(derivation); i++ {
+		s.derivationFile.WriteString(string(derivation[i]))
 	}
 	s.derivationFile.WriteString("\n")
 }
 
 func NewSyntaxAnalyzer() *Syntaxanalyzer {
-	file := configmap.Get("file")
+	file := configmap.Get("file").(string)
+	derive := configmap.Get("printDerivation").(bool)
 	derivationFile := fmt.Sprint(file, ".derivation")
-	fl, err := os.OpenFile(derivationFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
-	if err != nil {
-		panic(err)
+	if derive {
+		fl, err := os.OpenFile(derivationFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+		if err != nil {
+			panic(err)
+		}
+		return &Syntaxanalyzer{stack: newStack(derive), derivationFile: fl, traceDerivation: derive}
 	}
-	return &Syntaxanalyzer{stack: newStack(), derivationBase: "", derivationFile: fl}
+	return &Syntaxanalyzer{stack: newStack(derive), traceDerivation: derive}
 }
 
 func (s *Syntaxanalyzer) Parse() {
@@ -90,13 +112,13 @@ func (s *Syntaxanalyzer) Parse() {
 		x := s.Top()
 		if !nonTerminal[x] {
 			if realtype == x {
-				s.Pop()
+				s.Pop(token.TokenValue)
 				token = lexer.NextToken()
 				for token != nil && (token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT) {
 					token = lexer.NextToken()
 				}
 				if token == nil {
-					s.Pop()
+					s.Pop("")
 					break
 				}
 				realtype = token.TokenType
@@ -104,20 +126,20 @@ func (s *Syntaxanalyzer) Parse() {
 					realtype = "id"
 				}
 			} else {
-				if x == "&epsilon" {
-					s.Pop()
-				} else {
-					fmt.Println(token)
-					fmt.Println(x)
-					panic("nah")
-				}
+
+				fmt.Println(token)
+				fmt.Println(x)
+				panic("nah")
+
 			}
 		} else {
 
 			if parseTable[x][realtype] != "" {
-				s.Pop()
+				s.Pop("")
+				if parseTable[x][realtype] != "&epsilon" {
+					s.Push(parseTable[x][realtype])
+				}
 
-				s.Push(parseTable[x][realtype])
 			} else {
 				fmt.Println(token)
 				fmt.Println(x)
