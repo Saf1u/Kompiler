@@ -1,0 +1,80 @@
+NONTERMINAL,first set,follow set,nullable,endable
+START,class function,∅,yes,yes
+ARRAYSIZEPRIME,rsqbr intlit,lsqbr semi rpar comma,no,no
+ASSIGNSTAT,id,∅,no,no
+CLASSDECL,class,class function,no,yes
+FUNCDEF,function,class function,no,yes
+FUNCBODY,lcurbr,class function,no,yes
+FUNCHEAD,function,lcurbr,no,no
+FUNCSCOPEDFREE,lpar sr,lcurbr,no,no
+FUNCCONSTRUCTORORMETHOD,constructor id,lcurbr,no,no
+FUNCCONSTRUCTOR,lpar,lcurbr,no,no
+FUNCMETHOD,lpar,lcurbr,no,no
+FUNCTIONCALL,id,∅,no,no
+FUNCALLPRIME1,lpar,∅,no,no
+FUNCALLPRIME3,dot,∅,yes,no
+FUNCALLPRIME2,dot lsqbr,∅,no,no
+FUNCALLPRIME,dot lpar lsqbr,∅,no,no
+VARIABLEORFUNC,id,mult div and rsqbr eq neq lt gt leq geq plus minus or comma rpar semi,no,no
+VARIABLEORFUNCPRIME2,dot lsqbr,mult div and rsqbr eq neq lt gt leq geq plus minus or comma rpar semi,yes,no
+VARIABLEORFUNCPRIME1,lpar,mult div and rsqbr eq neq lt gt leq geq plus minus or comma rpar semi,no,no
+VARIABLEORFUNCPRIME3,dot,mult div and rsqbr eq neq lt gt leq geq plus minus or comma rpar semi,yes,no
+VARIABLEORFUNCPRIME,dot lpar lsqbr,mult div and rsqbr eq neq lt gt leq geq plus minus or comma rpar semi,yes,no
+FID,dot lpar lsqbr,id,no,no
+LOCALVARDECLPRIME,semi lpar lsqbr,localVar if while read write return id rcurbr,no,no
+LOCALVARDECL,localVar,localVar if while read write return id rcurbr,no,no
+MEMBERFUNCDECL,function constructor,public private function constructor attribute rcurbr,no,no
+FPARAMS,id,rpar,yes,no
+MEMBERVARDECL,attribute,public private function constructor attribute rcurbr,no,no
+OPTCLASSDECL2,isa,lcurbr,yes,no
+OPTFUNCHEAD1,id,∅,yes,no
+RELEXPR,eq neq lt gt leq geq,comma rpar semi,yes,no
+ARITHEXPR,intlit floatlit lpar not id plus minus,rsqbr eq neq lt gt leq geq comma rpar semi,no,no
+RELOP,eq neq lt gt leq geq,intlit floatlit lpar not id plus minus,no,no
+APARAMSTAIL,comma,comma rpar,no,no
+REPTAPARAMS1,comma,rpar,yes,no
+MEMBERDECL,function constructor attribute,public private function constructor attribute rcurbr,no,no
+REPTCLASSDECL4,public private function constructor attribute,rcurbr,yes,no
+REPTFPARAMS3,lsqbr,rpar comma,yes,no
+FPARAMSTAIL,comma,comma rpar,no,no
+REPTFPARAMS4,comma,rpar,yes,no
+REPTFPARAMSTAIL4,lsqbr,comma rpar,yes,no
+LOCALVARDECLORSTMT,localVar if while read write return id,localVar if while read write return id rcurbr,no,no
+REPTFUNCBODY1,localVar if while read write return id,rcurbr,yes,no
+REPTFUNCTIONCALL0,id,∅,yes,no
+REPTIDNEST1,lsqbr,dot,yes,no
+REPTLOCALVARDECL4,lsqbr,semi,yes,no
+ARRAYSIZE,lsqbr,lsqbr semi rpar comma,no,no
+REPTMEMBERVARDECL4,lsqbr,semi,yes,no
+REPTOPTCLASSDECL22,comma,lcurbr,yes,no
+CLASSDECLORFUNCDEF,class function,class function,no,yes
+REPTSTART0,class function,∅,yes,yes
+IDNEST,id,id,no,no
+REPTVARIABLE0,id,∅,yes,no
+REPTVARIABLE2,lsqbr,∅,yes,no
+RETURNTYPE,void integer float id,semi lcurbr,no,no
+ADDOP,plus minus or,intlit floatlit lpar not id plus minus,no,no
+RIGHTRECARITHEXPR,plus minus or,rsqbr eq neq lt gt leq geq comma rpar semi,yes,no
+MULTOP,mult div and,intlit floatlit lpar not id plus minus,no,no
+SIGN,plus minus,intlit floatlit lpar not id plus minus,no,no
+REPTSTATBLOCK1,if while read write return id,rcurbr,yes,no
+STATEMENT,if while read write return id,else semi localVar if while read write return id rcurbr,no,no
+MYRELEXPRCONSTRUCT,intlit floatlit lpar not id plus minus,rpar,no,no
+STATBLOCK,lcurbr if while read write return id,else semi,yes,no
+TERM,intlit floatlit lpar not id plus minus,rsqbr eq neq lt gt leq geq plus minus or comma rpar semi,no,no
+FACTOR,intlit floatlit lpar not id plus minus,mult div and rsqbr eq neq lt gt leq geq plus minus or comma rpar semi,no,no
+RIGHTRECTERM,mult div and,rsqbr eq neq lt gt leq geq plus minus or comma rpar semi,yes,no
+TYPE,integer float id,rpar lcurbr comma lpar lsqbr semi,no,no
+VARIABLE,id,equal rpar,no,no
+VARINDICEPRIME,dot lsqbr,equal rpar,yes,no
+VARPRIME,dot lpar lsqbr,equal rpar,yes,no
+VARIABLEASSIGNORFUNCCALL,id,else semi localVar if while read write return id rcurbr,no,no
+INDICE,lsqbr,mult div and dot lsqbr rsqbr eq neq lt gt leq geq equal plus minus or comma rpar semi,no,no
+VARIABLEASSIGNORFUNCCALLPRIME2,dot lsqbr equal,else semi localVar if while read write return id rcurbr,no,no
+ASSIGNOP,equal,intlit floatlit lpar not id plus minus,no,no
+EXPR,intlit floatlit lpar not id plus minus,comma rpar semi,no,no
+VARIABLEASSIGNORFUNCCALLPRIME1,lpar,else semi localVar if while read write return id rcurbr,no,no
+APARAMS,intlit floatlit lpar not id plus minus,rpar,yes,no
+VARIABLEASSIGNORFUNCCALLPRIME3,semi dot,else semi localVar if while read write return id rcurbr,no,no
+VARIABLEASSIGNORFUNCCALLPRIME,dot lpar equal lsqbr,else semi localVar if while read write return id rcurbr,no,no
+VISIBILITY,public private,function constructor attribute,yes,no

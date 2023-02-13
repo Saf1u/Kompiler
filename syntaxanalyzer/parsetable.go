@@ -1,11 +1,87 @@
 package syntaxanalyzer
 
+import (
+	"io/ioutil"
+	"strings"
+
+	"github.com/jszwec/csvutil"
+)
+
+type firstAndFollowLookUp struct {
+	entries map[string]firstAndFollowLookUpEntry
+}
+
+func (f *firstAndFollowLookUp) Nullable(nonTerminal string) bool {
+	if _, ok := f.entries[nonTerminal]; !ok {
+		panic("something went wrong looking up sets")
+	}
+	return f.entries[nonTerminal].Nullable
+}
+func (f *firstAndFollowLookUp) InFirst(nonTerminal string, token string) bool {
+	if _, ok := f.entries[nonTerminal]; !ok {
+		panic("something went wrong looking up sets")
+	}
+	return f.entries[nonTerminal].FirstSet[token]
+}
+func (f *firstAndFollowLookUp) InFollow(nonTerminal string, token string) bool {
+	if _, ok := f.entries[nonTerminal]; !ok {
+		panic("something went wrong looking up sets")
+	}
+	return f.entries[nonTerminal].FollowSet[token]
+}
+
+type firstAndFollowLookUpEntry struct {
+	FirstSet  map[string]bool
+	FollowSet map[string]bool
+	Nullable  bool
+}
+
 var parseTable map[string]map[string]string
 var nonTerminal = make(map[string]bool)
+var setsLookUpTable = &firstAndFollowLookUp{entries: make(map[string]firstAndFollowLookUpEntry)}
+
+func buildFollowAndFirstSets() {
+
+	type entry struct {
+		NonTerminal string `csv:"NONTERMINAL"`
+		FirstSet    string `csv:"first set"`
+		FollowSet   string `csv:"follow set"`
+		Nullable    string `csv:"nullable"`
+		Endable     string `csv:"endable"`
+	}
+	var entries []entry
+	data, err := ioutil.ReadFile("files/fflowsets(1).xlsx - Sheet 1.csv")
+	if err != nil {
+		panic(err)
+	}
+	if err := csvutil.Unmarshal(data, &entries); err != nil {
+		panic("could not load csv")
+	}
+
+	for _, entr := range entries {
+		listFirst := strings.Split(entr.FirstSet, " ")
+		firstSet := make(map[string]bool)
+		for _, f := range listFirst {
+			firstSet[f] = true
+		}
+		listFollow := strings.Split(entr.FollowSet, " ")
+		folSet := make(map[string]bool)
+		for _, f := range listFollow {
+			if f != "∅" {
+				folSet[f] = true
+			}
+		}
+		nullable := false
+		if entr.Nullable == "yes" {
+			nullable = true
+		}
+		setsLookUpTable.entries[entr.NonTerminal] = firstAndFollowLookUpEntry{FirstSet: firstSet, FollowSet: folSet, Nullable: nullable}
+	}
+}
 
 func init() {
 	parseTable = make(map[string]map[string]string)
-
+	buildFollowAndFirstSets()
 	nonTerminal["START"] = true
 	nonTerminal["ADDOP"] = true
 	nonTerminal["APARAMS"] = true

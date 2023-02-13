@@ -45,29 +45,29 @@ func (s *SpecialStack) tokenizeAndreversePush(str string) {
 
 }
 
-type Syntaxanalyzer struct {
+type SyntaxanalyzerParser struct {
 	stack           *SpecialStack
 	derivationFile  *os.File
 	traceDerivation bool
 }
 
-func (s *Syntaxanalyzer) Top() string {
+func (s *SyntaxanalyzerParser) Top() string {
 	return s.stack.Top()
 }
-func (s *Syntaxanalyzer) Pop(actualtoken string) string {
+func (s *SyntaxanalyzerParser) Pop(actualtoken string) string {
 	char := s.stack.Pop(actualtoken)
 	if s.traceDerivation {
 		s.writeDerivation(actualtoken)
 	}
 	return char
 }
-func (s *Syntaxanalyzer) Push(str string) {
+func (s *SyntaxanalyzerParser) Push(str string) {
 	s.stack.Push(str)
 	if s.traceDerivation {
 		s.writeDerivation(str)
 	}
 }
-func (s *Syntaxanalyzer) writeDerivation(str string) {
+func (s *SyntaxanalyzerParser) writeDerivation(str string) {
 	if str == "" {
 		return
 	}
@@ -83,7 +83,7 @@ func (s *Syntaxanalyzer) writeDerivation(str string) {
 	s.derivationFile.WriteString("\n")
 }
 
-func NewSyntaxAnalyzer() *Syntaxanalyzer {
+func NewSyntaxAnalyzer() *SyntaxanalyzerParser {
 	file := configmap.Get("file").(string)
 	derive := configmap.Get("printDerivation").(bool)
 	derivationFile := fmt.Sprint(file, ".derivation")
@@ -92,12 +92,12 @@ func NewSyntaxAnalyzer() *Syntaxanalyzer {
 		if err != nil {
 			panic(err)
 		}
-		return &Syntaxanalyzer{stack: newStack(derive), derivationFile: fl, traceDerivation: derive}
+		return &SyntaxanalyzerParser{stack: newStack(derive), derivationFile: fl, traceDerivation: derive}
 	}
-	return &Syntaxanalyzer{stack: newStack(derive), traceDerivation: derive}
+	return &SyntaxanalyzerParser{stack: newStack(derive), traceDerivation: derive}
 }
 
-func (s *Syntaxanalyzer) Parse() {
+func (s *SyntaxanalyzerParser) Parse() {
 	s.stack.Push("$")
 	s.stack.Push("START")
 	token := lexer.NextToken()
