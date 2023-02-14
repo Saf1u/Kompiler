@@ -11,23 +11,35 @@ type firstAndFollowLookUp struct {
 	entries map[string]firstAndFollowLookUpEntry
 }
 
-func (f *firstAndFollowLookUp) Nullable(nonTerminal string) bool {
-	if _, ok := f.entries[nonTerminal]; !ok {
-		panic("something went wrong looking up sets")
+func (f *firstAndFollowLookUp) Nullable(symbol string) bool {
+	if !nonTerminal[symbol] {
+		return false
 	}
-	return f.entries[nonTerminal].Nullable
+	//fmt.Println(symbol, " ")
+	if _, ok := f.entries[symbol]; !ok {
+		panic("something went wrong looking up nullable sets")
+	}
+	return f.entries[symbol].Nullable
 }
-func (f *firstAndFollowLookUp) InFirst(nonTerminal string, token string) bool {
-	if _, ok := f.entries[nonTerminal]; !ok {
-		panic("something went wrong looking up sets")
+func (f *firstAndFollowLookUp) InFirst(symbol string, token string) bool {
+	if !nonTerminal[symbol] {
+		return symbol == token
 	}
-	return f.entries[nonTerminal].FirstSet[token]
+	//fmt.Println(symbol, " ", token)
+	if _, ok := f.entries[symbol]; !ok {
+		panic("something went wrong looking up first sets")
+	}
+	return f.entries[symbol].FirstSet[token]
 }
-func (f *firstAndFollowLookUp) InFollow(nonTerminal string, token string) bool {
-	if _, ok := f.entries[nonTerminal]; !ok {
-		panic("something went wrong looking up sets")
+func (f *firstAndFollowLookUp) InFollow(symbol string, token string) bool {
+	if !nonTerminal[symbol] {
+		return false
 	}
-	return f.entries[nonTerminal].FollowSet[token]
+	//fmt.Println(symbol, " ", token)
+	if _, ok := f.entries[symbol]; !ok {
+		panic("something went wrong looking up follow sets")
+	}
+	return f.entries[symbol].FollowSet[token]
 }
 
 type firstAndFollowLookUpEntry struct {

@@ -126,10 +126,7 @@ func (s *SyntaxanalyzerParser) Parse() {
 					realtype = "id"
 				}
 			} else {
-
-				fmt.Println(token)
-				fmt.Println(x)
-				panic("nah")
+				realtype = s.skipError(*token)
 
 			}
 		} else {
@@ -139,11 +136,8 @@ func (s *SyntaxanalyzerParser) Parse() {
 				if parseTable[x][realtype] != "&epsilon" {
 					s.Push(parseTable[x][realtype])
 				}
-
 			} else {
-				fmt.Println(token)
-				fmt.Println(x)
-				panic("nah t")
+				realtype = s.skipError(*token)
 			}
 		}
 	}
@@ -153,4 +147,25 @@ func (s *SyntaxanalyzerParser) Parse() {
 		fmt.Println("succesful parse")
 	}
 
+}
+
+func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
+	fmt.Println("error at:", token.LineNumber)
+	if setsLookUpTable.InFollow(s.Top(), token.TokenType) {
+		s.Pop("")
+	} else {
+		for (!setsLookUpTable.InFirst(s.Top(), token.TokenType)) ||
+			(setsLookUpTable.Nullable(s.Top()) && !setsLookUpTable.InFollow(s.Top(), token.TokenType)) {
+			temp := lexer.NextToken()
+			if temp == nil {
+				fmt.Println("here")
+				os.Exit(1)
+			}
+			token = *temp
+		}
+	}
+	if token.TokenType == "self" {
+		return "id"
+	}
+	return token.TokenType
 }

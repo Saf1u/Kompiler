@@ -33,13 +33,19 @@ class LINEAR isa POLYNOMIAL,AHA,DAH {
    attribute a: float;
   private attribute b: float;
   public  constructor: (A: float, B: float);
-  public  function evaluate: (x: float) => float;
+  public  function evaluate: (x: float) => func();
 };
 
 class QUADRATIC isa POLYNOMIAL {
   private attribute a: float;
   private attribute b: float;
-  private attribute c: float;
+  private attribute c: func();
   public  constructor: (A: float, B: float, C: float);
+  public  function evaluate: (x: float) => func();
+  public  function evaluate: (x: float) => float;
   public  function evaluate: (x: float) => float;
 };
+
+func main() => float{
+  id()=33;
+}
