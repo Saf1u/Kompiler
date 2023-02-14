@@ -154,8 +154,8 @@ func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 	if setsLookUpTable.InFollow(s.Top(), token.TokenType) {
 		s.Pop("")
 	} else {
-		for (!setsLookUpTable.InFirst(s.Top(), token.TokenType)) ||
-			(setsLookUpTable.Nullable(s.Top()) && !setsLookUpTable.InFollow(s.Top(), token.TokenType)) {
+		for !(setsLookUpTable.InFirst(s.Top(), token.TokenType)) &&
+			!(setsLookUpTable.Nullable(s.Top()) && setsLookUpTable.InFollow(s.Top(), token.TokenType)) {
 			temp := lexer.NextToken()
 			if temp == nil {
 				fmt.Println("here")

@@ -46,6 +46,6 @@ class QUADRATIC isa POLYNOMIAL {
   public  function evaluate: (x: float) => float;
 };
 
-func main() => float{
+function main() => float{
   id()=33;
 }
