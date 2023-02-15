@@ -104,10 +104,7 @@ func (s *SyntaxanalyzerParser) Parse() {
 	for token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT {
 		token = lexer.NextToken()
 	}
-	realtype := token.TokenType
-	if token.TokenType == "self" {
-		realtype = "id"
-	}
+	realtype := replaceSelf(token.TokenType)
 	for s.Top() != "$" {
 		x := s.Top()
 		if !nonTerminal[x] {
@@ -121,13 +118,9 @@ func (s *SyntaxanalyzerParser) Parse() {
 					s.Pop("")
 					break
 				}
-				realtype = token.TokenType
-				if token.TokenType == "self" {
-					realtype = "id"
-				}
+				realtype = replaceSelf(token.TokenType)
 			} else {
 				realtype = s.skipError(*token)
-
 			}
 		} else {
 
@@ -164,8 +157,13 @@ func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 			token = *temp
 		}
 	}
-	if token.TokenType == "self" {
+
+	return replaceSelf(token.TokenType)
+}
+
+func replaceSelf(tokenType string) string {
+	if tokenType == "self" {
 		return "id"
 	}
-	return token.TokenType
+	return tokenType
 }
