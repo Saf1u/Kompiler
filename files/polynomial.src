@@ -29,6 +29,7 @@ function QUADRATIC::evaluate(x: float) => float
   localvar result: float;
   //Using Horner's method
   result = a;
+  aha =x;
   result = result * x + b;
   result = result * x + c;
   return (result);

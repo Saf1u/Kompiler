@@ -11,14 +11,16 @@ var conf map[string]interface{}
 func init() {
 	conf = make(map[string]interface{})
 	var file string
+	var deriveOut bool
 	flag.StringVar(&file, "file", "", "file to tokenize")
+	flag.BoolVar(&deriveOut, "deriveOut", false, "build left derivation tree")
 	flag.Parse()
 	if file == "" {
 		fmt.Fprintf(os.Stderr, "File not specified")
 		os.Exit(1)
 	}
 	set("file", file)
-	set("printDerivation", true)
+	set("printDerivation", deriveOut)
 }
 
 func set(key string, value interface{}) {

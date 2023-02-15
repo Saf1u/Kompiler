@@ -52,6 +52,7 @@ function LINEAR::evaluate(x: float) => float
   localvar result: float;
   result = 0.0;
   result = a = x + b;
+  aha =x;
   return (result);
 }
  
