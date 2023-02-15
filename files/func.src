@@ -19,7 +19,7 @@ class QUADRATIC isa POLYNOMIAL {
 };
 
 // ====== member function implementations ====== //  
-function POLYNOMIAL::evaluate(x: float) => float
+function POLYNOMIAL::evaluate(x: float) = float
 {
   return (0);
 }
@@ -61,8 +61,12 @@ function main() => void{
   localvar f1:: LINEAR(2, 3.5);
   localvar f2: QUADRATIC(-2.0, 1.0, 0.0);
   localvar counter: integer ;	
-  counter = id.id.id.id/;
-
+  counter = id.id.id.id;
+  id=3;
+  id.id[3]=4;
+  id.id.id.id.id=40;
+  id.id().id().id=22;
+  id.id.id.id.id.id[3][3].id().id=id;
   while(counter <=> 10)
   {
     write(counter);

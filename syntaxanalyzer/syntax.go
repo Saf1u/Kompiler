@@ -135,10 +135,8 @@ func (s *SyntaxanalyzerParser) Parse() {
 		}
 	}
 	if s.Top() != "$" {
-		panic("no dolla")
-	} else {
-		fmt.Println("succesful parse")
-	}
+		panic("unexpected termination")
+	} 
 
 }
 
@@ -151,7 +149,6 @@ func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 			!(setsLookUpTable.Nullable(s.Top()) && setsLookUpTable.InFollow(s.Top(), token.TokenType)) {
 			temp := lexer.NextToken()
 			if temp == nil {
-				fmt.Println("here")
 				os.Exit(1)
 			}
 			token = *temp
