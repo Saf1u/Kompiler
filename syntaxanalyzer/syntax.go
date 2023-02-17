@@ -165,7 +165,7 @@ func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 }
 
 func (s *SyntaxanalyzerParser) writeError(token lexer.Token) {
-	s.errorFile.WriteString(fmt.Sprint("error at line number:", token.LineNumber, " unexpected character:", token.TokenValue))
+	s.errorFile.WriteString(fmt.Sprint("error at line number:", token.LineNumber, " unexpected character:", token.TokenValue,"\n"))
 }
 
 func replaceSelf(tokenType string) string {
