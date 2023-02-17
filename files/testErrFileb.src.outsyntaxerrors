@@ -1,0 +1,16 @@
+error at line number: 1 unexpected character: POLYNOMIAL expected either of: class function
+error at line number: 2 unexpected character: : expected either of: lpar sr
+error at line number: 2 unexpected character: ; expected either of: lcurbr
+error at line number: 6 unexpected character: private expected either of: read write return id localVar if while
+error at line number: 6 unexpected character: : expected either of: dot lpar equal lsqbr
+error at line number: 8 unexpected character: : expected either of: dot lpar lsqbr
+error at line number: 8 unexpected character: : expected either of: dot lpar lsqbr
+error at line number: 9 unexpected character: public expected either of: localVar if while read write return id
+error at line number: 9 unexpected character: : expected either of: lpar equal lsqbr dot
+error at line number: 9 unexpected character: : expected either of: dot lpar lsqbr
+error at line number: 9 unexpected character: => expected either of: semi dot
+error at line number: 10 unexpected character: ; expected either of: class function
+error at line number: 14 unexpected character: float expected:colon
+error at line number: 17 unexpected character: evaluate expected either of: function constructor attribute
+error at line number: 21 unexpected character: evaluate expected:lpar
+error at line number: 21 unexpected character: float expected:colon

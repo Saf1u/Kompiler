@@ -1,0 +1,5 @@
+error at line number: 9 unexpected character: j expected either of: and mult div
+error at line number: 16 unexpected character: == expected either of: equal lsqbr dot lpar
+error at line number: 16 unexpected character: ; expected either of: equal dot lsqbr
+error at line number: 16 unexpected character: ; expected either of: while read write return id if
+error at line number: 22 unexpected character: i expected:semi
