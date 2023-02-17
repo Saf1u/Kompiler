@@ -48,6 +48,7 @@ func (s *SpecialStack) tokenizeAndreversePush(str string) {
 type SyntaxanalyzerParser struct {
 	stack           *SpecialStack
 	derivationFile  *os.File
+	errorFile       *os.File
 	traceDerivation bool
 }
 
@@ -86,15 +87,20 @@ func (s *SyntaxanalyzerParser) writeDerivation(str string) {
 func NewSyntaxAnalyzer() *SyntaxanalyzerParser {
 	file := configmap.Get("file").(string)
 	derive := configmap.Get("printDerivation").(bool)
-	derivationFile := fmt.Sprint(file, ".derivation")
+	derivationFile := fmt.Sprint(file, ".outderivation")
+	errorFile := fmt.Sprint(file, ".outsyntaxerrors")
+	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
 	if derive {
 		fl, err := os.OpenFile(derivationFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
 		if err != nil {
 			panic(err)
 		}
-		return &SyntaxanalyzerParser{stack: newStack(derive), derivationFile: fl, traceDerivation: derive}
+		return &SyntaxanalyzerParser{stack: newStack(derive), derivationFile: fl, traceDerivation: derive, errorFile: errFile}
 	}
-	return &SyntaxanalyzerParser{stack: newStack(derive), traceDerivation: derive}
+	return &SyntaxanalyzerParser{stack: newStack(derive), traceDerivation: derive, errorFile: errFile}
 }
 
 func (s *SyntaxanalyzerParser) Parse() {
@@ -136,12 +142,12 @@ func (s *SyntaxanalyzerParser) Parse() {
 	}
 	if s.Top() != "$" {
 		panic("unexpected termination")
-	} 
+	}
 
 }
 
 func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
-	fmt.Println("error at:", token.LineNumber)
+	s.writeError(token)
 	if setsLookUpTable.InFollow(s.Top(), token.TokenType) {
 		s.Pop("")
 	} else {
@@ -156,6 +162,10 @@ func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 	}
 
 	return replaceSelf(token.TokenType)
+}
+
+func (s *SyntaxanalyzerParser) writeError(token lexer.Token) {
+	s.errorFile.WriteString(fmt.Sprint("error at line number:", token.LineNumber, " unexpected character:", token.TokenValue))
 }
 
 func replaceSelf(tokenType string) string {
