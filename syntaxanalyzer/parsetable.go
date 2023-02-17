@@ -31,6 +31,27 @@ func (f *firstAndFollowLookUp) InFirst(symbol string, token string) bool {
 	}
 	return f.entries[symbol].FirstSet[token]
 }
+
+func (f *firstAndFollowLookUp) GetSets(symbol string) string {
+	if _, ok := f.entries[symbol]; !ok {
+		panic("something went wrong looking up first sets")
+	}
+	first := ""
+	isNullable := false
+	for k := range f.entries[symbol].FirstSet {
+		if k != "&epsilon" {
+			first = first + " " + k
+		} else {
+			isNullable = true
+		}
+	}
+	if isNullable {
+		for k := range f.entries[symbol].FollowSet {
+			first = first + " " + k
+		}
+	}
+	return first
+}
 func (f *firstAndFollowLookUp) InFollow(symbol string, token string) bool {
 	if !nonTerminal[symbol] {
 		return false

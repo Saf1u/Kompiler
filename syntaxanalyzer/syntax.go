@@ -165,7 +165,12 @@ func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 }
 
 func (s *SyntaxanalyzerParser) writeError(token lexer.Token) {
-	s.errorFile.WriteString(fmt.Sprint("error at line number:", token.LineNumber, " unexpected character:", token.TokenValue,"\n"))
+	if !nonTerminal[s.Top()] {
+		s.errorFile.WriteString(fmt.Sprint("error at line number:", token.LineNumber, " unexpected character:", token.TokenValue, " expected:", s.Top(), "\n"))
+	} else {
+		sets := setsLookUpTable.GetSets(s.Top())
+		s.errorFile.WriteString(fmt.Sprint("error at line number:", token.LineNumber, " unexpected character:", token.TokenValue, "expected rither of:", sets, "\n"))
+	}
 }
 
 func replaceSelf(tokenType string) string {
