@@ -1,8 +1,8 @@
-error at line number:22 unexpected character:=
-error at line number:39 unexpected character:==
-error at line number:46 unexpected character:==
-error at line number:54 unexpected character:=
-error at line number:61 unexpected character:::
-error at line number:70 unexpected character:>
-error at line number:70 unexpected character:>
-error at line number:73 unexpected character:;
+error at line number: 22 unexpected character: = expected:arrow
+error at line number: 39 unexpected character: == expected either of: dot lpar equal lsqbr
+error at line number: 46 unexpected character: == expected either of: dot lpar equal lsqbr
+error at line number: 54 unexpected character: = expected either of: dot lpar lsqbr
+error at line number: 61 unexpected character: :: expected:colon
+error at line number: 70 unexpected character: > expected either of: intlit floatlit lpar not id plus minus
+error at line number: 70 unexpected character: > expected:rpar
+error at line number: 73 unexpected character: ; expected either of: while read write return id if
