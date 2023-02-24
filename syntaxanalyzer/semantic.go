@@ -1,7 +1,78 @@
 package syntaxanalyzer
 
+var semanticActions map[string]func(*semanticStack)
+
+func init() {
+	semanticActions["S1"] = func(ss *semanticStack) {
+		ss.Push(&idNode{identifier: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{}})
+	}
+	semanticActions["S2"] = func(ss *semanticStack) {
+		ss.Push(&typeNode{typeName: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{}})
+	}
+	semanticActions["S3"] = func(ss *semanticStack) {
+		ss.Push(&epsilonNode{nodeImplementation: &nodeImplementation{}})
+	}
+	semanticActions["S4"] = func(ss *semanticStack) {
+		ss.Push(&noSizeNode{nodeImplementation: &nodeImplementation{}})
+	}
+	semanticActions["S5"] = func(ss *semanticStack) {
+		ss.Push(&intLitNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{}})
+	}
+
+	semanticActions["S6"] = func(ss *semanticStack) {
+		container := make([]node, 0)
+		cond := true
+		for val := ss.Pop(); cond; val = ss.Pop() {
+			switch val.(type) {
+			case *epsilonNode:
+				cond = false
+			default:
+				container = append(container, val)
+			}
+		}
+		first:=container[len(container)-1]
+		for i:=len(container)-2;i>=0;i--{
+			first.MakeSibling(container[i])
+		}
+		arrNode:=&arraySizeNode{nodeImplementation: &nodeImplementation{}}
+		arrNode.AdoptChildren(first)
+		ss.Push(arrNode)
+
+	}
+	semanticActions["S7"] = func(ss *semanticStack) {
+		localVarNode:=&localVarNode{nodeImplementation: &nodeImplementation{}}
+		container := make([]node, 0)
+		switch v := ss.Pop().(type) {
+		case *arraySizeNode:
+			container = append(container, v)
+		default:
+			panic("unexpected node")
+		}
+		switch v := ss.Pop().(type) {
+		case *typeNode:
+			container = append(container, v)
+		default:
+			panic("unexpected node")
+		}
+		switch v := ss.Pop().(type) {
+		case *idNode:
+			container = append(container, v)
+		default:
+			panic("unexpected node")
+		}
+		first:=container[len(container)-1]
+		for i:=len(container)-2;i>=0;i--{
+			first.MakeSibling(container[i])
+		}
+		localVarNode.AdoptChildren(first)
+		ss.Push(localVarNode)
+	}
+
+}
+
 type semanticStack struct {
-	container []node
+	container            []node
+	mostRecentTokenValue string
 }
 
 func MakeSemanticStack() *semanticStack {
@@ -12,8 +83,8 @@ func (s *semanticStack) Push(n node) {
 }
 
 func (s *semanticStack) Pop() node {
-	n:=s.container[len(s.container)-1]
-	s.container=s.container[0:len(s.container)-1]
+	n := s.container[len(s.container)-1]
+	s.container = s.container[0 : len(s.container)-1]
 	return n
 }
 
@@ -52,9 +123,17 @@ type arraySizeNode struct {
 type epsilonNode struct {
 	*nodeImplementation
 }
+type noSizeNode struct {
+	*nodeImplementation
+}
 type localVarNode struct {
 	*nodeImplementation
 }
+type intLitNode struct {
+	value string
+	*nodeImplementation
+}
+
 func (i *nodeImplementation) MakeSibling(y node) {
 	var current node = i
 	for current.getRightSibling() != nil {
