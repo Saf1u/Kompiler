@@ -52,7 +52,9 @@ type arraySizeNode struct {
 type epsilonNode struct {
 	*nodeImplementation
 }
-
+type localVarNode struct {
+	*nodeImplementation
+}
 func (i *nodeImplementation) MakeSibling(y node) {
 	var current node = i
 	for current.getRightSibling() != nil {
