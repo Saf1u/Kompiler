@@ -7,57 +7,30 @@ function id FUNCSCOPEDFREE FUNCBODY REPTSTART0
 function bubbleSort FUNCSCOPEDFREE FUNCBODY REPTSTART0
 function bubbleSort lpar FPARAMS rpar arrow RETURNTYPE FUNCBODY REPTSTART0
 function bubbleSort ( FPARAMS rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( id colon TYPE REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr colon TYPE REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : TYPE REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer ARRAYSIZE REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer lsqbr ARRAYSIZEPRIME REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ARRAYSIZEPRIME REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ rsqbr REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] REPTFPARAMS3 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] FPARAMSTAIL REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] comma id colon TYPE REPTFPARAMSTAIL4 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , id colon TYPE REPTFPARAMSTAIL4 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , size colon TYPE REPTFPARAMSTAIL4 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : TYPE REPTFPARAMSTAIL4 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer REPTFPARAMSTAIL4 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer REPTFPARAMSTAIL4 REPTFPARAMS4 rpar arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) arrow RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => RETURNTYPE FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void FUNCBODY REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void lcurbr REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { LOCALVARDECLORSTMT REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { LOCALVARDECL REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar id colon TYPE LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar id colon TYPE LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n colon TYPE LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : TYPE LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; LOCALVARDECLORSTMT REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; LOCALVARDECL REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar id colon TYPE LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar id colon TYPE LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i colon TYPE LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : TYPE LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer LOCALVARDECLPRIME REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer ARRAYSIZE REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer lsqbr ARRAYSIZEPRIME REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ ARRAYSIZEPRIME REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ rsqbr REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ ] REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ ] ARRAYSIZE REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ ] lsqbr ARRAYSIZEPRIME REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ ] [ ARRAYSIZEPRIME REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ ] [ rsqbr REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ ] [ ] REPTLOCALVARDECL4 semi REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ ] [ ] ; REPTFUNCBODY1 rcurbr REPTSTART0
-function bubbleSort ( arr : integer [ ] , size : integer ) => void { localvar n : integer ; localvar i : integer [ ] [ ] ; } REPTSTART0
+function bubbleSort ( ) arrow RETURNTYPE FUNCBODY REPTSTART0
+function bubbleSort ( ) => RETURNTYPE FUNCBODY REPTSTART0
+function bubbleSort ( ) => void FUNCBODY REPTSTART0
+function bubbleSort ( ) => void FUNCBODY REPTSTART0
+function bubbleSort ( ) => void lcurbr REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { LOCALVARDECLORSTMT REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { LOCALVARDECL REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar id S1 colon TYPE S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar id S1 colon TYPE S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i S1 colon TYPE S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : TYPE S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer S3 REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer ARRAYSIZE REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer lsqbr ARRAYSIZEPRIME REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ ARRAYSIZEPRIME REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ rsqbr S4 REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ ] S4 REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ ] ARRAYSIZE REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ ] lsqbr ARRAYSIZEPRIME REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ ] [ ARRAYSIZEPRIME REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ ] [ rsqbr S4 REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ ] [ ] S4 REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ ] [ ] ; S7 REPTFUNCBODY1 rcurbr REPTSTART0
+function bubbleSort ( ) => void { localvar i : integer [ ] [ ] ; } REPTSTART0

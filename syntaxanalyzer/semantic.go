@@ -1,8 +1,13 @@
 package syntaxanalyzer
 
+import (
+	"reflect"
+)
+
 var semanticActions map[string]func(*semanticStack)
 
 func init() {
+	semanticActions = make(map[string]func(*semanticStack))
 	semanticActions["S1"] = func(ss *semanticStack) {
 		ss.Push(&idNode{identifier: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{}})
 	}
@@ -22,25 +27,26 @@ func init() {
 	semanticActions["S6"] = func(ss *semanticStack) {
 		container := make([]node, 0)
 		cond := true
-		for val := ss.Pop(); cond; val = ss.Pop() {
+		for val := ss.Pop(); cond; {
 			switch val.(type) {
 			case *epsilonNode:
 				cond = false
 			default:
 				container = append(container, val)
+				val = ss.Pop()
 			}
 		}
-		first:=container[len(container)-1]
-		for i:=len(container)-2;i>=0;i--{
+		first := container[len(container)-1]
+		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
 		}
-		arrNode:=&arraySizeNode{nodeImplementation: &nodeImplementation{}}
+		arrNode := &arraySizeNode{nodeImplementation: &nodeImplementation{}}
 		arrNode.AdoptChildren(first)
 		ss.Push(arrNode)
 
 	}
 	semanticActions["S7"] = func(ss *semanticStack) {
-		localVarNode:=&localVarNode{nodeImplementation: &nodeImplementation{}}
+		localVarNode := &localVarNode{nodeImplementation: &nodeImplementation{}}
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
 		case *arraySizeNode:
@@ -52,7 +58,7 @@ func init() {
 		case *typeNode:
 			container = append(container, v)
 		default:
-			panic("unexpected node")
+			panic(reflect.TypeOf(v))
 		}
 		switch v := ss.Pop().(type) {
 		case *idNode:
@@ -60,8 +66,8 @@ func init() {
 		default:
 			panic("unexpected node")
 		}
-		first:=container[len(container)-1]
-		for i:=len(container)-2;i>=0;i--{
+		first := container[len(container)-1]
+		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
 		}
 		localVarNode.AdoptChildren(first)

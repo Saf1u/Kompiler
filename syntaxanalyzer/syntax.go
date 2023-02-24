@@ -47,6 +47,7 @@ func (s *SpecialStack) tokenizeAndreversePush(str string) {
 
 type SyntaxanalyzerParser struct {
 	stack           *SpecialStack
+	semStack        *semanticStack
 	derivationFile  *os.File
 	errorFile       *os.File
 	traceDerivation bool
@@ -98,9 +99,9 @@ func NewSyntaxAnalyzer() *SyntaxanalyzerParser {
 		if err != nil {
 			panic(err)
 		}
-		return &SyntaxanalyzerParser{stack: newStack(derive), derivationFile: fl, traceDerivation: derive, errorFile: errFile}
+		return &SyntaxanalyzerParser{stack: newStack(derive), semStack: MakeSemanticStack(), derivationFile: fl, traceDerivation: derive, errorFile: errFile}
 	}
-	return &SyntaxanalyzerParser{stack: newStack(derive), traceDerivation: derive, errorFile: errFile}
+	return &SyntaxanalyzerParser{stack: newStack(derive), semStack: MakeSemanticStack(), traceDerivation: derive, errorFile: errFile}
 }
 
 func (s *SyntaxanalyzerParser) Parse() {
@@ -114,19 +115,25 @@ func (s *SyntaxanalyzerParser) Parse() {
 	for s.Top() != "$" {
 		x := s.Top()
 		if !nonTerminal[x] {
-			if realtype == x {
-				s.Pop(token.TokenValue)
-				token = lexer.NextToken()
-				for token != nil && (token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT) {
-					token = lexer.NextToken()
-				}
-				if token == nil {
-					s.Pop("")
-					break
-				}
-				realtype = replaceSelf(token.TokenType)
+			if action, exist := semanticActions[x]; exist {
+				s.semStack.mostRecentTokenValue = token.TokenValue
+				action(s.semStack)
+				s.Pop("")
 			} else {
-				realtype = s.skipError(*token)
+				if realtype == x {
+					s.Pop(token.TokenValue)
+					token = lexer.NextToken()
+					for token != nil && (token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT) {
+						token = lexer.NextToken()
+					}
+					if token == nil {
+						s.Pop("")
+						break
+					}
+					realtype = replaceSelf(token.TokenType)
+				} else {
+					realtype = s.skipError(*token)
+				}
 			}
 		} else {
 
