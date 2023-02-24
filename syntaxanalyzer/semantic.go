@@ -1,27 +1,49 @@
 package syntaxanalyzer
 
 import (
+	"fmt"
+	"os"
 	"reflect"
 )
+
+var globalIDPool int = 0
+
+func getNextID() int {
+	next := globalIDPool
+	globalIDPool++
+	return next
+}
 
 var semanticActions map[string]func(*semanticStack)
 
 func init() {
 	semanticActions = make(map[string]func(*semanticStack))
 	semanticActions["S1"] = func(ss *semanticStack) {
-		ss.Push(&idNode{identifier: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{}})
+		id := getNextID()
+		ss.Push(&idNode{identifier: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.writeNode(id, fmt.Sprint("Id|", ss.mostRecentTokenValue))
+
 	}
 	semanticActions["S2"] = func(ss *semanticStack) {
-		ss.Push(&typeNode{typeName: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{}})
+		id := getNextID()
+		ss.Push(&typeNode{typeName: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.writeNode(id, fmt.Sprint("type|", ss.mostRecentTokenValue))
+
 	}
 	semanticActions["S3"] = func(ss *semanticStack) {
-		ss.Push(&epsilonNode{nodeImplementation: &nodeImplementation{}})
+		id := getNextID()
+		ss.Push(&epsilonNode{nodeImplementation: &nodeImplementation{diagramID: id}})
 	}
 	semanticActions["S4"] = func(ss *semanticStack) {
-		ss.Push(&noSizeNode{nodeImplementation: &nodeImplementation{}})
+		id := getNextID()
+		ss.Push(&noSizeNode{nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.writeNode(id, "NoSize|")
+
 	}
 	semanticActions["S5"] = func(ss *semanticStack) {
-		ss.Push(&intLitNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{}})
+		id := getNextID()
+		ss.Push(&intLitNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.writeNode(id, fmt.Sprint("IntLit|", ss.mostRecentTokenValue))
 	}
 
 	semanticActions["S6"] = func(ss *semanticStack) {
@@ -36,17 +58,23 @@ func init() {
 				val = ss.Pop()
 			}
 		}
+		id := getNextID()
+		ss.writeNode(id, ("ArraySizeNode"))
 		first := container[len(container)-1]
+		ss.writeEdge(id,first.getDiagramID())
 		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
+			ss.writeEdge(id,container[i].getDiagramID())
 		}
-		arrNode := &arraySizeNode{nodeImplementation: &nodeImplementation{}}
+		arrNode := &arraySizeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		arrNode.AdoptChildren(first)
 		ss.Push(arrNode)
 
 	}
 	semanticActions["S7"] = func(ss *semanticStack) {
-		localVarNode := &localVarNode{nodeImplementation: &nodeImplementation{}}
+		id := getNextID()
+		ss.writeNode(id, ("localVarNode"))
+		localVarNode := &localVarNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
 		case *arraySizeNode:
@@ -67,8 +95,10 @@ func init() {
 			panic("unexpected node")
 		}
 		first := container[len(container)-1]
+		ss.writeEdge(id,first.getDiagramID())
 		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
+			ss.writeEdge(id,container[i].getDiagramID())
 		}
 		localVarNode.AdoptChildren(first)
 		ss.Push(localVarNode)
@@ -79,10 +109,14 @@ func init() {
 type semanticStack struct {
 	container            []node
 	mostRecentTokenValue string
+	dotFile              *os.File
 }
 
-func MakeSemanticStack() *semanticStack {
-	return &semanticStack{container: make([]node, 0)}
+func MakeSemanticStack(file *os.File) *semanticStack {
+	file.WriteString("digraph AST {\n")
+	file.WriteString("node [shape=record];\n")
+	file.WriteString(" node [fontname=Sans];charset=\"UTF-8\" splines=true splines=spline rankdir =LR\n")
+	return &semanticStack{container: make([]node, 0), dotFile: file}
 }
 func (s *semanticStack) Push(n node) {
 	s.container = append(s.container, n)
@@ -92,6 +126,12 @@ func (s *semanticStack) Pop() node {
 	n := s.container[len(s.container)-1]
 	s.container = s.container[0 : len(s.container)-1]
 	return n
+}
+func (s *semanticStack) writeNode(id int, info string) {
+	s.dotFile.WriteString(fmt.Sprintf("%d[label=\"%s\"];\n", id, info))
+}
+func (s *semanticStack) writeEdge(idParent int, idChild int) {
+	s.dotFile.WriteString(fmt.Sprintf("%d->%d;\n", idParent, idChild))
 }
 
 type node interface {
@@ -103,6 +143,7 @@ type node interface {
 	setLeftSibling(node)
 	setParent(node)
 	AdoptChildren(node)
+	getDiagramID() int
 }
 
 type nodeImplementation struct {
@@ -111,6 +152,7 @@ type nodeImplementation struct {
 	leftmostChild   node
 	rightMost       node
 	lineNumber      int
+	diagramID       int
 }
 
 type idNode struct {
@@ -192,4 +234,7 @@ func (i *nodeImplementation) setLeftSibling(y node) {
 }
 func (i *nodeImplementation) setParent(y node) {
 	i.parent = y
+}
+func (i *nodeImplementation) getDiagramID() int {
+	return i.diagramID
 }

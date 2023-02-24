@@ -90,7 +90,12 @@ func NewSyntaxAnalyzer() *SyntaxanalyzerParser {
 	derive := configmap.Get("printDerivation").(bool)
 	derivationFile := fmt.Sprint(file, ".outderivation")
 	errorFile := fmt.Sprint(file, ".outsyntaxerrors")
+	astOutFileName := fmt.Sprint(file, ".dot.ast")
 	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	astFile, err := os.OpenFile(astOutFileName, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
 	if err != nil {
 		panic(err)
 	}
@@ -99,9 +104,9 @@ func NewSyntaxAnalyzer() *SyntaxanalyzerParser {
 		if err != nil {
 			panic(err)
 		}
-		return &SyntaxanalyzerParser{stack: newStack(derive), semStack: MakeSemanticStack(), derivationFile: fl, traceDerivation: derive, errorFile: errFile}
+		return &SyntaxanalyzerParser{stack: newStack(derive), semStack: MakeSemanticStack(astFile), derivationFile: fl, traceDerivation: derive, errorFile: errFile}
 	}
-	return &SyntaxanalyzerParser{stack: newStack(derive), semStack: MakeSemanticStack(), traceDerivation: derive, errorFile: errFile}
+	return &SyntaxanalyzerParser{stack: newStack(derive), semStack: MakeSemanticStack(astFile), traceDerivation: derive, errorFile: errFile}
 }
 
 func (s *SyntaxanalyzerParser) Parse() {
@@ -116,10 +121,10 @@ func (s *SyntaxanalyzerParser) Parse() {
 		x := s.Top()
 		if !nonTerminal[x] {
 			if action, exist := semanticActions[x]; exist {
-				s.semStack.mostRecentTokenValue = token.TokenValue
 				action(s.semStack)
 				s.Pop("")
 			} else {
+				s.semStack.mostRecentTokenValue = token.TokenValue
 				if realtype == x {
 					s.Pop(token.TokenValue)
 					token = lexer.NextToken()
@@ -131,6 +136,7 @@ func (s *SyntaxanalyzerParser) Parse() {
 						break
 					}
 					realtype = replaceSelf(token.TokenType)
+					
 				} else {
 					realtype = s.skipError(*token)
 				}
