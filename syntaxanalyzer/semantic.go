@@ -1,5 +1,22 @@
 package syntaxanalyzer
 
+type semanticStack struct {
+	container []node
+}
+
+func MakeSemanticStack() *semanticStack {
+	return &semanticStack{container: make([]node, 0)}
+}
+func (s *semanticStack) Push(n node) {
+	s.container = append(s.container, n)
+}
+
+func (s *semanticStack) Pop() node {
+	n:=s.container[len(s.container)-1]
+	s.container=s.container[0:len(s.container)-1]
+	return n
+}
+
 type node interface {
 	MakeSibling(node)
 	getRightSibling() node

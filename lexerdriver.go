@@ -6,4 +6,5 @@ func main() {
 
 	s := syntaxanalyzer.NewSyntaxAnalyzer()
 	s.Parse()
+
 }
