@@ -164,11 +164,12 @@ func init() {
 		default:
 			panic(reflect.TypeOf(v))
 		}
-		ss.writeEdge(add.getDiagramID(), term.getDiagramID())
-		ss.writeEdge(add.getDiagramID(), termb.getDiagramID())
+		
 		termb.MakeSibling(term)
 		add.AdoptChildren(termb)
 		ss.Push(add)
+		ss.writeEdge(add.getDiagramID(), termb.getDiagramID())
+		ss.writeEdge(add.getDiagramID(), term.getDiagramID())
 
 	}
 	semanticActions["S19"] = func(ss *semanticStack) {
@@ -180,11 +181,11 @@ func init() {
 		default:
 			panic(reflect.TypeOf(v))
 		}
-		ss.writeEdge(mult.getDiagramID(), term.getDiagramID())
-		ss.writeEdge(mult.getDiagramID(), termb.getDiagramID())
 		termb.MakeSibling(term)
 		mult.AdoptChildren(termb)
 		ss.Push(mult)
+		ss.writeEdge(mult.getDiagramID(), termb.getDiagramID())
+		ss.writeEdge(mult.getDiagramID(), term.getDiagramID())
 
 	}
 
