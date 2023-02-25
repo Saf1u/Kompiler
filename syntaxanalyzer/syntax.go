@@ -40,7 +40,10 @@ func (s *SpecialStack) Top() string {
 func (s *SpecialStack) tokenizeAndreversePush(str string) {
 	rhs := strings.Split(str, " ")
 	for i := len(rhs) - 1; i >= 0; i-- {
+		if rhs[i]!="&epsilon"{
+			//semantic rule can intro epsilons
 		s.container = append(s.container, rhs[i])
+		}
 	}
 
 }

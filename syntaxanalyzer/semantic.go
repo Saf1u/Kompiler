@@ -123,7 +123,37 @@ func init() {
 		ss.writeEdge(dot.getDiagramID(), term.getDiagramID())
 		ss.writeEdge(dot.getDiagramID(), termb.getDiagramID())
 	}
-	semanticActions["S9"] = semanticActions["S6"]
+	semanticActions["S9"] = func(ss *semanticStack) {
+		container := make([]node, 0)
+		cond := true
+		for val := ss.Pop(); cond; {
+			switch val.(type) {
+			case *epsilonNode:
+				cond = false
+			default:
+				
+				container = append(container, val)
+				val = ss.Pop()
+			}
+		}
+		if len(container) == 0 {
+			id := getNextID()
+			ss.writeBlank(id)
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+		}
+		id := getNextID()
+		ss.writeNode(id, ("ArraySizeNode"))
+		first := container[len(container)-1]
+		ss.writeEdge(id, first.getDiagramID())
+		for i := len(container) - 2; i >= 0; i-- {
+			first.MakeSibling(container[i])
+			ss.writeEdge(id, container[i].getDiagramID())
+		}
+		arrNode := &arraySizeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		arrNode.AdoptChildren(first)
+		ss.Push(arrNode)
+
+	}
 	semanticActions["S10"] = func(ss *semanticStack) {
 		indiceList := ss.Pop()
 		switch v := indiceList.(type) {
@@ -145,6 +175,7 @@ func init() {
 		ss.writeNode(id, fmt.Sprint("VarNode|"))
 		ss.writeEdge(varN.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(varN.getDiagramID(), idTok.getDiagramID())
+		ss.Push(varN)
 
 	}
 	semanticActions["S11"] = func(ss *semanticStack) {
@@ -259,6 +290,7 @@ func init() {
 				cond = false
 			default:
 				container = append(container, val)
+				// fmt.Println(reflect.TypeOf(val))
 				val = ss.Pop()
 			}
 		}
