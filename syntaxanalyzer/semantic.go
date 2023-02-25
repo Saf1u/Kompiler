@@ -158,26 +158,32 @@ func init() {
 	semanticActions["S21"] = func(ss *semanticStack) {
 		term := ss.Pop()
 		add := ss.Pop()
+		termb := ss.Pop()
 		switch v := add.(type) {
 		case *addNode:
 		default:
 			panic(reflect.TypeOf(v))
 		}
 		ss.writeEdge(add.getDiagramID(), term.getDiagramID())
-		add.AdoptChildren(term)
+		ss.writeEdge(add.getDiagramID(), termb.getDiagramID())
+		termb.MakeSibling(term)
+		add.AdoptChildren(termb)
 		ss.Push(add)
 
 	}
 	semanticActions["S19"] = func(ss *semanticStack) {
 		term := ss.Pop()
 		mult := ss.Pop()
+		termb := ss.Pop()
 		switch v := mult.(type) {
 		case *multNode:
 		default:
 			panic(reflect.TypeOf(v))
 		}
 		ss.writeEdge(mult.getDiagramID(), term.getDiagramID())
-		mult.AdoptChildren(term)
+		ss.writeEdge(mult.getDiagramID(), termb.getDiagramID())
+		termb.MakeSibling(term)
+		mult.AdoptChildren(termb)
 		ss.Push(mult)
 
 	}
