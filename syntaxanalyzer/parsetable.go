@@ -4501,7 +4501,7 @@ func init() {
 	parseTable["FID"]["lpar"] = "lpar APARAMS rpar dot"
 	parseTable["INDICE"]["lpar"] = ""
 	parseTable["LOCALVARDECL"]["lpar"] = ""
-	parseTable["LOCALVARDECLPRIME"]["lpar"] = "lpar APARAMS rpar semi"
+	parseTable["LOCALVARDECLPRIME"]["lpar"] = "lpar S3 APARAMS S22 rpar semi"
 	parseTable["LOCALVARDECLORSTMT"]["lpar"] = ""
 	parseTable["MEMBERDECL"]["lpar"] = ""
 	parseTable["MEMBERFUNCDECL"]["lpar"] = ""

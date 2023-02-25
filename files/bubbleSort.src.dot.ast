@@ -2,13 +2,11 @@ digraph AST {
 node [shape=record];
  node [fontname=Sans];charset="UTF-8" splines=true splines=spline rankdir =LR
 0[label="Id|i"];
-1[label="type|integer"];
-3[label="NoSize|"];
-4[label="NoSize|"];
-5[label="ArraySizeNode"];
-5->3;
+1[label="type|poly"];
+none3[shape="point"];
+4[label="ParamListNode"];
+4->none3;
+5[label="localVarNode"];
+5->0;
+5->1;
 5->4;
-6[label="localVarNode"];
-6->0;
-6->1;
-6->5;

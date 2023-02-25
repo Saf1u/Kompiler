@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"strconv"
 )
 
 var globalIDPool int = 0
 
-func getNextID() int {
+func getNextID() string {
 	next := globalIDPool
 	globalIDPool++
-	return next
+	return strconv.Itoa(next)
 }
 
 var semanticActions map[string]func(*semanticStack)
@@ -58,13 +59,18 @@ func init() {
 				val = ss.Pop()
 			}
 		}
+		if len(container) == 0 {
+			id := getNextID()
+			ss.writeBlank(id)
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+		}
 		id := getNextID()
 		ss.writeNode(id, ("ArraySizeNode"))
 		first := container[len(container)-1]
-		ss.writeEdge(id,first.getDiagramID())
+		ss.writeEdge(id, first.getDiagramID())
 		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
-			ss.writeEdge(id,container[i].getDiagramID())
+			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		arrNode := &arraySizeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		arrNode.AdoptChildren(first)
@@ -78,6 +84,8 @@ func init() {
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
 		case *arraySizeNode:
+			container = append(container, v)
+		case *paramListNode:
 			container = append(container, v)
 		default:
 			panic("unexpected node")
@@ -95,13 +103,114 @@ func init() {
 			panic("unexpected node")
 		}
 		first := container[len(container)-1]
-		ss.writeEdge(id,first.getDiagramID())
+		ss.writeEdge(id, first.getDiagramID())
 		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
-			ss.writeEdge(id,container[i].getDiagramID())
+			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		localVarNode.AdoptChildren(first)
 		ss.Push(localVarNode)
+	}
+
+	semanticActions["S13"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.Push(&floatNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.writeNode(id, fmt.Sprint("FloatLit|", ss.mostRecentTokenValue))
+
+	}
+	semanticActions["S12"] = func(ss *semanticStack) {
+
+	}
+	semanticActions["S14"] = func(ss *semanticStack) {
+		factor := ss.Pop()
+		id := getNextID()
+		ss.writeNode(id, fmt.Sprint("NotNode|", ss.mostRecentTokenValue))
+		ss.writeEdge(id, factor.getDiagramID())
+		not := &notNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		not.AdoptChildren(factor)
+		ss.Push(not)
+	}
+	semanticActions["S15"] = func(ss *semanticStack) {
+		factor := ss.Pop()
+		sign := ss.Pop()
+		ss.writeEdge(sign.getDiagramID(), factor.getDiagramID())
+		sign.AdoptChildren(factor)
+		ss.Push(sign)
+	}
+	semanticActions["S16"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.writeNode(id, fmt.Sprint("SignNode|", ss.mostRecentTokenValue))
+		sign := &signNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.Push(sign)
+	}
+	semanticActions["S20"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.writeNode(id, fmt.Sprint("addNode|", ss.mostRecentTokenValue))
+		add := &addNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.Push(add)
+	}
+	semanticActions["S18"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.writeNode(id, fmt.Sprint("multNode|", ss.mostRecentTokenValue))
+		mul := &multNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.Push(mul)
+	}
+	semanticActions["S21"] = func(ss *semanticStack) {
+		term := ss.Pop()
+		add := ss.Pop()
+		switch v := add.(type) {
+		case *addNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		ss.writeEdge(add.getDiagramID(), term.getDiagramID())
+		add.AdoptChildren(term)
+		ss.Push(add)
+
+	}
+	semanticActions["S19"] = func(ss *semanticStack) {
+		term := ss.Pop()
+		mult := ss.Pop()
+		switch v := mult.(type) {
+		case *multNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		ss.writeEdge(mult.getDiagramID(), term.getDiagramID())
+		mult.AdoptChildren(term)
+		ss.Push(mult)
+
+	}
+
+	semanticActions["S22"] = func(ss *semanticStack) {
+		container := make([]node, 0)
+		cond := true
+		for val := ss.Pop(); cond; {
+			switch val.(type) {
+			case *epsilonNode:
+				cond = false
+			default:
+				container = append(container, val)
+				val = ss.Pop()
+			}
+		}
+		if len(container) == 0 {
+			id := getNextID()
+			ss.writeBlank(id)
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+		}
+		id := getNextID()
+		ss.writeNode(id, ("ParamListNode"))
+		first := container[len(container)-1]
+		ss.writeEdge(id, first.getDiagramID())
+		for i := len(container) - 2; i >= 0; i-- {
+			first.MakeSibling(container[i])
+			ss.writeEdge(id, container[i].getDiagramID())
+		}
+		paramNode := &paramListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		paramNode.AdoptChildren(first)
+		ss.Push(paramNode)
+
 	}
 
 }
@@ -127,11 +236,14 @@ func (s *semanticStack) Pop() node {
 	s.container = s.container[0 : len(s.container)-1]
 	return n
 }
-func (s *semanticStack) writeNode(id int, info string) {
-	s.dotFile.WriteString(fmt.Sprintf("%d[label=\"%s\"];\n", id, info))
+func (s *semanticStack) writeNode(id string, info string) {
+	s.dotFile.WriteString(fmt.Sprintf("%s[label=\"%s\"];\n", id, info))
 }
-func (s *semanticStack) writeEdge(idParent int, idChild int) {
-	s.dotFile.WriteString(fmt.Sprintf("%d->%d;\n", idParent, idChild))
+func (s *semanticStack) writeBlank(id string) {
+	s.dotFile.WriteString(fmt.Sprintf("none%s[shape=\"%s\"];\n", id, "point"))
+}
+func (s *semanticStack) writeEdge(idParent string, idChild string) {
+	s.dotFile.WriteString(fmt.Sprintf("%s->%s;\n", idParent, idChild))
 }
 
 type node interface {
@@ -143,7 +255,7 @@ type node interface {
 	setLeftSibling(node)
 	setParent(node)
 	AdoptChildren(node)
-	getDiagramID() int
+	getDiagramID() string
 }
 
 type nodeImplementation struct {
@@ -152,7 +264,7 @@ type nodeImplementation struct {
 	leftmostChild   node
 	rightMost       node
 	lineNumber      int
-	diagramID       int
+	diagramID       string
 }
 
 type idNode struct {
@@ -164,11 +276,19 @@ type typeNode struct {
 	typeName string
 	*nodeImplementation
 }
-
+type paramListNode struct {
+	*nodeImplementation
+}
 type arraySizeNode struct {
 	*nodeImplementation
 }
 type epsilonNode struct {
+	*nodeImplementation
+}
+type notNode struct {
+	*nodeImplementation
+}
+type dotNode struct {
 	*nodeImplementation
 }
 type noSizeNode struct {
@@ -178,6 +298,22 @@ type localVarNode struct {
 	*nodeImplementation
 }
 type intLitNode struct {
+	value string
+	*nodeImplementation
+}
+type floatNode struct {
+	value string
+	*nodeImplementation
+}
+type addNode struct {
+	value string
+	*nodeImplementation
+}
+type signNode struct {
+	value string
+	*nodeImplementation
+}
+type multNode struct {
 	value string
 	*nodeImplementation
 }
@@ -235,6 +371,6 @@ func (i *nodeImplementation) setLeftSibling(y node) {
 func (i *nodeImplementation) setParent(y node) {
 	i.parent = y
 }
-func (i *nodeImplementation) getDiagramID() int {
+func (i *nodeImplementation) getDiagramID() string {
 	return i.diagramID
 }

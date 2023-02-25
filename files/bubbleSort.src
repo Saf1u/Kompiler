@@ -1,7 +1,7 @@
 /* sort the array */
 function bubbleSort() => void 
 {
-  localvar i    : integer[][];
+  localvar i    : poly();
 }
    
 
