@@ -181,7 +181,7 @@ func init() {
 	semanticActions["S11"] = func(ss *semanticStack) {
 		indiceList := ss.Pop()
 		switch v := indiceList.(type) {
-		case *arraySizeNode:
+		case *paramListNode:
 		default:
 			panic(reflect.TypeOf(v))
 		}
@@ -199,6 +199,7 @@ func init() {
 		ss.writeNode(id, fmt.Sprint("funcCall|"))
 		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(funcCall.getDiagramID(), idTok.getDiagramID())
+		ss.Push(funcCall)
 
 	}
 
@@ -290,7 +291,6 @@ func init() {
 				cond = false
 			default:
 				container = append(container, val)
-				// fmt.Println(reflect.TypeOf(val))
 				val = ss.Pop()
 			}
 		}

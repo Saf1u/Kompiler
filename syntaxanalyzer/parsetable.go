@@ -4495,7 +4495,7 @@ func init() {
 	parseTable["VARIABLEORFUNC"]["lpar"] = ""
 	parseTable["VARIABLEORFUNCPRIME"]["lpar"] = "VARIABLEORFUNCPRIME1"
 	parseTable["VARIABLEORFUNCPRIME2"]["lpar"] = ""
-	parseTable["VARIABLEORFUNCPRIME1"]["lpar"] = "lpar APARAMS rpar VARIABLEORFUNCPRIME3"
+	parseTable["VARIABLEORFUNCPRIME1"]["lpar"] = "S3 lpar APARAMS S22 S11 rpar VARIABLEORFUNCPRIME3"
 	parseTable["VARIABLEORFUNCPRIME3"]["lpar"] = ""
 	parseTable["IDNEST"]["lpar"] = ""
 	parseTable["FID"]["lpar"] = "lpar APARAMS rpar dot"

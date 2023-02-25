@@ -1,8 +1,9 @@
 [blockcmt, /* sort the array */, 1]
-[function, function, 2][id, bubbleSort, 2][lpar, (, 2][rpar, ), 2][arrow, =>, 2][void, void, 2]
-[lcurbr, {, 3]
-[localvar, localvar, 4][id, i, 4][colon, :, 4][id, poly, 4][lpar, (, 4][id, x, 4][dot, ., 4][id, y, 4][lsqbr, [, 4][intlit, 3, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 4, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 5, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 5, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 6, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 5, 4][rsqbr, ], 4][dot, ., 4][id, z, 4][lsqbr, [, 4][intlit, 3, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 4, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 5, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 5, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 6, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 5, 4][rsqbr, ], 4][dot, ., 4][id, n, 4][lsqbr, [, 4][intlit, 2, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 3, 4][rsqbr, ], 4][rpar, ), 4][semi, ;, 4]
-[rcurbr, }, 5]
+[inlinecmt, //  localvar i    : poly(x.y[3][4][5][5][6][5].z[3][4][5][5][6][5].n[2][3]);, 2]
+[function, function, 3][id, bubbleSort, 3][lpar, (, 3][rpar, ), 3][arrow, =>, 3][void, void, 3]
+[lcurbr, {, 4]
+[localvar, localvar, 5][id, i, 5][colon, :, 5][id, poly, 5][lpar, (, 5][id, make, 5][lpar, (, 5][intlit, 10, 5][plus, +, 5][intlit, 23, 5][comma, ,, 5][floatlit, 9.9, 5][comma, ,, 5][intlit, 10, 5][comma, ,, 5][id, a, 5][dot, ., 5][id, b, 5][lsqbr, [, 5][intlit, 10, 5][rsqbr, ], 5][dot, ., 5][id, c, 5][lsqbr, [, 5][intlit, 20, 5][rsqbr, ], 5][lsqbr, [, 5][intlit, 10, 5][rsqbr, ], 5][lsqbr, [, 5][intlit, 11, 5][rsqbr, ], 5][dot, ., 5][id, d, 5][rpar, ), 5][dot, ., 5][id, newmake, 5][lsqbr, [, 5][intlit, 1, 5][rsqbr, ], 5][lsqbr, [, 5][intlit, 2, 5][rsqbr, ], 5][dot, ., 5][id, oldmake, 5][lsqbr, [, 5][intlit, 1, 5][rsqbr, ], 5][comma, ,, 5][intlit, 2, 5][comma, ,, 5][id, make, 5][lpar, (, 5][rpar, ), 5][dot, ., 5][id, x, 5][dot, ., 5][id, unmake, 5][lpar, (, 5][rpar, ), 5][dot, ., 5][id, y, 5][lsqbr, [, 5][intlit, 1, 5][rsqbr, ], 5][lsqbr, [, 5][intlit, 3, 5][rsqbr, ], 5][dot, ., 5][id, remake, 5][lpar, (, 5][rpar, ), 5][dot, ., 5][id, end, 5][rpar, ), 5][semi, ;, 5]
+[rcurbr, }, 6]
 
 
 
