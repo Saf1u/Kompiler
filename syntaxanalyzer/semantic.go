@@ -111,6 +111,65 @@ func init() {
 		localVarNode.AdoptChildren(first)
 		ss.Push(localVarNode)
 	}
+	semanticActions["S8"] = func(ss *semanticStack) {
+		id := getNextID()
+		dot:=&dotNode{ nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.writeNode(id, fmt.Sprint("DotNode|"))
+		term := ss.Pop()
+		termb := ss.Pop()
+		termb.MakeSibling(term)
+		dot.AdoptChildren(termb)
+		ss.Push(dot)
+		ss.writeEdge(dot.getDiagramID(), term.getDiagramID())
+		ss.writeEdge(dot.getDiagramID(), termb.getDiagramID())
+	}
+	semanticActions["S9"] = semanticActions["S6"]
+	semanticActions["S10"] = func(ss *semanticStack) {
+		indiceList := ss.Pop()
+		switch v := indiceList.(type) {
+		case *arraySizeNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+
+		idTok := ss.Pop()
+		switch v := idTok.(type) {
+		case *idNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		id := getNextID()
+		varN:=&varNode{ nodeImplementation: &nodeImplementation{diagramID: id}}
+		indiceList.MakeSibling(idTok)
+		varN.AdoptChildren(indiceList)
+		ss.writeNode(id, fmt.Sprint("VarNode|"))
+		ss.writeEdge(varN.getDiagramID(), indiceList.getDiagramID())
+		ss.writeEdge(varN.getDiagramID(), idTok.getDiagramID())
+
+	}
+	semanticActions["S11"] = func(ss *semanticStack) {
+		indiceList := ss.Pop()
+		switch v := indiceList.(type) {
+		case *arraySizeNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+
+		idTok := ss.Pop()
+		switch v := idTok.(type) {
+		case *idNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		id := getNextID()
+		funcCall:=&functionCall{ nodeImplementation: &nodeImplementation{diagramID: id}}
+		indiceList.MakeSibling(idTok)
+		funcCall.AdoptChildren(indiceList)
+		ss.writeNode(id, fmt.Sprint("funcCall|"))
+		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
+		ss.writeEdge(funcCall.getDiagramID(), idTok.getDiagramID())
+
+	}
 
 	semanticActions["S13"] = func(ss *semanticStack) {
 		id := getNextID()
@@ -124,7 +183,7 @@ func init() {
 	semanticActions["S14"] = func(ss *semanticStack) {
 		factor := ss.Pop()
 		id := getNextID()
-		ss.writeNode(id, fmt.Sprint("NotNode|", ss.mostRecentTokenValue))
+		ss.writeNode(id, fmt.Sprint("NotNode|"))
 		ss.writeEdge(id, factor.getDiagramID())
 		not := &notNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		not.AdoptChildren(factor)
@@ -323,6 +382,14 @@ type signNode struct {
 	*nodeImplementation
 }
 type multNode struct {
+	value string
+	*nodeImplementation
+}
+type functionCall struct {
+	value string
+	*nodeImplementation
+}
+type varNode struct {
 	value string
 	*nodeImplementation
 }

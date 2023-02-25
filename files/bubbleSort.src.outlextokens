@@ -1,7 +1,7 @@
 [blockcmt, /* sort the array */, 1]
 [function, function, 2][id, bubbleSort, 2][lpar, (, 2][rpar, ), 2][arrow, =>, 2][void, void, 2]
 [lcurbr, {, 3]
-[localvar, localvar, 4][id, i, 4][colon, :, 4][id, poly, 4][lpar, (, 4][intlit, 1, 4][minus, -, 4][intlit, 2, 4][plus, +, 4][intlit, 3, 4][mult, *, 4][intlit, 21, 4][mult, *, 4][intlit, 2, 4][mult, *, 4][intlit, 3, 4][mult, *, 4][intlit, 4, 4][plus, +, 4][intlit, 5, 4][plus, +, 4][intlit, 2, 4][plus, +, 4][intlit, 4, 4][plus, +, 4][intlit, 5, 4][div, /, 4][intlit, 6, 4][minus, -, 4][intlit, 11, 4][mult, *, 4][intlit, 2, 4][mult, *, 4][intlit, 3, 4][rpar, ), 4][semi, ;, 4]
+[localvar, localvar, 4][id, i, 4][colon, :, 4][id, poly, 4][lpar, (, 4][id, x, 4][dot, ., 4][id, y, 4][rpar, ), 4][semi, ;, 4]
 [rcurbr, }, 5]
 
 
