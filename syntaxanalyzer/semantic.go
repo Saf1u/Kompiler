@@ -168,8 +168,9 @@ func init() {
 		termb.MakeSibling(term)
 		add.AdoptChildren(termb)
 		ss.Push(add)
-		ss.writeEdge(add.getDiagramID(), termb.getDiagramID())
 		ss.writeEdge(add.getDiagramID(), term.getDiagramID())
+		ss.writeEdge(add.getDiagramID(), termb.getDiagramID())
+		
 
 	}
 	semanticActions["S19"] = func(ss *semanticStack) {
@@ -184,8 +185,9 @@ func init() {
 		termb.MakeSibling(term)
 		mult.AdoptChildren(termb)
 		ss.Push(mult)
-		ss.writeEdge(mult.getDiagramID(), termb.getDiagramID())
 		ss.writeEdge(mult.getDiagramID(), term.getDiagramID())
+		ss.writeEdge(mult.getDiagramID(), termb.getDiagramID())
+		
 
 	}
 
@@ -231,7 +233,7 @@ type semanticStack struct {
 func MakeSemanticStack(file *os.File) *semanticStack {
 	file.WriteString("digraph AST {\n")
 	file.WriteString("node [shape=record];\n")
-	file.WriteString(" node [fontname=Sans];charset=\"UTF-8\" splines=true splines=spline rankdir =LR\n")
+	file.WriteString(" node [fontname=Sans];charset=\"UTF-8\" splines=true splines=spline rankdir =LR ordering=\"out\"\n")
 	return &semanticStack{container: make([]node, 0), dotFile: file}
 }
 func (s *semanticStack) Push(n node) {
