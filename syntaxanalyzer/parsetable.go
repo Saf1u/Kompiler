@@ -5006,7 +5006,7 @@ func init() {
 	parseTable["RIGHTRECTERM"]["while"] = ""
 	parseTable["SIGN"]["while"] = ""
 	parseTable["STATBLOCK"]["while"] = "STATEMENT"
-	parseTable["STATEMENT"]["while"] = "while lpar MYRELEXPRCONSTRUCT rpar STATBLOCK semi"
+	parseTable["STATEMENT"]["while"] = "while lpar MYRELEXPRCONSTRUCT rpar S3 STATBLOCK S32 semi S34"
 	parseTable["TERM"]["while"] = ""
 	parseTable["TYPE"]["while"] = ""
 	parseTable["VARIABLE"]["while"] = ""

@@ -479,6 +479,23 @@ func init() {
 		ss.writeEdge(ifNode.getDiagramID(), statBlockb.getDiagramID())
 		ss.writeEdge(ifNode.getDiagramID(), relExpr.getDiagramID())
 	}
+	semanticActions["S34"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.writeNode(id, ("WhileStat"))
+		whileNode := &whileStatementNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		statBlocka:= ss.Pop()
+		relExpr := ss.Pop()
+		switch v := statBlocka.(type) {
+		case *statBlockNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		relExpr.MakeSibling(statBlocka)
+		whileNode.AdoptChildren(relExpr)
+		ss.Push(whileNode)
+		ss.writeEdge(whileNode.getDiagramID(), statBlocka.getDiagramID())
+		ss.writeEdge(whileNode.getDiagramID(), relExpr.getDiagramID())
+	}
 	
 
 }
