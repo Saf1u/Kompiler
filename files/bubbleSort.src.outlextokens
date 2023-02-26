@@ -3,7 +3,7 @@
 [inlinecmt, //poly(make(10+23,9.9,10,a.b[10].c[20][10][11].d).newmake[1][2].oldmake[1],2,make().x.unmake().y[1][3].remake().end), 3]
 [function, function, 4][id, bubbleSort, 4][lpar, (, 4][rpar, ), 4][arrow, =>, 4][void, void, 4]
 [lcurbr, {, 5]
-[localvar, localvar, 6][id, i, 6][colon, :, 6][id, poly, 6][lpar, (, 6][intlit, 10, 6][plus, +, 6][intlit, 20, 6][plus, +, 6][intlit, 30, 6][plus, +, 6][intlit, 2, 6][gt, >, 6][floatlit, 5.2, 6][mult, *, 6][intlit, 4, 6][rpar, ), 6][semi, ;, 6]
+[read, read, 6][lpar, (, 6][id, a, 6][lpar, (, 6][rpar, ), 6][dot, ., 6][id, b, 6][rpar, ), 6][semi, ;, 6]
 [rcurbr, }, 7]
 
 

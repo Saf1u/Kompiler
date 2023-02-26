@@ -337,6 +337,24 @@ func init() {
 		ss.writeEdge(relNode.getDiagramID(), relexpra.getDiagramID())
 		ss.writeEdge(relNode.getDiagramID(), relexprb.getDiagramID())
 	}
+	semanticActions["S25"] = func(ss *semanticStack) {
+		id := getNextID()
+		paramNode := &readStatementNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.Push(paramNode)
+		ss.writeNode(id, ("ReadStatementNode"))
+	}
+	semanticActions["S26"] = func(ss *semanticStack) {
+		varNode:= ss.Pop()
+		readstatNode := ss.Pop()
+		switch v := readstatNode.(type) {
+		case *readStatementNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		readstatNode.AdoptChildren(varNode)
+		ss.Push(readstatNode)
+		ss.writeEdge(readstatNode.getDiagramID(), varNode.getDiagramID())
+	}
 
 }
 
@@ -419,6 +437,9 @@ type dotNode struct {
 type relOpNode struct {
 	*nodeImplementation
 	value string
+}
+type readStatementNode struct {
+	*nodeImplementation
 }
 type noSizeNode struct {
 	*nodeImplementation
