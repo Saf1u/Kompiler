@@ -355,6 +355,58 @@ func init() {
 		ss.Push(readstatNode)
 		ss.writeEdge(readstatNode.getDiagramID(), varNode.getDiagramID())
 	}
+	semanticActions["S27"] = func(ss *semanticStack) {
+		expr:= ss.Pop()
+		identifier:=ss.Pop()
+		id := getNextID()
+		assignNode := &assignStatNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.writeNode(id, ("assignStat"))
+		identifier.AdoptChildren(expr)
+		assignNode.AdoptChildren(identifier)
+		ss.Push(assignNode)
+		ss.writeEdge(assignNode.getDiagramID(), expr.getDiagramID())
+		ss.writeEdge(assignNode.getDiagramID(), identifier.getDiagramID())
+	}
+	semanticActions["S28"] = func(ss *semanticStack) {
+		indiceList := ss.Pop()
+		switch v := indiceList.(type) {
+		case *arraySizeNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+
+		idTok := ss.Pop()
+		
+		id := getNextID()
+		varN:=&varNode{ nodeImplementation: &nodeImplementation{diagramID: id}}
+		indiceList.MakeSibling(idTok)
+		varN.AdoptChildren(indiceList)
+		ss.writeNode(id, fmt.Sprint("VarNode|"))
+		ss.writeEdge(varN.getDiagramID(), indiceList.getDiagramID())
+		ss.writeEdge(varN.getDiagramID(), idTok.getDiagramID())
+		ss.Push(varN)
+
+	}
+	semanticActions["S29"] = func(ss *semanticStack) {
+		indiceList := ss.Pop()
+		switch v := indiceList.(type) {
+		case *paramListNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+
+		idTok := ss.Pop()
+		id := getNextID()
+		funcCall:=&functionCall{ nodeImplementation: &nodeImplementation{diagramID: id}}
+		indiceList.MakeSibling(idTok)
+		funcCall.AdoptChildren(indiceList)
+		ss.writeNode(id, fmt.Sprint("funcCall|"))
+		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
+		ss.writeEdge(funcCall.getDiagramID(), idTok.getDiagramID())
+		ss.Push(funcCall)
+
+	}
+	
 
 }
 
@@ -408,6 +460,11 @@ type nodeImplementation struct {
 	rightMost       node
 	lineNumber      int
 	diagramID       string
+}
+
+type assignStatNode struct {
+	identifier string
+	*nodeImplementation
 }
 
 type idNode struct {
