@@ -406,6 +406,25 @@ func init() {
 		ss.Push(funcCall)
 
 	}
+	semanticActions["S30"] = func(ss *semanticStack) {
+		id := getNextID()
+		write := &writeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.writeNode(id, ("WriteStatementNode"))
+		varNode:= ss.Pop()
+		write.AdoptChildren(varNode)
+		ss.Push(write)
+		ss.writeEdge(write.getDiagramID(), varNode.getDiagramID())
+	}
+
+	semanticActions["S31"] = func(ss *semanticStack) {
+		id := getNextID()
+		ret := &returnNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.writeNode(id, ("ReturnStatementNode"))
+		varNode:= ss.Pop()
+		ret.AdoptChildren(varNode)
+		ss.Push(ret)
+		ss.writeEdge(ret.getDiagramID(), varNode.getDiagramID())
+	}
 	
 
 }
@@ -463,6 +482,14 @@ type nodeImplementation struct {
 }
 
 type assignStatNode struct {
+	identifier string
+	*nodeImplementation
+}
+type writeNode struct {
+	identifier string
+	*nodeImplementation
+}
+type returnNode struct {
 	identifier string
 	*nodeImplementation
 }
