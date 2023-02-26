@@ -312,6 +312,31 @@ func init() {
 		ss.Push(paramNode)
 
 	}
+	semanticActions["S23"] = func(ss *semanticStack) {
+		id := getNextID()
+		paramNode := &relOpNode{value: ss.mostRecentTokenValue,nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.Push(paramNode)
+		val:=fmt.Sprint("relOpNode|", "neq")
+		if ss.mostRecentTokenValue!="<>"{
+		val=fmt.Sprint("relOpNode|\\", ss.mostRecentTokenValue)
+		}
+		ss.writeNode(id, val)
+	}
+	semanticActions["S24"] = func(ss *semanticStack) {
+		relexpra := ss.Pop()
+		relNode := ss.Pop()
+		relexprb := ss.Pop()
+		switch v := relNode.(type) {
+		case *relOpNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		relexprb.MakeSibling(relexpra)
+		relNode.AdoptChildren(relexprb)
+		ss.Push(relNode)
+		ss.writeEdge(relNode.getDiagramID(), relexpra.getDiagramID())
+		ss.writeEdge(relNode.getDiagramID(), relexprb.getDiagramID())
+	}
 
 }
 
@@ -390,6 +415,10 @@ type notNode struct {
 }
 type dotNode struct {
 	*nodeImplementation
+}
+type relOpNode struct {
+	*nodeImplementation
+	value string
 }
 type noSizeNode struct {
 	*nodeImplementation
