@@ -425,6 +425,60 @@ func init() {
 		ss.Push(ret)
 		ss.writeEdge(ret.getDiagramID(), varNode.getDiagramID())
 	}
+	semanticActions["S32"] = func(ss *semanticStack) {
+		container := make([]node, 0)
+		cond := true
+		for val := ss.Pop(); cond; {
+			switch val.(type) {
+			case *epsilonNode:
+				cond = false
+			default:
+				container = append(container, val)
+				val = ss.Pop()
+			}
+		}
+		if len(container) == 0 {
+			id := getNextID()
+			ss.writeBlank(id)
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+		}
+		id := getNextID()
+		ss.writeNode(id, ("StatBlock"))
+		first := container[len(container)-1]
+		ss.writeEdge(id, first.getDiagramID())
+		for i := len(container) - 2; i >= 0; i-- {
+			first.MakeSibling(container[i])
+			ss.writeEdge(id, container[i].getDiagramID())
+		}
+		paramNode := &statBlockNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		paramNode.AdoptChildren(first)
+		ss.Push(paramNode)
+	}
+	semanticActions["S33"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.writeNode(id, ("IfStat"))
+		ifNode := &ifStatementNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		statBlocka:= ss.Pop()
+		statBlockb:= ss.Pop()
+		relExpr := ss.Pop()
+		switch v := statBlocka.(type) {
+		case *statBlockNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		switch v := statBlockb.(type) {
+		case *statBlockNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		statBlockb.MakeSibling(statBlocka)
+		relExpr.MakeSibling(statBlockb)
+		ifNode.AdoptChildren(relExpr)
+		ss.Push(ifNode)
+		ss.writeEdge(ifNode.getDiagramID(), statBlocka.getDiagramID())
+		ss.writeEdge(ifNode.getDiagramID(), statBlockb.getDiagramID())
+		ss.writeEdge(ifNode.getDiagramID(), relExpr.getDiagramID())
+	}
 	
 
 }
@@ -490,6 +544,18 @@ type writeNode struct {
 	*nodeImplementation
 }
 type returnNode struct {
+	identifier string
+	*nodeImplementation
+}
+type statBlockNode struct {
+	identifier string
+	*nodeImplementation
+}
+type ifStatementNode struct {
+	identifier string
+	*nodeImplementation
+}
+type whileStatementNode struct {
 	identifier string
 	*nodeImplementation
 }
