@@ -98,8 +98,10 @@ none13[shape="point"];
 56->48;
 56->55;
 57[label="FuncDef"];
+58[label="scopeNode"];
 57->56;
 57->26;
 57->25;
+57->58;
 57->0;
 }

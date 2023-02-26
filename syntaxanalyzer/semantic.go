@@ -536,6 +536,9 @@ func init() {
 		id := getNextID()
 		ss.writeNode(id, ("FuncDef"))
 		funcNode := &funcDefNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		scopeId := getNextID()
+		ss.writeNode(scopeId, ("scopeNode"))
+		scope := &scopeNode{nodeImplementation: &nodeImplementation{diagramID: scopeId},value: ""}
 		statBlock:= ss.Pop()
 		typeN:= ss.Pop()
 		fParams := ss.Pop()
@@ -562,12 +565,14 @@ func init() {
 		}
 		typeN.MakeSibling(statBlock)
 		fParams.MakeSibling(typeN)
-		idTok.MakeSibling(fParams)
+		scope.MakeSibling(fParams)
+		idTok.MakeSibling(scope)
 		funcNode.AdoptChildren(idTok)
 		ss.Push(funcNode)
 		ss.writeEdge(funcNode.getDiagramID(), statBlock.getDiagramID())
 		ss.writeEdge(funcNode.getDiagramID(), typeN.getDiagramID())
 		ss.writeEdge(funcNode.getDiagramID(), fParams.getDiagramID())
+		ss.writeEdge(funcNode.getDiagramID(), scope.getDiagramID())
 		ss.writeEdge(funcNode.getDiagramID(), idTok.getDiagramID())
 		
 	}
@@ -658,6 +663,11 @@ type funcDefNode struct {
 
 type idNode struct {
 	identifier string
+	*nodeImplementation
+}
+type scopeNode struct {
+	identifier string
+	value string
 	*nodeImplementation
 }
 
