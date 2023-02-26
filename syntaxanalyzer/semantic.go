@@ -451,9 +451,10 @@ func init() {
 		id := getNextID()
 		ss.writeNode(id, ("StatBlock"))
 		first := container[len(container)-1]
-		ss.writeEdge(id, first.getDiagramID())
 		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
+		}
+		for i := 0; i <len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		paramNode := &statBlockNode{nodeImplementation: &nodeImplementation{diagramID: id}}

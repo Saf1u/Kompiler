@@ -3,14 +3,21 @@
 [inlinecmt, //poly(make(10+23,9.9,10,a.b[10].c[20][10][11].d).newmake[1][2].oldmake[1],2,make().x.unmake().y[1][3].remake().end), 3]
 [function, function, 4][id, bubbleSort, 4][lpar, (, 4][id, run, 4][colon, :, 4][integer, integer, 4][lsqbr, [, 4][intlit, 2, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 2, 4][rsqbr, ], 4][lsqbr, [, 4][rsqbr, ], 4][comma, ,, 4][id, bye, 4][colon, :, 4][float, float, 4][comma, ,, 4][id, hello, 4][colon, :, 4][id, red, 4][lsqbr, [, 4][intlit, 1, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 2, 4][rsqbr, ], 4][lsqbr, [, 4][rsqbr, ], 4][lsqbr, [, 4][intlit, 3, 4][rsqbr, ], 4][rpar, ), 4][arrow, =>, 4][float, float, 4]
 [lcurbr, {, 5]
-[write, write, 6][lpar, (, 6][intlit, 3, 6][gt, >, 6][intlit, 4, 6][rpar, ), 6][semi, ;, 6]
-[while, while, 7][lpar, (, 7][intlit, 1, 7][gt, >, 7][intlit, 3, 7][rpar, ), 7][lcurbr, {, 7]
-[write, write, 8][lpar, (, 8][intlit, 1, 8][gt, >, 8][intlit, 4, 8][rpar, ), 8][semi, ;, 8]
-[rcurbr, }, 9][semi, ;, 9]
-[id, a, 10][dot, ., 10][id, b, 10][equal, =, 10][intlit, 3, 10][minus, -, 10][intlit, 5, 10][semi, ;, 10]
-[id, hello, 11][lpar, (, 11][id, x, 11][comma, ,, 11][id, y, 11][comma, ,, 11][id, z, 11][rpar, ), 11][semi, ;, 11]
+[id, a, 6][equal, =, 6][intlit, 1, 6][semi, ;, 6]
+[id, put, 7][lpar, (, 7][id, a, 7][rpar, ), 7][semi, ;, 7]
+[id, b, 8][equal, =, 8][intlit, 2, 8][semi, ;, 8]
+[id, put, 9][lpar, (, 9][id, b, 9][rpar, ), 9][semi, ;, 9]
+[id, c, 10][equal, =, 10][intlit, 3, 10][semi, ;, 10]
+[id, put, 11][lpar, (, 11][id, c, 11][rpar, ), 11][semi, ;, 11]
+[id, a, 12][equal, =, 12][id, f, 12][lpar, (, 12][id, a, 12][comma, ,, 12][id, b, 12][comma, ,, 12][id, c, 12][rpar, ), 12][mult, *, 12][id, b, 12][plus, +, 12][id, c, 12][semi, ;, 12]
+[id, put, 13][lpar, (, 13][id, a, 13][plus, +, 13][intlit, 4, 13][rpar, ), 13][semi, ;, 13]
+[while, while, 14][lpar, (, 14][intlit, 1, 14][gt, >, 14][intlit, 2, 14][rpar, ), 14][lcurbr, {, 14]
+[id, put, 15][lpar, (, 15][id, a, 15][plus, +, 15][intlit, 4, 15][rpar, ), 15][semi, ;, 15]
+[id, put, 16][lpar, (, 16][id, a, 16][plus, +, 16][intlit, 2, 16][rpar, ), 16][semi, ;, 16]
+[id, put, 17][lpar, (, 17][id, a, 17][plus, +, 17][intlit, 1, 17][rpar, ), 17][semi, ;, 17]
+[rcurbr, }, 18][semi, ;, 18]
 
-[rcurbr, }, 13]
+[rcurbr, }, 20]
 
 
 
