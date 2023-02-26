@@ -67,9 +67,11 @@ func init() {
 		id := getNextID()
 		ss.writeNode(id, ("ArraySizeNode"))
 		first := container[len(container)-1]
-		ss.writeEdge(id, first.getDiagramID())
-		for i := len(container) - 2; i >= 0; i-- {
+		for i := len(container)-2; i >=0; i-- {
 			first.MakeSibling(container[i])
+			
+		}
+		for i := 0; i <len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		arrNode := &arraySizeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
@@ -143,10 +145,14 @@ func init() {
 		}
 		id := getNextID()
 		ss.writeNode(id, ("ArraySizeNode"))
+		//red[1][2][]
+		//[][2][1]
+		
 		first := container[len(container)-1]
-		ss.writeEdge(id, first.getDiagramID())
-		for i := len(container) - 2; i >= 0; i-- {
+		for i := len(container)-2; i >=0; i-- {
 			first.MakeSibling(container[i])
+		}
+		for i := 0; i <len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		arrNode := &arraySizeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
@@ -300,7 +306,7 @@ func init() {
 			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
-		ss.writeNode(id, ("ParamListNode"))
+		ss.writeNode(id, ("AParamListNode"))
 		first := container[len(container)-1]
 		ss.writeEdge(id, first.getDiagramID())
 		for i := len(container) - 2; i >= 0; i-- {
@@ -496,6 +502,75 @@ func init() {
 		ss.writeEdge(whileNode.getDiagramID(), statBlocka.getDiagramID())
 		ss.writeEdge(whileNode.getDiagramID(), relExpr.getDiagramID())
 	}
+	semanticActions["S35"] = func(ss *semanticStack) {
+		container := make([]node, 0)
+		cond := true
+		for val := ss.Pop(); cond; {
+			switch val.(type) {
+			case *epsilonNode:
+				cond = false
+			default:
+				container = append(container, val)
+				val = ss.Pop()
+			}
+		}
+		if len(container) == 0 {
+			id := getNextID()
+			ss.writeBlank(id)
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+		}
+		id := getNextID()
+		ss.writeNode(id, ("fParamListNode"))
+		first := container[len(container)-1]
+		ss.writeEdge(id, first.getDiagramID())
+		for i := len(container) - 2; i >= 0; i-- {
+			first.MakeSibling(container[i])
+			ss.writeEdge(id, container[i].getDiagramID())
+		}
+		paramNode := &fparamListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		paramNode.AdoptChildren(first)
+		ss.Push(paramNode)
+
+	}
+	semanticActions["S36"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.writeNode(id, ("FuncDef"))
+		funcNode := &funcDefNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		statBlock:= ss.Pop()
+		typeN:= ss.Pop()
+		fParams := ss.Pop()
+		idTok:= ss.Pop()
+		switch v := statBlock.(type) {
+		case *statBlockNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		switch v := typeN.(type) {
+		case *typeNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		switch v := fParams.(type) {
+		case *fparamListNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		switch v := idTok.(type) {
+		case *idNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		typeN.MakeSibling(statBlock)
+		fParams.MakeSibling(typeN)
+		idTok.MakeSibling(fParams)
+		funcNode.AdoptChildren(idTok)
+		ss.Push(funcNode)
+		ss.writeEdge(funcNode.getDiagramID(), statBlock.getDiagramID())
+		ss.writeEdge(funcNode.getDiagramID(), typeN.getDiagramID())
+		ss.writeEdge(funcNode.getDiagramID(), fParams.getDiagramID())
+		ss.writeEdge(funcNode.getDiagramID(), idTok.getDiagramID())
+		
+	}
 	
 
 }
@@ -576,6 +651,10 @@ type whileStatementNode struct {
 	identifier string
 	*nodeImplementation
 }
+type funcDefNode struct {
+	identifier string
+	*nodeImplementation
+}
 
 type idNode struct {
 	identifier string
@@ -587,6 +666,9 @@ type typeNode struct {
 	*nodeImplementation
 }
 type paramListNode struct {
+	*nodeImplementation
+}
+type fparamListNode struct {
 	*nodeImplementation
 }
 type arraySizeNode struct {

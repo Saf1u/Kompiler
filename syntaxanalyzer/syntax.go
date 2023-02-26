@@ -93,7 +93,7 @@ func NewSyntaxAnalyzer() *SyntaxanalyzerParser {
 	derive := configmap.Get("printDerivation").(bool)
 	derivationFile := fmt.Sprint(file, ".outderivation")
 	errorFile := fmt.Sprint(file, ".outsyntaxerrors")
-	astOutFileName := fmt.Sprint(file, ".dot.ast")
+	astOutFileName := fmt.Sprint(file, ".ast.dot")
 	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
 	if err != nil {
 		panic(err)
@@ -126,6 +126,12 @@ func (s *SyntaxanalyzerParser) Parse() {
 			if action, exist := semanticActions[x]; exist {
 				action(s.semStack)
 				s.Pop("")
+				if s.Top()=="REPTSTART0"{
+					s.Pop("")
+					break
+				}else{
+					continue
+				}
 			} else {
 				s.semStack.mostRecentTokenValue = token.TokenValue
 				if realtype == x {
@@ -135,8 +141,14 @@ func (s *SyntaxanalyzerParser) Parse() {
 						token = lexer.NextToken()
 					}
 					if token == nil {
-						s.Pop("")
-						break
+						//pop reptstart
+						if s.Top()=="REPTSTART0"{
+							s.Pop("")
+							break
+						}else{
+							continue
+						}
+						
 					}
 					realtype = replaceSelf(token.TokenType)
 					
@@ -152,13 +164,16 @@ func (s *SyntaxanalyzerParser) Parse() {
 					s.Push(parseTable[x][realtype])
 				}
 			} else {
+				fmt.Println(x," ",realtype)
 				realtype = s.skipError(*token)
 			}
 		}
 	}
 	if s.Top() != "$" {
+		fmt.Println(s.stack.container)
 		panic("unexpected termination")
 	}
+	s.semStack.dotFile.WriteString("}")
 
 }
 
