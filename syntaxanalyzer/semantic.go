@@ -105,9 +105,10 @@ func init() {
 			panic("unexpected node")
 		}
 		first := container[len(container)-1]
-		ss.writeEdge(id, first.getDiagramID())
 		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
+		}
+		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		localVarNode.AdoptChildren(first)
@@ -306,9 +307,10 @@ func init() {
 		id := getNextID()
 		ss.writeNode(id, ("AParamListNode"))
 		first := container[len(container)-1]
-		ss.writeEdge(id, first.getDiagramID())
 		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
+		}
+		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		paramNode := &paramListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
@@ -521,9 +523,10 @@ func init() {
 		id := getNextID()
 		ss.writeNode(id, ("fParamListNode"))
 		first := container[len(container)-1]
-		ss.writeEdge(id, first.getDiagramID())
 		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i])
+		}
+		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		paramNode := &fparamListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
@@ -612,6 +615,95 @@ func init() {
 		ss.Push(&idNode{identifier: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
 		//ss.writeNode(id, fmt.Sprint("Id|", ss.mostRecentTokenValue))
 	}
+	semanticActions["S41"] = func(ss *semanticStack) {
+		id := getNextID()
+		visibility := ss.mostRecentTokenValue
+		if visibility != "private" && visibility != "public" {
+			visibility = ""
+		}
+		ss.Push(&visibilityNode{identifier: visibility, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.writeNode(id, fmt.Sprint("VisibilityNode|", visibility))
+	}
+	semanticActions["S42"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.writeNode(id, ("localVarNode"))
+		localVarNode := &localVarNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		container := make([]node, 0)
+		switch v := ss.Pop().(type) {
+		case *arraySizeNode:
+			container = append(container, v)
+		case *paramListNode:
+			container = append(container, v)
+		default:
+			panic("unexpected node")
+		}
+		switch v := ss.Pop().(type) {
+		case *typeNode:
+			container = append(container, v)
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		switch v := ss.Pop().(type) {
+		case *idNode:
+			container = append(container, v)
+		default:
+			panic("unexpected node")
+		}
+		switch v := ss.Pop().(type) {
+		case *visibilityNode:
+			container = append(container, v)
+		default:
+			panic("unexpected node")
+		}
+		first := container[len(container)-1]
+		for i := len(container) - 2; i >= 0; i-- {
+			first.MakeSibling(container[i])
+		}
+		for i := 0; i < len(container); i++ {
+			ss.writeEdge(id, container[i].getDiagramID())
+		}
+		localVarNode.AdoptChildren(first)
+		ss.Push(localVarNode)
+	}
+	semanticActions["S43"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.writeNode(id, ("FuncDecl"))
+		funcDecl := &funcDeclNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		typeN := ss.Pop()
+		fParams := ss.Pop()
+		idTok := ss.Pop()
+		visibility := ss.Pop()
+		switch v := typeN.(type) {
+		case *typeNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		switch v := fParams.(type) {
+		case *fparamListNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		switch v := idTok.(type) {
+		case *idNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		switch v := visibility.(type) {
+		case *visibilityNode:
+		default:
+			panic(reflect.TypeOf(v))
+		}
+		fParams.MakeSibling(typeN)
+		idTok.MakeSibling(fParams)
+		visibility.MakeSibling(idTok)
+		funcDecl.AdoptChildren(visibility)
+		ss.Push(funcDecl)
+		ss.writeEdge(funcDecl.getDiagramID(), typeN.getDiagramID())
+		ss.writeEdge(funcDecl.getDiagramID(), fParams.getDiagramID())
+		ss.writeEdge(funcDecl.getDiagramID(), idTok.getDiagramID())
+		ss.writeEdge(funcDecl.getDiagramID(), visibility.getDiagramID())
+
+	}
 
 }
 
@@ -669,6 +761,13 @@ type nodeImplementation struct {
 
 type assignStatNode struct {
 	identifier string
+	*nodeImplementation
+}
+type visibilityNode struct {
+	identifier string
+	*nodeImplementation
+}
+type funcDeclNode struct {
 	*nodeImplementation
 }
 type writeNode struct {
