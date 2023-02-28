@@ -34,7 +34,7 @@ function QUADRATIC::evaluate(x: float) => float
 
 function QUADRATIC::constructor(A: float, B: float, C: float)
 {
-  self.a = A;
+  self.a.b[1][2].c= A;
   self.b = B;
   self.c = C;
 }

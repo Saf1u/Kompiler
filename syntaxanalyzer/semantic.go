@@ -81,7 +81,7 @@ func init() {
 	}
 	semanticActions["S7"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.writeNode(id, ("localVarNode"))
+		ss.writeNode(id, ("localVarDeclNode"))
 		localVarNode := &localVarNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
@@ -626,8 +626,8 @@ func init() {
 	}
 	semanticActions["S42"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.writeNode(id, ("VarNode"))
-		localVarNode := &varNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.writeNode(id, ("ClassVarDeclNode"))
+		VarNode := &ClassVarNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
 		case *arraySizeNode:
@@ -662,8 +662,8 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		localVarNode.AdoptChildren(first)
-		ss.Push(localVarNode)
+		VarNode.AdoptChildren(first)
+		ss.Push(VarNode)
 	}
 	semanticActions["S43"] = func(ss *semanticStack) {
 		id := getNextID()
@@ -757,7 +757,7 @@ func init() {
 
 				container = append(container, val)
 				val = ss.Pop()
-			case *localVarNode:
+			case *ClassVarNode:
 
 				container = append(container, val)
 				val = ss.Pop()
@@ -932,6 +932,9 @@ type noSizeNode struct {
 	*nodeImplementation
 }
 type localVarNode struct {
+	*nodeImplementation
+}
+type ClassVarNode struct {
 	*nodeImplementation
 }
 type intLitNode struct {
