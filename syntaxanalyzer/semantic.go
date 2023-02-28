@@ -626,8 +626,8 @@ func init() {
 	}
 	semanticActions["S42"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.writeNode(id, ("localVarNode"))
-		localVarNode := &localVarNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.writeNode(id, ("VarNode"))
+		localVarNode := &varNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
 		case *arraySizeNode:
@@ -704,6 +704,90 @@ func init() {
 		ss.writeEdge(funcDecl.getDiagramID(), visibility.getDiagramID())
 
 	}
+	semanticActions["S44"] = func(ss *semanticStack) {
+		container := make([]node, 0)
+		cond := true
+		for val := ss.Pop(); cond; {
+			switch val.(type) {
+			case *epsilonNode:
+				cond = false
+			case *idNode:
+
+				container = append(container, val)
+				val = ss.Pop()
+			 default:
+				panic(reflect.TypeOf(val))
+			}
+		}
+		if len(container) == 0 {
+			id := getNextID()
+			ss.writeBlank(id)
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+		}
+		id := getNextID()
+		ss.writeNode(id, ("InheritanceNode"))
+		first := container[len(container)-1]
+		for i := len(container) - 2; i >= 0; i-- {
+			first.MakeSibling(container[i])
+		}
+		for i := 0; i < len(container); i++ {
+			ss.writeEdge(id, container[i].getDiagramID())
+		}
+		inhertitNode := &inheritanceNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		inhertitNode.AdoptChildren(first)
+		ss.Push(inhertitNode)
+
+	}
+	semanticActions["S45"] = func(ss *semanticStack) {
+		paramNode := &classMarkerPseudoNode{ nodeImplementation: &nodeImplementation{}}
+		ss.Push(paramNode)
+	}
+	semanticActions["S46"] = func(ss *semanticStack) {
+		container := make([]node, 0)
+		cond := true
+		for val := ss.Pop(); cond; {
+			switch val.(type) {
+			case *classMarkerPseudoNode:
+				cond = false
+			case *idNode:
+
+				container = append(container, val)
+				val = ss.Pop()
+			case *inheritanceNode:
+
+				container = append(container, val)
+				val = ss.Pop()
+			case *localVarNode:
+
+				container = append(container, val)
+				val = ss.Pop()
+			case *funcDeclNode:
+
+				container = append(container, val)
+				val = ss.Pop()
+			 default:
+				panic(reflect.TypeOf(val))
+			}
+		}
+		if len(container) == 0 {
+			id := getNextID()
+			ss.writeBlank(id)
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+		}
+		id := getNextID()
+		ss.writeNode(id, ("ClassDecl"))
+		first := container[len(container)-1]
+		for i := len(container) - 2; i >= 0; i-- {
+			first.MakeSibling(container[i])
+		}
+		for i := 0; i < len(container); i++ {
+			ss.writeEdge(id, container[i].getDiagramID())
+		}
+		class := &classDecl{nodeImplementation: &nodeImplementation{diagramID: id}}
+		class.AdoptChildren(first)
+		ss.Push(class)
+
+	}
 
 }
 
@@ -763,6 +847,10 @@ type assignStatNode struct {
 	identifier string
 	*nodeImplementation
 }
+
+type classMarkerPseudoNode struct {
+	*nodeImplementation
+}
 type visibilityNode struct {
 	identifier string
 	*nodeImplementation
@@ -770,11 +858,18 @@ type visibilityNode struct {
 type funcDeclNode struct {
 	*nodeImplementation
 }
+type classDecl struct {
+	*nodeImplementation
+}
 type writeNode struct {
 	identifier string
 	*nodeImplementation
 }
 type returnNode struct {
+	identifier string
+	*nodeImplementation
+}
+type inheritanceNode struct {
 	identifier string
 	*nodeImplementation
 }

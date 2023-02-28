@@ -1,15 +1,11 @@
-[blockcmt, /* sort the array */, 1]
-[inlinecmt, //  localvar i    : poly(x.y[3][4][5][5][6][5].z[3][4][5][5][6][5].n[2][3]);, 2]
-[inlinecmt, //poly(make(10+23,9.9,10,a.b[10].c[20][10][11].d).newmake[1][2].oldmake[1],2,make().x.unmake().y[1][3].remake().end), 3]
-[inlinecmt, //run:integer[2][2][],bye:float,hello:red[1][2][][3], 4]
+
+
+
+
 [class, class, 5][id, QUADRATIC, 5][isa, isa, 5][id, POLYNOMIAL, 5][lcurbr, {, 5]
-[public, public, 6][constructor, constructor, 6][colon, :, 6][lpar, (, 6][id, A, 6][colon, :, 6][float, float, 6][comma, ,, 6][id, B, 6][colon, :, 6][float, float, 6][comma, ,, 6][id, C, 6][colon, :, 6][float, float, 6][rpar, ), 6][semi, ;, 6]
-[public, public, 7][function, function, 7][id, evaluate, 7][colon, :, 7][lpar, (, 7][id, x, 7][colon, :, 7][float, float, 7][rpar, ), 7][arrow, =>, 7][float, float, 7][semi, ;, 7]
-[function, function, 8][id, REevaluate, 8][colon, :, 8][lpar, (, 8][id, x, 8][colon, :, 8][float, float, 8][lsqbr, [, 8][intlit, 1, 8][rsqbr, ], 8][lsqbr, [, 8][rsqbr, ], 8][lsqbr, [, 8][intlit, 3, 8][rsqbr, ], 8][rpar, ), 8][arrow, =>, 8][float, float, 8][semi, ;, 8]
-[constructor, constructor, 9][colon, :, 9][lpar, (, 9][id, A, 9][colon, :, 9][float, float, 9][comma, ,, 9][id, B, 9][colon, :, 9][float, float, 9][lsqbr, [, 9][intlit, 1, 9][rsqbr, ], 9][comma, ,, 9][id, C, 9][colon, :, 9][float, float, 9][rpar, ), 9][semi, ;, 9]
-[constructor, constructor, 10][colon, :, 10][lpar, (, 10][rpar, ), 10][semi, ;, 10]
-[rcurbr, }, 11][semi, ;, 11]
 
+[public, public, 7][constructor, constructor, 7][colon, :, 7][lpar, (, 7][id, A, 7][colon, :, 7][float, float, 7][lsqbr, [, 7][intlit, 1, 7][rsqbr, ], 7][lsqbr, [, 7][intlit, 2, 7][rsqbr, ], 7][lsqbr, [, 7][intlit, 3, 7][rsqbr, ], 7][rpar, ), 7][semi, ;, 7]
 
+[rcurbr, }, 9][semi, ;, 9]
 
 

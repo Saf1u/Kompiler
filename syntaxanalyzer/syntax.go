@@ -126,11 +126,15 @@ func (s *SyntaxanalyzerParser) Parse() {
 			if action, exist := semanticActions[x]; exist {
 				action(s.semStack)
 				s.Pop("")
-				if s.Top()=="REPTSTART0"{
-					s.Pop("")
-					break
-				}else{
-					continue
+				if token == nil {
+					//pop reptstart
+					if s.Top()=="REPTSTART0"{
+						s.Pop("")
+						break
+					}else{
+						continue
+					}
+					
 				}
 			} else {
 				s.semStack.mostRecentTokenValue = token.TokenValue
