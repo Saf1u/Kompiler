@@ -177,6 +177,7 @@ func (s *SyntaxanalyzerParser) Parse() {
 		fmt.Println(s.stack.container)
 		panic("unexpected termination")
 	}
+	semanticActions["GROUPACTION"](s.semStack)
 	s.semStack.dotFile.WriteString("}")
 
 }

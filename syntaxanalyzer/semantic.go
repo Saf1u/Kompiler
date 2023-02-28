@@ -715,7 +715,7 @@ func init() {
 
 				container = append(container, val)
 				val = ss.Pop()
-			 default:
+			default:
 				panic(reflect.TypeOf(val))
 			}
 		}
@@ -739,7 +739,7 @@ func init() {
 
 	}
 	semanticActions["S45"] = func(ss *semanticStack) {
-		paramNode := &classMarkerPseudoNode{ nodeImplementation: &nodeImplementation{}}
+		paramNode := &classMarkerPseudoNode{nodeImplementation: &nodeImplementation{}}
 		ss.Push(paramNode)
 	}
 	semanticActions["S46"] = func(ss *semanticStack) {
@@ -765,7 +765,7 @@ func init() {
 
 				container = append(container, val)
 				val = ss.Pop()
-			 default:
+			default:
 				panic(reflect.TypeOf(val))
 			}
 		}
@@ -789,6 +789,48 @@ func init() {
 
 	}
 
+	semanticActions["GROUPACTION"] = func(ss *semanticStack) {
+		id := getNextID()
+		classList := &classListNode{&nodeImplementation{diagramID: id}}
+		ss.writeNode(id, ("ClassList"))
+		id = getNextID()
+		funcList := &funcDeclNode{&nodeImplementation{diagramID: id}}
+		ss.writeNode(id, ("FuncDeflList"))
+		id = getNextID()
+		progNode := &classListNode{&nodeImplementation{diagramID: id}}
+		ss.writeNode(id, ("Prog"))
+		id = getNextID()
+		progBlockNode := &programBlockNode{&nodeImplementation{diagramID: id}}
+		ss.writeNode(id, ("ProgramBlock"))
+		for val := ss.Pop(); val != nil; {
+			switch val.(type) {
+			case *classDecl:
+				ss.writeEdge(classList.getDiagramID(), val.getDiagramID())
+				classList.AdoptChildren(val)
+				val = ss.Pop()
+			case *funcDefNode:
+				panic(reflect.TypeOf(val.getLeftMostChild()))
+				if val.getLeftMostChild().getRightSibling().(*idNode).identifier == "main" {
+					ss.writeEdge(progBlockNode.getDiagramID(), val.getDiagramID())
+					progBlockNode.AdoptChildren(val)
+				} else {
+					ss.writeEdge(funcList.getDiagramID(), val.getDiagramID())
+					funcList.AdoptChildren(val)
+				}
+				val = ss.Pop()
+			default:
+				panic(reflect.TypeOf(val))
+			}
+		}
+		progBlockNode.AdoptChildren(progNode)
+		progNode.AdoptChildren(funcList)
+		progNode.AdoptChildren(classList)
+		ss.writeEdge(progNode.getDiagramID(), classList.getDiagramID())
+		ss.writeEdge(progNode.getDiagramID(), funcList.getDiagramID())
+		ss.writeEdge(progNode.getDiagramID(), progBlockNode.getDiagramID())
+
+	}
+
 }
 
 type semanticStack struct {
@@ -808,6 +850,9 @@ func (s *semanticStack) Push(n node) {
 }
 
 func (s *semanticStack) Pop() node {
+	if len(s.container) == 0 {
+		return nil
+	}
 	n := s.container[len(s.container)-1]
 	s.container = s.container[0 : len(s.container)-1]
 	return n
@@ -826,6 +871,7 @@ type node interface {
 	MakeSibling(node)
 	getRightSibling() node
 	getLeftMostSibling() node
+	getLeftMostChild() node
 	getParent() node
 	setRightSibling(node)
 	setLeftSibling(node)
@@ -878,7 +924,16 @@ type ifStatementNode struct {
 type whileStatementNode struct {
 	*nodeImplementation
 }
+type classListNode struct {
+	*nodeImplementation
+}
+type funcDefListNode struct {
+	*nodeImplementation
+}
 type funcDefNode struct {
+	*nodeImplementation
+}
+type programBlockNode struct {
 	*nodeImplementation
 }
 
@@ -992,6 +1047,9 @@ func (i *nodeImplementation) getRightSibling() node {
 }
 func (i *nodeImplementation) getParent() node {
 	return i.parent
+}
+func (i *nodeImplementation) getLeftMostChild() node {
+	return i.leftmostChild
 }
 func (i *nodeImplementation) getLeftMostSibling() node {
 	if i.leftmostSibling == nil {
