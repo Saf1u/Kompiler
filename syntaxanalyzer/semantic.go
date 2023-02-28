@@ -117,7 +117,7 @@ func init() {
 	semanticActions["S8"] = func(ss *semanticStack) {
 		id := getNextID()
 		dot := &dotNode{nodeImplementation: &nodeImplementation{diagramID: id}}
-		ss.writeNode(id, fmt.Sprint("DotNode|"))
+		ss.writeNode(id, ("DotNode"))
 		term := ss.Pop()
 		termb := ss.Pop()
 		termb.MakeSibling(term)
@@ -179,7 +179,7 @@ func init() {
 		varN := &varNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		indiceList.MakeSibling(idTok)
 		varN.AdoptChildren(indiceList)
-		ss.writeNode(id, fmt.Sprint("VarNode|"))
+		ss.writeNode(id, ("VarNode"))
 		ss.writeEdge(varN.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(varN.getDiagramID(), idTok.getDiagramID())
 		ss.Push(varN)
@@ -203,7 +203,7 @@ func init() {
 		funcCall := &functionCall{nodeImplementation: &nodeImplementation{diagramID: id}}
 		indiceList.MakeSibling(idTok)
 		funcCall.AdoptChildren(indiceList)
-		ss.writeNode(id, fmt.Sprint("funcCall|"))
+		ss.writeNode(id, ("funcCall"))
 		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(funcCall.getDiagramID(), idTok.getDiagramID())
 		ss.Push(funcCall)
@@ -222,7 +222,7 @@ func init() {
 	semanticActions["S14"] = func(ss *semanticStack) {
 		factor := ss.Pop()
 		id := getNextID()
-		ss.writeNode(id, fmt.Sprint("NotNode|"))
+		ss.writeNode(id, ("NotNode"))
 		ss.writeEdge(id, factor.getDiagramID())
 		not := &notNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		not.AdoptChildren(factor)
@@ -387,7 +387,7 @@ func init() {
 		varN := &varNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		indiceList.MakeSibling(idTok)
 		varN.AdoptChildren(indiceList)
-		ss.writeNode(id, fmt.Sprint("VarNode|"))
+		ss.writeNode(id, ("VarNode"))
 		ss.writeEdge(varN.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(varN.getDiagramID(), idTok.getDiagramID())
 		ss.Push(varN)
@@ -406,7 +406,7 @@ func init() {
 		funcCall := &functionCall{nodeImplementation: &nodeImplementation{diagramID: id}}
 		indiceList.MakeSibling(idTok)
 		funcCall.AdoptChildren(indiceList)
-		ss.writeNode(id, fmt.Sprint("funcCall|"))
+		ss.writeNode(id, ("funcCall"))
 		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(funcCall.getDiagramID(), idTok.getDiagramID())
 		ss.Push(funcCall)
@@ -600,15 +600,15 @@ func init() {
 	}
 	semanticActions["S38"] = func(ss *semanticStack) {
 		scopeId := getNextID()
-		ss.writeNode(scopeId, ("scopeNode"))
+		ss.writeNode(scopeId, ("scopeNode| "))
 		scope := &idNode{nodeImplementation: &nodeImplementation{diagramID: scopeId}, identifier: ""}
 		ss.Push(scope)
 	}
 	semanticActions["S39"] = func(ss *semanticStack) {
-		scopeId := getNextID()
-		ss.writeNode(scopeId, ("typeNode"))
-		scope := &typeNode{nodeImplementation: &nodeImplementation{diagramID: scopeId}, typeName: ""}
-		ss.Push(scope)
+		Id := getNextID()
+		ss.writeNode(Id, ("typeNode| "))
+		typeN := &typeNode{nodeImplementation: &nodeImplementation{diagramID: Id}, typeName: ""}
+		ss.Push(typeN)
 	}
 	semanticActions["S40"] = func(ss *semanticStack) {
 		id := getNextID()
@@ -844,7 +844,6 @@ type nodeImplementation struct {
 }
 
 type assignStatNode struct {
-	identifier string
 	*nodeImplementation
 }
 
@@ -862,31 +861,24 @@ type classDecl struct {
 	*nodeImplementation
 }
 type writeNode struct {
-	identifier string
 	*nodeImplementation
 }
 type returnNode struct {
-	identifier string
 	*nodeImplementation
 }
 type inheritanceNode struct {
-	identifier string
 	*nodeImplementation
 }
 type statBlockNode struct {
-	identifier string
 	*nodeImplementation
 }
 type ifStatementNode struct {
-	identifier string
 	*nodeImplementation
 }
 type whileStatementNode struct {
-	identifier string
 	*nodeImplementation
 }
 type funcDefNode struct {
-	identifier string
 	*nodeImplementation
 }
 
@@ -958,11 +950,9 @@ type multNode struct {
 	*nodeImplementation
 }
 type functionCall struct {
-	value string
 	*nodeImplementation
 }
 type varNode struct {
-	value string
 	*nodeImplementation
 }
 

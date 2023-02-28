@@ -1,13 +1,13 @@
 
 
 [class, class, 3][id, LINEAR, 3][isa, isa, 3][id, POLYNOMIAL, 3][lcurbr, {, 3]
-[private, private, 4][attribute, attribute, 4][id, a, 4][colon, :, 4][float, float, 4][semi, ;, 4]
+[attribute, attribute, 4][id, a, 4][colon, :, 4][float, float, 4][semi, ;, 4]
 [private, private, 5][attribute, attribute, 5][id, b, 5][colon, :, 5][float, float, 5][semi, ;, 5]
 [public, public, 6][constructor, constructor, 6][colon, :, 6][lpar, (, 6][id, A, 6][colon, :, 6][float, float, 6][comma, ,, 6][id, B, 6][colon, :, 6][float, float, 6][rpar, ), 6][semi, ;, 6]
 [public, public, 7][function, function, 7][id, evaluate, 7][colon, :, 7][lpar, (, 7][id, x, 7][colon, :, 7][float, float, 7][rpar, ), 7][arrow, =>, 7][float, float, 7][semi, ;, 7]
 [rcurbr, }, 8][semi, ;, 8]
 
-[class, class, 10][id, QUADRATIC, 10][isa, isa, 10][id, POLYNOMIAL, 10][lcurbr, {, 10]
+[class, class, 10][id, QUADRATIC, 10][lcurbr, {, 10]
 [private, private, 11][attribute, attribute, 11][id, a, 11][colon, :, 11][float, float, 11][semi, ;, 11]
 [private, private, 12][attribute, attribute, 12][id, b, 12][colon, :, 12][float, float, 12][semi, ;, 12]
 [private, private, 13][attribute, attribute, 13][id, c, 13][colon, :, 13][float, float, 13][semi, ;, 13]

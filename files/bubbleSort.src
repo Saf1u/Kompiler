@@ -1,13 +1,13 @@
 
 
 class LINEAR isa POLYNOMIAL {
-  private attribute a: float;
+   attribute a: float;
   private attribute b: float;
   public  constructor: (A: float, B: float);
   public  function evaluate: (x: float) => float;
 };
 
-class QUADRATIC isa POLYNOMIAL {
+class QUADRATIC {
   private attribute a: float;
   private attribute b: float;
   private attribute c: float;
