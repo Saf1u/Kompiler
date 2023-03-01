@@ -41,6 +41,17 @@ func init() {
 		ss.writeNode(id, "NoSize|")
 
 	}
+	semanticActions["S5X"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.Push(&dimNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.writeNode(id, fmt.Sprint("DimNode|", ss.mostRecentTokenValue))
+	}
+	semanticActions["S4X"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.Push(&dimNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.writeNode(id, fmt.Sprint("DimNode|", ""))
+
+	}
 	semanticActions["S5"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.Push(&intLitNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
@@ -75,7 +86,7 @@ func init() {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		arrNode := &dimListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
-		arrNode.AdoptChildren(first,arrNode)
+		arrNode.AdoptChildren(first, arrNode)
 		ss.Push(arrNode)
 
 	}
@@ -111,7 +122,7 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		localVarNode.AdoptChildren(first,localVarNode)
+		localVarNode.AdoptChildren(first, localVarNode)
 		ss.Push(localVarNode)
 	}
 	semanticActions["S8"] = func(ss *semanticStack) {
@@ -121,7 +132,7 @@ func init() {
 		term := ss.Pop()
 		termb := ss.Pop()
 		termb.MakeSibling(term, termb)
-		dot.AdoptChildren(termb,dot)
+		dot.AdoptChildren(termb, dot)
 		ss.Push(dot)
 		ss.writeEdge(dot.getDiagramID(), term.getDiagramID())
 		ss.writeEdge(dot.getDiagramID(), termb.getDiagramID())
@@ -145,7 +156,7 @@ func init() {
 			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
-		ss.writeNode(id, ("DimList"))
+		ss.writeNode(id, ("IndiceList"))
 		//red[1][2][]
 		//[][2][1]
 
@@ -156,15 +167,15 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		arrNode := &dimListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
-		arrNode.AdoptChildren(first,arrNode)
+		arrNode := &indiceListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		arrNode.AdoptChildren(first, arrNode)
 		ss.Push(arrNode)
 
 	}
 	semanticActions["S10"] = func(ss *semanticStack) {
 		indiceList := ss.Pop()
 		switch v := indiceList.(type) {
-		case *dimListNode:
+		case *indiceListNode:
 		default:
 			panic(reflect.TypeOf(v))
 		}
@@ -178,7 +189,7 @@ func init() {
 		id := getNextID()
 		varN := &varNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		indiceList.MakeSibling(idTok, indiceList)
-		varN.AdoptChildren(indiceList,varN)
+		varN.AdoptChildren(indiceList, varN)
 		ss.writeNode(id, ("VarNode"))
 		ss.writeEdge(varN.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(varN.getDiagramID(), idTok.getDiagramID())
@@ -202,7 +213,7 @@ func init() {
 		id := getNextID()
 		funcCall := &functionCall{nodeImplementation: &nodeImplementation{diagramID: id}}
 		indiceList.MakeSibling(idTok, indiceList)
-		funcCall.AdoptChildren(indiceList,funcCall)
+		funcCall.AdoptChildren(indiceList, funcCall)
 		ss.writeNode(id, ("funcCall"))
 		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(funcCall.getDiagramID(), idTok.getDiagramID())
@@ -225,14 +236,14 @@ func init() {
 		ss.writeNode(id, ("NotNode"))
 		ss.writeEdge(id, factor.getDiagramID())
 		not := &notNode{nodeImplementation: &nodeImplementation{diagramID: id}}
-		not.AdoptChildren(factor,not)
+		not.AdoptChildren(factor, not)
 		ss.Push(not)
 	}
 	semanticActions["S15"] = func(ss *semanticStack) {
 		factor := ss.Pop()
 		sign := ss.Pop()
 		ss.writeEdge(sign.getDiagramID(), factor.getDiagramID())
-		sign.AdoptChildren(factor,sign)
+		sign.AdoptChildren(factor, sign)
 		ss.Push(sign)
 	}
 	semanticActions["S16"] = func(ss *semanticStack) {
@@ -264,7 +275,7 @@ func init() {
 		}
 
 		termb.MakeSibling(term, termb)
-		add.AdoptChildren(termb,add)
+		add.AdoptChildren(termb, add)
 		ss.Push(add)
 		ss.writeEdge(add.getDiagramID(), term.getDiagramID())
 		ss.writeEdge(add.getDiagramID(), termb.getDiagramID())
@@ -280,7 +291,7 @@ func init() {
 			panic(reflect.TypeOf(v))
 		}
 		termb.MakeSibling(term, termb)
-		mult.AdoptChildren(termb,mult)
+		mult.AdoptChildren(termb, mult)
 		ss.Push(mult)
 		ss.writeEdge(mult.getDiagramID(), term.getDiagramID())
 		ss.writeEdge(mult.getDiagramID(), termb.getDiagramID())
@@ -314,7 +325,7 @@ func init() {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		paramNode := &paramListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
-		paramNode.AdoptChildren(first,paramNode)
+		paramNode.AdoptChildren(first, paramNode)
 		ss.Push(paramNode)
 
 	}
@@ -338,7 +349,7 @@ func init() {
 			panic(reflect.TypeOf(v))
 		}
 		relexprb.MakeSibling(relexpra, relexprb)
-		relNode.AdoptChildren(relexprb,relNode)
+		relNode.AdoptChildren(relexprb, relNode)
 		ss.Push(relNode)
 		ss.writeEdge(relNode.getDiagramID(), relexpra.getDiagramID())
 		ss.writeEdge(relNode.getDiagramID(), relexprb.getDiagramID())
@@ -357,7 +368,7 @@ func init() {
 		default:
 			panic(reflect.TypeOf(v))
 		}
-		readstatNode.AdoptChildren(varNode,readstatNode)
+		readstatNode.AdoptChildren(varNode, readstatNode)
 		ss.Push(readstatNode)
 		ss.writeEdge(readstatNode.getDiagramID(), varNode.getDiagramID())
 	}
@@ -367,8 +378,8 @@ func init() {
 		id := getNextID()
 		assignNode := &assignStatNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		ss.writeNode(id, ("assignStat"))
-		identifier.AdoptChildren(expr,identifier)
-		assignNode.AdoptChildren(identifier,assignNode)
+		identifier.AdoptChildren(expr, identifier)
+		assignNode.AdoptChildren(identifier, assignNode)
 		ss.Push(assignNode)
 		ss.writeEdge(assignNode.getDiagramID(), expr.getDiagramID())
 		ss.writeEdge(assignNode.getDiagramID(), identifier.getDiagramID())
@@ -376,7 +387,7 @@ func init() {
 	semanticActions["S28"] = func(ss *semanticStack) {
 		indiceList := ss.Pop()
 		switch v := indiceList.(type) {
-		case *dimListNode:
+		case *indiceListNode:
 		default:
 			panic(reflect.TypeOf(v))
 		}
@@ -386,7 +397,7 @@ func init() {
 		id := getNextID()
 		varN := &varNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		indiceList.MakeSibling(idTok, indiceList)
-		varN.AdoptChildren(indiceList,varN)
+		varN.AdoptChildren(indiceList, varN)
 		ss.writeNode(id, ("VarNode"))
 		ss.writeEdge(varN.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(varN.getDiagramID(), idTok.getDiagramID())
@@ -405,7 +416,7 @@ func init() {
 		id := getNextID()
 		funcCall := &functionCall{nodeImplementation: &nodeImplementation{diagramID: id}}
 		indiceList.MakeSibling(idTok, indiceList)
-		funcCall.AdoptChildren(indiceList,funcCall)
+		funcCall.AdoptChildren(indiceList, funcCall)
 		ss.writeNode(id, ("funcCall"))
 		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(funcCall.getDiagramID(), idTok.getDiagramID())
@@ -417,7 +428,7 @@ func init() {
 		write := &writeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		ss.writeNode(id, ("WriteStatementNode"))
 		varNode := ss.Pop()
-		write.AdoptChildren(varNode,write)
+		write.AdoptChildren(varNode, write)
 		ss.Push(write)
 		ss.writeEdge(write.getDiagramID(), varNode.getDiagramID())
 	}
@@ -427,7 +438,7 @@ func init() {
 		ret := &returnNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		ss.writeNode(id, ("ReturnStatementNode"))
 		varNode := ss.Pop()
-		ret.AdoptChildren(varNode,ret)
+		ret.AdoptChildren(varNode, ret)
 		ss.Push(ret)
 		ss.writeEdge(ret.getDiagramID(), varNode.getDiagramID())
 	}
@@ -458,7 +469,7 @@ func init() {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		paramNode := &statBlockNode{nodeImplementation: &nodeImplementation{diagramID: id}}
-		paramNode.AdoptChildren(first,paramNode)
+		paramNode.AdoptChildren(first, paramNode)
 		ss.Push(paramNode)
 	}
 	semanticActions["S33"] = func(ss *semanticStack) {
@@ -480,7 +491,7 @@ func init() {
 		}
 		statBlockb.MakeSibling(statBlocka, statBlockb)
 		relExpr.MakeSibling(statBlockb, relExpr)
-		ifNode.AdoptChildren(relExpr,ifNode)
+		ifNode.AdoptChildren(relExpr, ifNode)
 		ss.Push(ifNode)
 		ss.writeEdge(ifNode.getDiagramID(), statBlocka.getDiagramID())
 		ss.writeEdge(ifNode.getDiagramID(), statBlockb.getDiagramID())
@@ -498,7 +509,7 @@ func init() {
 			panic(reflect.TypeOf(v))
 		}
 		relExpr.MakeSibling(statBlocka, relExpr)
-		whileNode.AdoptChildren(relExpr,whileNode)
+		whileNode.AdoptChildren(relExpr, whileNode)
 		ss.Push(whileNode)
 		ss.writeEdge(whileNode.getDiagramID(), statBlocka.getDiagramID())
 		ss.writeEdge(whileNode.getDiagramID(), relExpr.getDiagramID())
@@ -530,7 +541,7 @@ func init() {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		paramNode := &fparamListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
-		paramNode.AdoptChildren(first,paramNode)
+		paramNode.AdoptChildren(first, paramNode)
 		ss.Push(paramNode)
 
 	}
@@ -582,7 +593,7 @@ func init() {
 		fParams.MakeSibling(typeN, fParams)
 		idTok.MakeSibling(fParams, idTok)
 		scope.MakeSibling(idTok, scope)
-		funcNode.AdoptChildren(scope,funcNode)
+		funcNode.AdoptChildren(scope, funcNode)
 		ss.Push(funcNode)
 		ss.writeEdge(funcNode.getDiagramID(), statBlock.getDiagramID())
 		ss.writeEdge(funcNode.getDiagramID(), typeN.getDiagramID())
@@ -662,7 +673,7 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		VarNode.AdoptChildren(first,VarNode)
+		VarNode.AdoptChildren(first, VarNode)
 		ss.Push(VarNode)
 	}
 	semanticActions["S43"] = func(ss *semanticStack) {
@@ -696,7 +707,7 @@ func init() {
 		fParams.MakeSibling(typeN, fParams)
 		idTok.MakeSibling(fParams, idTok)
 		visibility.MakeSibling(idTok, visibility)
-		funcDecl.AdoptChildren(visibility,funcDecl)
+		funcDecl.AdoptChildren(visibility, funcDecl)
 		ss.Push(funcDecl)
 		ss.writeEdge(funcDecl.getDiagramID(), typeN.getDiagramID())
 		ss.writeEdge(funcDecl.getDiagramID(), fParams.getDiagramID())
@@ -734,7 +745,7 @@ func init() {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		inhertitNode := &inheritanceNode{nodeImplementation: &nodeImplementation{diagramID: id}}
-		inhertitNode.AdoptChildren(first,inhertitNode)
+		inhertitNode.AdoptChildren(first, inhertitNode)
 		ss.Push(inhertitNode)
 
 	}
@@ -784,7 +795,7 @@ func init() {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
 		class := &classDecl{nodeImplementation: &nodeImplementation{diagramID: id}}
-		class.AdoptChildren(first,class)
+		class.AdoptChildren(first, class)
 		ss.Push(class)
 
 	}
@@ -806,25 +817,25 @@ func init() {
 			switch val.(type) {
 			case *classDecl:
 				ss.writeEdge(classList.getDiagramID(), val.getDiagramID())
-				classList.AdoptChildren(val,classList)
+				classList.AdoptChildren(val, classList)
 				val = ss.Pop()
 			case *funcDefNode:
 				// panic(reflect.TypeOf(val.getLeftMostChild().getRightSibling()))
 				if val.getLeftMostChild().getRightSibling().(*idNode).identifier == "main" {
 					ss.writeEdge(progBlockNode.getDiagramID(), val.getDiagramID())
-					progBlockNode.AdoptChildren(val,progBlockNode)
+					progBlockNode.AdoptChildren(val, progBlockNode)
 				} else {
 					ss.writeEdge(funcList.getDiagramID(), val.getDiagramID())
-					funcList.AdoptChildren(val,funcList)
+					funcList.AdoptChildren(val, funcList)
 				}
 				val = ss.Pop()
 			default:
 				panic(reflect.TypeOf(val))
 			}
 		}
-		progBlockNode.AdoptChildren(progNode,progBlockNode)
-		progNode.AdoptChildren(funcList,progNode)
-		progNode.AdoptChildren(classList,progNode)
+		progBlockNode.AdoptChildren(progNode, progBlockNode)
+		progNode.AdoptChildren(funcList, progNode)
+		progNode.AdoptChildren(classList, progNode)
 		ss.writeEdge(progNode.getDiagramID(), classList.getDiagramID())
 		ss.writeEdge(progNode.getDiagramID(), funcList.getDiagramID())
 		ss.writeEdge(progNode.getDiagramID(), progBlockNode.getDiagramID())
@@ -876,7 +887,7 @@ type node interface {
 	setRightSibling(node)
 	setLeftSibling(node)
 	setParent(node)
-	AdoptChildren(node,node)
+	AdoptChildren(node, node)
 	getDiagramID() string
 }
 
@@ -959,6 +970,9 @@ type fparamListNode struct {
 type dimListNode struct {
 	*nodeImplementation
 }
+type indiceListNode struct {
+	*nodeImplementation
+}
 type epsilonNode struct {
 	*nodeImplementation
 }
@@ -985,6 +999,10 @@ type ClassVarNode struct {
 	*nodeImplementation
 }
 type intLitNode struct {
+	value string
+	*nodeImplementation
+}
+type dimNode struct {
 	value string
 	*nodeImplementation
 }
@@ -1027,7 +1045,7 @@ func (i *nodeImplementation) MakeSibling(y node, current node) {
 	}
 
 }
-func (i *nodeImplementation) AdoptChildren(y node,self node) {
+func (i *nodeImplementation) AdoptChildren(y node, self node) {
 	if i.leftmostChild != nil {
 		i.leftmostChild.MakeSibling(y, i.leftmostChild)
 	} else {

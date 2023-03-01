@@ -34,7 +34,7 @@
 
 [function, function, 35][id, QUADRATIC, 35][sr, ::, 35][constructor, constructor, 35][lpar, (, 35][id, A, 35][colon, :, 35][float, float, 35][comma, ,, 35][id, B, 35][colon, :, 35][float, float, 35][comma, ,, 35][id, C, 35][colon, :, 35][float, float, 35][rpar, ), 35]
 [lcurbr, {, 36]
-[self, self, 37][dot, ., 37][id, a, 37][dot, ., 37][id, b, 37][lsqbr, [, 37][intlit, 1, 37][rsqbr, ], 37][lsqbr, [, 37][intlit, 2, 37][rsqbr, ], 37][dot, ., 37][id, c, 37][equal, =, 37][id, A, 37][semi, ;, 37]
+[self, self, 37][dot, ., 37][id, a, 37][dot, ., 37][id, b, 37][lsqbr, [, 37][intlit, 1, 37][rsqbr, ], 37][lsqbr, [, 37][intlit, 2, 37][mult, *, 37][intlit, 3, 37][plus, +, 37][intlit, 3, 37][rsqbr, ], 37][dot, ., 37][id, c, 37][equal, =, 37][id, A, 37][semi, ;, 37]
 [self, self, 38][dot, ., 38][id, b, 38][equal, =, 38][id, B, 38][semi, ;, 38]
 [self, self, 39][dot, ., 39][id, c, 39][equal, =, 39][id, C, 39][semi, ;, 39]
 [rcurbr, }, 40]
