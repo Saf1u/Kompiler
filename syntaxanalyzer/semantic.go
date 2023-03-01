@@ -35,12 +35,12 @@ func init() {
 		id := getNextID()
 		ss.Push(&epsilonNode{nodeImplementation: &nodeImplementation{diagramID: id}})
 	}
-	semanticActions["S4"] = func(ss *semanticStack) {
-		id := getNextID()
-		ss.Push(&noSizeNode{nodeImplementation: &nodeImplementation{diagramID: id}})
-		ss.writeNode(id, "NoSize|")
+	// semanticActions["S4"] = func(ss *semanticStack) {
+	// 	id := getNextID()
+	// 	ss.Push(&noSizeNode{nodeImplementation: &nodeImplementation{diagramID: id}})
+	// 	ss.writeNode(id, "NoSize|")
 
-	}
+	// }
 	semanticActions["S5X"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.Push(&dimNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})

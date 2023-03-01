@@ -32,9 +32,9 @@ function QUADRATIC::evaluate(x: float) => float
   return (result);
 }
 
-function QUADRATIC::constructor(A: float, B: float, C: float)
+function QUADRATIC::constructor(A: float[][][], B: float, C: float)
 {
-  self.a.b[1][2*3+3].c= A;
+  var[2 * (0+5-6)][2][5].func().arr[5].value.otherFunc(5.6*8.4/(4.2-6.3));
   self.b = B;
   self.c = C;
 }
