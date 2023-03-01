@@ -65,7 +65,7 @@ func init() {
 			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
-		ss.writeNode(id, ("ArraySizeNode"))
+		ss.writeNode(id, ("DimList"))
 		first := container[len(container)-1]
 		for i := len(container) - 2; i >= 0; i-- {
 			first.MakeSibling(container[i], first)
@@ -74,7 +74,7 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		arrNode := &arraySizeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		arrNode := &dimListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		arrNode.AdoptChildren(first,arrNode)
 		ss.Push(arrNode)
 
@@ -85,7 +85,7 @@ func init() {
 		localVarNode := &localVarNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
-		case *arraySizeNode:
+		case *dimListNode:
 			container = append(container, v)
 		case *paramListNode:
 			container = append(container, v)
@@ -145,7 +145,7 @@ func init() {
 			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
-		ss.writeNode(id, ("ArraySizeNode"))
+		ss.writeNode(id, ("DimList"))
 		//red[1][2][]
 		//[][2][1]
 
@@ -156,7 +156,7 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		arrNode := &arraySizeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		arrNode := &dimListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		arrNode.AdoptChildren(first,arrNode)
 		ss.Push(arrNode)
 
@@ -164,7 +164,7 @@ func init() {
 	semanticActions["S10"] = func(ss *semanticStack) {
 		indiceList := ss.Pop()
 		switch v := indiceList.(type) {
-		case *arraySizeNode:
+		case *dimListNode:
 		default:
 			panic(reflect.TypeOf(v))
 		}
@@ -376,7 +376,7 @@ func init() {
 	semanticActions["S28"] = func(ss *semanticStack) {
 		indiceList := ss.Pop()
 		switch v := indiceList.(type) {
-		case *arraySizeNode:
+		case *dimListNode:
 		default:
 			panic(reflect.TypeOf(v))
 		}
@@ -630,7 +630,7 @@ func init() {
 		VarNode := &ClassVarNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
-		case *arraySizeNode:
+		case *dimListNode:
 			container = append(container, v)
 		case *paramListNode:
 			container = append(container, v)
@@ -956,7 +956,7 @@ type paramListNode struct {
 type fparamListNode struct {
 	*nodeImplementation
 }
-type arraySizeNode struct {
+type dimListNode struct {
 	*nodeImplementation
 }
 type epsilonNode struct {
