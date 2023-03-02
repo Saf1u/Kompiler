@@ -137,7 +137,7 @@ func (s *SyntaxanalyzerParser) Parse() {
 					
 				}
 			} else {
-				s.semStack.mostRecentTokenValue = token.TokenValue
+				s.semStack.mostRecentTokenValue = *token
 				if realtype == x {
 					s.Pop(token.TokenValue)
 					token = lexer.NextToken()

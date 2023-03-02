@@ -1,6 +1,7 @@
 package syntaxanalyzer
 
 import (
+	"compiler/lexer"
 	"fmt"
 	"os"
 	"reflect"
@@ -21,14 +22,14 @@ func init() {
 	semanticActions = make(map[string]func(*semanticStack))
 	semanticActions["S1"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&idNode{identifier: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
-		ss.writeNode(id, fmt.Sprint("Id|", ss.mostRecentTokenValue))
+		ss.Push(&idNode{identifier: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.writeNode(id, fmt.Sprint("Id|", ss.mostRecentTokenValue.TokenValue))
 
 	}
 	semanticActions["S2"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&typeNode{typeName: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
-		ss.writeNode(id, fmt.Sprint("type|", ss.mostRecentTokenValue))
+		ss.Push(&typeNode{typeName: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.writeNode(id, fmt.Sprint("type|", ss.mostRecentTokenValue.TokenValue))
 
 	}
 	semanticActions["S3"] = func(ss *semanticStack) {
@@ -43,19 +44,19 @@ func init() {
 	// }
 	semanticActions["S5X"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&dimNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
-		ss.writeNode(id, fmt.Sprint("DimNode|", ss.mostRecentTokenValue))
+		ss.Push(&dimNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.writeNode(id, fmt.Sprint("DimNode|", ss.mostRecentTokenValue.TokenValue))
 	}
 	semanticActions["S4X"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&dimNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.Push(&dimNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		ss.writeNode(id, fmt.Sprint("DimNode|", ""))
 
 	}
 	semanticActions["S5"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&intLitNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
-		ss.writeNode(id, fmt.Sprint("IntLit|", ss.mostRecentTokenValue))
+		ss.Push(&intLitNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.writeNode(id, fmt.Sprint("IntLit|", ss.mostRecentTokenValue.TokenValue))
 	}
 
 	semanticActions["S6"] = func(ss *semanticStack) {
@@ -223,8 +224,8 @@ func init() {
 
 	semanticActions["S13"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&floatNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
-		ss.writeNode(id, fmt.Sprint("FloatLit|", ss.mostRecentTokenValue))
+		ss.Push(&floatNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber:ss.mostRecentTokenValue.LineNumber}})
+		ss.writeNode(id, fmt.Sprint("FloatLit|", ss.mostRecentTokenValue.TokenValue))
 
 	}
 	semanticActions["S12"] = func(ss *semanticStack) {
@@ -248,20 +249,20 @@ func init() {
 	}
 	semanticActions["S16"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.writeNode(id, fmt.Sprint("SignNode|", ss.mostRecentTokenValue))
-		sign := &signNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.writeNode(id, fmt.Sprint("SignNode|", ss.mostRecentTokenValue.TokenValue))
+		sign := &signNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}}
 		ss.Push(sign)
 	}
 	semanticActions["S20"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.writeNode(id, fmt.Sprint("addNode|", ss.mostRecentTokenValue))
-		add := &addNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.writeNode(id, fmt.Sprint("addNode|", ss.mostRecentTokenValue.TokenValue))
+		add := &addNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}}
 		ss.Push(add)
 	}
 	semanticActions["S18"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.writeNode(id, fmt.Sprint("multNode|", ss.mostRecentTokenValue))
-		mul := &multNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}}
+		ss.writeNode(id, fmt.Sprint("multNode|", ss.mostRecentTokenValue.TokenValue))
+		mul := &multNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}}
 		ss.Push(mul)
 	}
 	semanticActions["S21"] = func(ss *semanticStack) {
@@ -331,11 +332,11 @@ func init() {
 	}
 	semanticActions["S23"] = func(ss *semanticStack) {
 		id := getNextID()
-		paramNode := &relOpNode{value: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}}
+		paramNode := &relOpNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}}
 		ss.Push(paramNode)
 		val := fmt.Sprint("relOpNode|", "neq")
-		if ss.mostRecentTokenValue != "<>" {
-			val = fmt.Sprint("relOpNode|\\", ss.mostRecentTokenValue)
+		if ss.mostRecentTokenValue.TokenValue != "<>" {
+			val = fmt.Sprint("relOpNode|\\", ss.mostRecentTokenValue.TokenValue)
 		}
 		ss.writeNode(id, val)
 	}
@@ -623,12 +624,12 @@ func init() {
 	}
 	semanticActions["S40"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&idNode{identifier: ss.mostRecentTokenValue, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.Push(&idNode{identifier: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id,lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		//ss.writeNode(id, fmt.Sprint("Id|", ss.mostRecentTokenValue))
 	}
 	semanticActions["S41"] = func(ss *semanticStack) {
 		id := getNextID()
-		visibility := ss.mostRecentTokenValue
+		visibility := ss.mostRecentTokenValue.TokenValue
 		if visibility != "private" && visibility != "public" {
 			visibility = ""
 		}
@@ -846,7 +847,7 @@ func init() {
 
 type semanticStack struct {
 	container            []node
-	mostRecentTokenValue string
+	mostRecentTokenValue lexer.Token
 	dotFile              *os.File
 }
 
@@ -987,9 +988,6 @@ type relOpNode struct {
 	value string
 }
 type readStatementNode struct {
-	*nodeImplementation
-}
-type noSizeNode struct {
 	*nodeImplementation
 }
 type localVarNode struct {
