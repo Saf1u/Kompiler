@@ -178,7 +178,9 @@ func init() {
 		idTok := ss.Pop()
 		switch v := idTok.(type) {
 		case *idNode:
+		case *dotNode:
 		default:
+			fmt.Println(ss.mostRecentTokenValue.TokenValue)
 			panic(reflect.TypeOf(v))
 		}
 		id := getNextID()

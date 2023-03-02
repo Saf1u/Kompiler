@@ -1,72 +1,9 @@
 
-
-class LINEAR isa POLYNOMIAL {
-   attribute a: float;
-  private attribute b: float;
-  public  constructor: (A: float, B: float);
-  public  function evaluate: (x: float) => float;
-};
-
-class QUADRATIC {
-  private attribute a: float;
-  private attribute b: float;
-  private attribute c: float;
-  public  constructor: (A: float[1][2][3], B: float, C: float);
-  public  function evaluate: (x: float) => float;
-};
-
-// ====== member function implementations ====== //  
-function POLYNOMIAL::evaluate(x: float) => float
-{
-  return (0);
-}
-
-function QUADRATIC::evaluate(x: float) => float
-{
-  localvar result: float;
-  //Using Horner's method
-  result = a;
-  aha =x;
-  result = result * x + b;
-  result = result * x + c;
-  return (result);
-}
-
-function QUADRATIC::constructor(A: float[][][], B: float, C: float)
-{
-  var[2 * (0+5-6)][2][5].func().arr[5].value.otherFunc(5.6*8.4/(4.2-6.3));
-  self.b = B;
-  self.c = C;
-}
-
-function LINEAR::constructor(A: float, B: float) 
-{
-  self.a = A;
-  self.b = B;
-}
-
-function LINEAR::evaluate(x: float) => float 
-{
-  localvar result: float;
-  result = 0.0;
-  result = a * x + b;
-  return (result);
-}
- 
 // ====== main ====== //
 function main() => void
 {
-  localvar f1: LINEAR(2, 3.5);
-  localvar f2: QUADRATIC(-2.0, 1.0, 0.0);
-  localvar counter: integer ;	
-  counter = id.id.id.id;
-
-  while(counter <= 10)
-  {
-    write(counter);
-    write(f1.evaluate(counter));
-    write(f2.evaluate(counter));
-  };
+  a.b.c();
+  id=a.b.c()*2;
 }
 
 
