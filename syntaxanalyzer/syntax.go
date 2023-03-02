@@ -168,7 +168,7 @@ func (s *SyntaxanalyzerParser) Parse() {
 					s.Push(parseTable[x][realtype])
 				}
 			} else {
-				fmt.Println(x," ",realtype)
+				//fmt.Println(x," ",realtype)
 				realtype = s.skipError(*token)
 			}
 		}
