@@ -375,8 +375,8 @@ func init() {
 		id := getNextID()
 		assignNode := &assignStatNode{nodeImplementation: &nodeImplementation{diagramID: id}}
 		ss.writeNode(id, ("assignStat"))
-		identifier.AdoptChildren(expr, identifier)
 		assignNode.AdoptChildren(identifier, assignNode)
+		assignNode.AdoptChildren(expr, assignNode)
 		ss.Push(assignNode)
 		ss.writeEdge(assignNode.getDiagramID(), expr.getDiagramID())
 		ss.writeEdge(assignNode.getDiagramID(), identifier.getDiagramID())
@@ -805,7 +805,7 @@ func init() {
 		funcList := &funcDefListNode{&nodeImplementation{diagramID: id}}
 		ss.writeNode(id, ("FuncDeflList"))
 		id = getNextID()
-		progNode := &classListNode{&nodeImplementation{diagramID: id}}
+		progNode := &program{&nodeImplementation{diagramID: id}}
 		ss.writeNode(id, ("Prog"))
 		id = getNextID()
 		progBlockNode := &programBlockNode{&nodeImplementation{diagramID: id}}
@@ -830,12 +830,13 @@ func init() {
 				panic(reflect.TypeOf(val))
 			}
 		}
-		progBlockNode.AdoptChildren(progNode, progBlockNode)
+		progNode.AdoptChildren(progBlockNode, progNode)
 		progNode.AdoptChildren(funcList, progNode)
 		progNode.AdoptChildren(classList, progNode)
 		ss.writeEdge(progNode.getDiagramID(), classList.getDiagramID())
 		ss.writeEdge(progNode.getDiagramID(), funcList.getDiagramID())
 		ss.writeEdge(progNode.getDiagramID(), progBlockNode.getDiagramID())
+		ss.Push(progNode)
 
 	}
 
@@ -898,6 +899,9 @@ type nodeImplementation struct {
 }
 
 type assignStatNode struct {
+	*nodeImplementation
+}
+type program struct {
 	*nodeImplementation
 }
 
