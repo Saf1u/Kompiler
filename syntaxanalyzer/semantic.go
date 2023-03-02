@@ -152,8 +152,6 @@ func init() {
 		}
 		id := getNextID()
 		ss.writeNode(id, ("IndiceList"))
-		//red[1][2][]
-		//[][2][1]
 
 		first := container[len(container)-1]
 		for i := len(container) - 2; i >= 0; i-- {
@@ -185,8 +183,8 @@ func init() {
 		}
 		id := getNextID()
 		varN := &varNode{nodeImplementation: &nodeImplementation{diagramID: id}}
-		indiceList.MakeSibling(idTok, indiceList)
-		varN.AdoptChildren(indiceList, varN)
+		idTok.MakeSibling(indiceList, idTok)
+		varN.AdoptChildren(idTok, varN)
 		ss.writeNode(id, ("VarNode"))
 		ss.writeEdge(varN.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(varN.getDiagramID(), idTok.getDiagramID())
@@ -209,8 +207,8 @@ func init() {
 		}
 		id := getNextID()
 		funcCall := &functionCall{nodeImplementation: &nodeImplementation{diagramID: id}}
-		indiceList.MakeSibling(idTok, indiceList)
-		funcCall.AdoptChildren(indiceList, funcCall)
+		idTok.MakeSibling(indiceList, idTok)
+		funcCall.AdoptChildren(idTok, funcCall)
 		ss.writeNode(id, ("funcCall"))
 		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(funcCall.getDiagramID(), idTok.getDiagramID())
