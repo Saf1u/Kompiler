@@ -1,0 +1,19 @@
+class POLYNOMIAL {
+  public function evaluate: (x: float) => float;
+};
+
+class LINEAR isa POLYNOMIAL {
+  private attribute a: float[1];
+  private attribute b: float[][];
+  private attribute c: float;
+  public  constructor: (A: float, B: float);
+  public  function evaluate: (x: float) => float;
+};
+
+class QUADRATIC isa POLYNOMIAL,MONONOMIAL,TRINOMINAL {
+  private attribute a: float;
+  attribute b: float;
+  private attribute c: float;
+  public  constructor: (A: float, B: float, C: float);
+  function evaluate: (x: float) => float;
+};

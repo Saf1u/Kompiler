@@ -1,0 +1,25 @@
+
+
+function main()=>void{
+
+    while(a>b){
+        if (1000==2000)then{
+            write(1*2);
+        } else;
+
+
+        if(200>100)then
+        read(ida);
+        else read(idb);;
+
+
+         if(200>100)then{
+            read(ida.idb[1]);
+         }
+        else{
+            read(ida[1][2].idb);
+        };
+
+    };
+
+}

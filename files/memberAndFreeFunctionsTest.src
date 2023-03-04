@@ -1,0 +1,31 @@
+function QUADRATIC::evaluate(x: float) => float
+{
+  localvar result: float;
+  //Using Horner's method
+  result = a;
+  aha =x;
+  result = result * x + b;
+  result = result * x + c;
+  return (result);
+}
+
+function QUADRATIC::constructor(A: float, B: float, C: float)
+{
+  self.a = A;
+  self.b = B;
+  self.c = C;
+}
+
+function LINEAR::constructor(A: float, B: float) 
+{
+  self.a = A;
+  self.b = B;
+}
+
+function dosomething() => int{
+    localvar a: int;
+    localvar b: float;
+    localvar c: car;
+    localvar d: int[][][][1];
+    localvar e: car[0];
+}

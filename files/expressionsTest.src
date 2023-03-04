@@ -1,0 +1,6 @@
+function main ()=>void{
+    x=ida.idb.idc(1,2,3).idd[1][2].ide[(1*2)+(4/(1-2))*action(1,2)].idf[1+3].idg;
+    while((1*2)+(4/(1-2))*action(1,2)*-100+(not(1*3))>3){
+
+    };
+}
