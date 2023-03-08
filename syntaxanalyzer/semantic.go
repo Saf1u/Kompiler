@@ -32,6 +32,12 @@ func init() {
 		ss.writeNode(id, fmt.Sprint("type|", ss.mostRecentTokenValue.TokenValue))
 
 	}
+	semanticActions["S2E"] = func(ss *semanticStack) {
+		id := getNextID()
+		ss.Push(&returnTypeNode{typeName: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.writeNode(id, fmt.Sprint("returnType|", ss.mostRecentTokenValue.TokenValue))
+
+	}
 	semanticActions["S3"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.Push(&epsilonNode{nodeImplementation: &nodeImplementation{diagramID: id}})
@@ -555,7 +561,7 @@ func init() {
 			panic(reflect.TypeOf(v))
 		}
 		switch v := typeN.(type) {
-		case *typeNode:
+		case *returnTypeNode:
 		default:
 			panic(reflect.TypeOf(v))
 		}
@@ -612,8 +618,8 @@ func init() {
 	}
 	semanticActions["S39"] = func(ss *semanticStack) {
 		Id := getNextID()
-		ss.writeNode(Id, ("type| "))
-		typeN := &typeNode{nodeImplementation: &nodeImplementation{diagramID: Id}, typeName: ""}
+		ss.writeNode(Id, ("erturntype| "))
+		typeN := &returnTypeNode{nodeImplementation: &nodeImplementation{diagramID: Id}, typeName: ""}
 		ss.Push(typeN)
 	}
 	semanticActions["S40"] = func(ss *semanticStack) {
@@ -957,6 +963,10 @@ type scopeNode struct {
 }
 
 type typeNode struct {
+	typeName string
+	*nodeImplementation
+}
+type returnTypeNode struct {
 	typeName string
 	*nodeImplementation
 }
