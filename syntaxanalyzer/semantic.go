@@ -893,6 +893,21 @@ type node interface {
 	getDiagramID() string
 }
 
+type SymbolTable struct {
+}
+
+type symbolTableRecord struct {
+	name      string
+	kind      string
+	typeEntry typeRecord
+	link      *SymbolTable
+}
+
+type typeRecord struct {
+	typeInfo   string
+	dimensions []int
+}
+
 type nodeImplementation struct {
 	parent          node
 	leftmostSibling node
