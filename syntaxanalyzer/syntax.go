@@ -40,9 +40,9 @@ func (s *SpecialStack) Top() string {
 func (s *SpecialStack) tokenizeAndreversePush(str string) {
 	rhs := strings.Split(str, " ")
 	for i := len(rhs) - 1; i >= 0; i-- {
-		if rhs[i]!="&epsilon"{
+		if rhs[i] != "&epsilon" {
 			//semantic rule can intro epsilons
-		s.container = append(s.container, rhs[i])
+			s.container = append(s.container, rhs[i])
 		}
 	}
 
@@ -112,7 +112,7 @@ func NewSyntaxAnalyzer() *SyntaxanalyzerParser {
 	return &SyntaxanalyzerParser{stack: newStack(derive), semStack: MakeSemanticStack(astFile), traceDerivation: derive, errorFile: errFile}
 }
 
-func (s *SyntaxanalyzerParser) Parse() {
+func (s *SyntaxanalyzerParser) Parse() node {
 	s.stack.Push("$")
 	s.stack.Push("START")
 	token := lexer.NextToken()
@@ -128,13 +128,13 @@ func (s *SyntaxanalyzerParser) Parse() {
 				s.Pop("")
 				if token == nil {
 					//pop reptstart
-					if s.Top()=="REPTSTART0"{
+					if s.Top() == "REPTSTART0" {
 						s.Pop("")
 						break
-					}else{
+					} else {
 						continue
 					}
-					
+
 				}
 			} else {
 				s.semStack.mostRecentTokenValue = *token
@@ -146,16 +146,16 @@ func (s *SyntaxanalyzerParser) Parse() {
 					}
 					if token == nil {
 						//pop reptstart
-						if s.Top()=="REPTSTART0"{
+						if s.Top() == "REPTSTART0" {
 							s.Pop("")
 							break
-						}else{
+						} else {
 							continue
 						}
-						
+
 					}
 					realtype = replaceSelf(token.TokenType)
-					
+
 				} else {
 					realtype = s.skipError(*token)
 				}
@@ -179,7 +179,7 @@ func (s *SyntaxanalyzerParser) Parse() {
 	}
 	semanticActions["GROUPACTION"](s.semStack)
 	s.semStack.dotFile.WriteString("}")
-
+	return s.semStack.Pop()
 }
 
 func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {

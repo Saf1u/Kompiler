@@ -891,17 +891,18 @@ type node interface {
 	setParent(node)
 	AdoptChildren(node, node)
 	getDiagramID() string
-	accept(visitor)
+	Accept(visitor)
 }
 
-type SymbolTable struct {
+type symbolTable struct {
+	records []symbolTableRecord
 }
 
 type symbolTableRecord struct {
 	name      string
 	kind      string
 	typeEntry typeRecord
-	link      *SymbolTable
+	link      *symbolTable
 }
 
 type typeRecord struct {
@@ -915,6 +916,7 @@ type nodeImplementation struct {
 	leftmostChild   node
 	rightMost       node
 	lineNumber      int
+	table           symbolTable
 	diagramID       string
 }
 
@@ -922,10 +924,10 @@ type assignStatNode struct {
 	*nodeImplementation
 }
 
-func (i *assignStatNode) accept(v visitor) {
+func (i *assignStatNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitAssign(i)
@@ -935,10 +937,10 @@ type program struct {
 	*nodeImplementation
 }
 
-func (i *program) accept(v visitor) {
+func (i *program) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitProgram(i)
@@ -952,10 +954,10 @@ type visibilityNode struct {
 	*nodeImplementation
 }
 
-func (i *visibilityNode) accept(v visitor) {
+func (i *visibilityNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitVisiblity(i)
@@ -965,10 +967,10 @@ type funcDeclNode struct {
 	*nodeImplementation
 }
 
-func (i *funcDeclNode) accept(v visitor) {
+func (i *funcDeclNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitFuncDecl(i)
@@ -978,10 +980,10 @@ type classDecl struct {
 	*nodeImplementation
 }
 
-func (i *classDecl) accept(v visitor) {
+func (i *classDecl) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitClassDecl(i)
@@ -991,10 +993,10 @@ type writeNode struct {
 	*nodeImplementation
 }
 
-func (i *writeNode) accept(v visitor) {
+func (i *writeNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitWrite(i)
@@ -1004,10 +1006,10 @@ type returnNode struct {
 	*nodeImplementation
 }
 
-func (i *returnNode) accept(v visitor) {
+func (i *returnNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitReturn(i)
@@ -1017,10 +1019,10 @@ type inheritanceNode struct {
 	*nodeImplementation
 }
 
-func (i *inheritanceNode) accept(v visitor) {
+func (i *inheritanceNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitInheritance(i)
@@ -1030,10 +1032,10 @@ type statBlockNode struct {
 	*nodeImplementation
 }
 
-func (i *statBlockNode) accept(v visitor) {
+func (i *statBlockNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitStatBlock(i)
@@ -1043,10 +1045,10 @@ type ifStatementNode struct {
 	*nodeImplementation
 }
 
-func (i *ifStatementNode) accept(v visitor) {
+func (i *ifStatementNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitifStatement(i)
@@ -1056,10 +1058,10 @@ type whileStatementNode struct {
 	*nodeImplementation
 }
 
-func (i *whileStatementNode) accept(v visitor) {
+func (i *whileStatementNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitWhileStatement(i)
@@ -1069,10 +1071,10 @@ type classListNode struct {
 	*nodeImplementation
 }
 
-func (i *classListNode) accept(v visitor) {
+func (i *classListNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitClassList(i)
@@ -1082,10 +1084,10 @@ type funcDefListNode struct {
 	*nodeImplementation
 }
 
-func (i *funcDefListNode) accept(v visitor) {
+func (i *funcDefListNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitFuncDefList(i)
@@ -1095,10 +1097,10 @@ type funcDefNode struct {
 	*nodeImplementation
 }
 
-func (i *funcDefNode) accept(v visitor) {
+func (i *funcDefNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitFuncDef(i)
@@ -1107,10 +1109,11 @@ func (i *funcDefNode) accept(v visitor) {
 type programBlockNode struct {
 	*nodeImplementation
 }
-func (i *programBlockNode) accept(v visitor) {
+
+func (i *programBlockNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitProgramBlock(i)
@@ -1120,22 +1123,25 @@ type idNode struct {
 	identifier string
 	*nodeImplementation
 }
-func (i *idNode) accept(v visitor) {
+
+func (i *idNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitId(i)
 }
+
 type scopeNode struct {
 	identifier string
 	*nodeImplementation
 }
-func (i *scopeNode) accept(v visitor) {
+
+func (i *scopeNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitScope(i)
@@ -1145,66 +1151,77 @@ type typeNode struct {
 	typeName string
 	*nodeImplementation
 }
-func (i *typeNode) accept(v visitor) {
+
+func (i *typeNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitType(i)
 }
+
 type returnTypeNode struct {
 	typeName string
 	*nodeImplementation
 }
-func (i *returnTypeNode) accept(v visitor) {
+
+func (i *returnTypeNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitReturnType(i)
 }
+
 type paramListNode struct {
 	*nodeImplementation
 }
-func (i *paramListNode) accept(v visitor) {
+
+func (i *paramListNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitParamlist(i)
 }
+
 type fparamListNode struct {
 	*nodeImplementation
 }
-func (i *fparamListNode) accept(v visitor) {
+
+func (i *fparamListNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitFparamlist(i)
 }
+
 type dimListNode struct {
 	*nodeImplementation
 }
-func (i *dimListNode) accept(v visitor) {
+
+func (i *dimListNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitDimList(i)
 }
+
 type indiceListNode struct {
 	*nodeImplementation
 }
-func (i *indiceListNode) accept(v visitor) {
+
+func (i *indiceListNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitIndiceList(i)
@@ -1213,23 +1230,24 @@ func (i *indiceListNode) accept(v visitor) {
 type epsilonNode struct {
 	*nodeImplementation
 }
-func (i *epsilonNode) accept(v visitor) {
+
+func (i *epsilonNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitEpsilon(i)
 }
 
-
 type notNode struct {
 	*nodeImplementation
 }
-func (i *notNode) accept(v visitor) {
+
+func (i *notNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitNot(i)
@@ -1238,10 +1256,11 @@ func (i *notNode) accept(v visitor) {
 type dotNode struct {
 	*nodeImplementation
 }
-func (i *dotNode) accept(v visitor) {
+
+func (i *dotNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitDot(i)
@@ -1251,10 +1270,11 @@ type relOpNode struct {
 	*nodeImplementation
 	value string
 }
-func (i *relOpNode) accept(v visitor) {
+
+func (i *relOpNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitRelOp(i)
@@ -1263,10 +1283,11 @@ func (i *relOpNode) accept(v visitor) {
 type readStatementNode struct {
 	*nodeImplementation
 }
-func (i *readStatementNode) accept(v visitor) {
+
+func (i *readStatementNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitReadStatement(i)
@@ -1275,10 +1296,11 @@ func (i *readStatementNode) accept(v visitor) {
 type localVarNode struct {
 	*nodeImplementation
 }
-func (i *localVarNode) accept(v visitor) {
+
+func (i *localVarNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitLocalVarDecl(i)
@@ -1287,10 +1309,11 @@ func (i *localVarNode) accept(v visitor) {
 type ClassVarNode struct {
 	*nodeImplementation
 }
-func (i *ClassVarNode) accept(v visitor) {
+
+func (i *ClassVarNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitClassVarDecl(i)
@@ -1300,10 +1323,11 @@ type intLitNode struct {
 	value string
 	*nodeImplementation
 }
-func (i *intLitNode) accept(v visitor) {
+
+func (i *intLitNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitIntlit(i)
@@ -1313,10 +1337,11 @@ type dimNode struct {
 	value string
 	*nodeImplementation
 }
-func (i *dimNode) accept(v visitor) {
+
+func (i *dimNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitDim(i)
@@ -1326,10 +1351,11 @@ type floatNode struct {
 	value string
 	*nodeImplementation
 }
-func (i *floatNode) accept(v visitor) {
+
+func (i *floatNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitFloatLit(i)
@@ -1339,10 +1365,11 @@ type addNode struct {
 	value string
 	*nodeImplementation
 }
-func (i *addNode) accept(v visitor) {
+
+func (i *addNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitAdd(i)
@@ -1352,10 +1379,11 @@ type signNode struct {
 	value string
 	*nodeImplementation
 }
-func (i *signNode) accept(v visitor) {
+
+func (i *signNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitSign(i)
@@ -1365,10 +1393,11 @@ type multNode struct {
 	value string
 	*nodeImplementation
 }
-func (i *multNode) accept(v visitor) {
+
+func (i *multNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitMult(i)
@@ -1377,10 +1406,11 @@ func (i *multNode) accept(v visitor) {
 type functionCall struct {
 	*nodeImplementation
 }
-func (i *functionCall) accept(v visitor) {
+
+func (i *functionCall) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitFuncCall(i)
@@ -1389,15 +1419,15 @@ func (i *functionCall) accept(v visitor) {
 type varNode struct {
 	*nodeImplementation
 }
-func (i *varNode) accept(v visitor) {
+
+func (i *varNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
 	for n != nil {
-		n.accept(v)
+		n.Accept(v)
 		n = n.getRightSibling()
 	}
 	v.visitVar(i)
 }
-
 
 func (i *nodeImplementation) MakeSibling(y node, current node) {
 	for current.getRightSibling() != nil {
@@ -1415,7 +1445,7 @@ func (i *nodeImplementation) MakeSibling(y node, current node) {
 	}
 
 }
-func (i *nodeImplementation) accept(v visitor) {
+func (i *nodeImplementation) Accept(v visitor) {
 
 }
 func (i *nodeImplementation) AdoptChildren(y node, self node) {
