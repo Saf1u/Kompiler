@@ -686,7 +686,7 @@ func init() {
 		idTok := ss.Pop()
 		visibility := ss.Pop()
 		switch v := typeN.(type) {
-		case *typeNode:
+		case *returnTypeNode:
 		default:
 			panic(reflect.TypeOf(v))
 		}

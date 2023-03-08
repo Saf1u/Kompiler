@@ -6953,7 +6953,7 @@ func init() {
 	parseTable["LOCALVARDECLPRIME"]["function"] = ""
 	parseTable["LOCALVARDECLORSTMT"]["function"] = ""
 	parseTable["MEMBERDECL"]["function"] = "MEMBERFUNCDECL"
-	parseTable["MEMBERFUNCDECL"]["function"] = "function id S1 colon S3 lpar FPARAMS rpar S35 arrow RETURNTYPE S2 semi S43"
+	parseTable["MEMBERFUNCDECL"]["function"] = "function id S1 colon S3 lpar FPARAMS rpar S35 arrow RETURNTYPE S2E semi S43"
 	parseTable["MEMBERVARDECL"]["function"] = ""
 	parseTable["MULTOP"]["function"] = ""
 	parseTable["OPTCLASSDECL2"]["function"] = ""

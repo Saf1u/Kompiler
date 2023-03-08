@@ -5,7 +5,7 @@ node [shape=record];
 none3[shape="point"];
 4[label="fParamListNode"];
 4->none3;
-5[label="type|void"];
+5[label="returnType|void"];
 7[label="Id|x"];
 none9[shape="point"];
 10[label="IndiceList"];
