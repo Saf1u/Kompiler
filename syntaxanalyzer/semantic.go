@@ -618,7 +618,7 @@ func init() {
 	}
 	semanticActions["S39"] = func(ss *semanticStack) {
 		Id := getNextID()
-		ss.writeNode(Id, ("erturntype| "))
+		ss.writeNode(Id, ("returntype| "))
 		typeN := &returnTypeNode{nodeImplementation: &nodeImplementation{diagramID: Id}, typeName: ""}
 		ss.Push(typeN)
 	}
