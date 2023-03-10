@@ -829,7 +829,6 @@ func init() {
 					progBlockNode.AdoptChildren(val, progBlockNode)
 				} else {
 					ss.writeEdge(funcList.getDiagramID(), val.getDiagramID())
-					funcList.AdoptChildren(val, funcList)
 					functionContainer = append(functionContainer, val)
 				}
 				val = ss.Pop()
@@ -940,7 +939,7 @@ func (s *symbolTable) exist(name string) bool {
 	_, ok := s.records[name]
 	return ok
 }
-func (s *symbolTable) getRecords(name string) []*symbolTableRecord {
+func (s *symbolTable) getRecords() []*symbolTableRecord {
 	records:=make([]*symbolTableRecord,0)
 	for _,key:=range s.keys{
 		records = append(records, s.records[key])
@@ -982,6 +981,9 @@ func (s *symbolTableRecord) getVisibility() string {
 }
 func (s *symbolTableRecord) SetNameEntry(name string) {
 	s.name = name
+}
+func (s *symbolTableRecord) SetTablelink(link *symbolTable) {
+	s.link = link
 }
 func (s *symbolTableRecord) SetKindEntry(kind string) {
 	s.kind = kind
@@ -1333,6 +1335,7 @@ type epsilonNode struct {
 }
 
 func (i *epsilonNode) Accept(v visitor) {
+	
 	n := i.getLeftMostChild()
 	for n != nil {
 		n.Accept(v)

@@ -20,4 +20,17 @@
 [public, public, 20][function, function, 20][id, evaluate, 20][colon, :, 20][lpar, (, 20][id, x, 20][colon, :, 20][float, float, 20][rpar, ), 20][arrow, =>, 20][float, float, 20][semi, ;, 20]
 [rcurbr, }, 21][semi, ;, 21]
 
+[function, function, 23][id, QUADRATIC, 23][sr, ::, 23][constructor, constructor, 23][lpar, (, 23][id, A, 23][colon, :, 23][float, float, 23][comma, ,, 23][id, B, 23][colon, :, 23][float, float, 23][comma, ,, 23][id, C, 23][colon, :, 23][float, float, 23][rpar, ), 23]
+[lcurbr, {, 24]
+[self, self, 25][dot, ., 25][id, a, 25][equal, =, 25][id, A, 25][semi, ;, 25]
+[self, self, 26][dot, ., 26][id, b, 26][equal, =, 26][id, B, 26][semi, ;, 26]
+[self, self, 27][dot, ., 27][id, c, 27][equal, =, 27][id, C, 27][semi, ;, 27]
+[localvar, localvar, 28][id, resulta, 28][colon, :, 28][float, float, 28][lsqbr, [, 28][intlit, 2, 28][rsqbr, ], 28][semi, ;, 28]
+[localvar, localvar, 29][id, resultb, 29][colon, :, 29][float, float, 29][lsqbr, [, 29][rsqbr, ], 29][lsqbr, [, 29][rsqbr, ], 29][semi, ;, 29]
+[localvar, localvar, 30][id, resultc, 30][colon, :, 30][float, float, 30][semi, ;, 30]
+[localvar, localvar, 31][id, resultb, 31][colon, :, 31][float, float, 31][semi, ;, 31]
+
+
+[rcurbr, }, 34]
+
 

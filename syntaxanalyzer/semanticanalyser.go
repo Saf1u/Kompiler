@@ -1,6 +1,8 @@
 package syntaxanalyzer
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const typeSepeator = "|"
 
@@ -432,31 +434,43 @@ func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
 
 // visitFuncDef provides a mock function with given fields: n*
 func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
-	funcDefEntry := newRecord("", "funcdecl", "", nil, nil)
+	funcDefEntry := newRecord("", "funcdef", "", nil, nil)
 	scope := ""
-	id:=""
+	id := ""
+	typeInfo := ""
 	switch n.getLeftMostChild().(type) {
 	default:
 		left := n.getLeftMostChild()
 		for left != nil {
-		
-			switch entry.getKind() {
-			case "scope":
-				funcDecfEntry.SetVisibilityEntry(entry.getName())
-			case "fparam":
-				typeInfo = fmt.Sprint(typeInfo, entry.getName())
-			case "returnType":
-				typeInfo = fmt.Sprint(entry.getName(), typeInfo)
-			case "id":
-				id:=en
+			switch left.(type) {
+			case *statBlockNode:
+				records := left.getTable().getRecords()
+				for _, record := range records {
+					n.getTable().addRecord(record)
+				}
+			case *fparamListNode:
+				typeInfo = fmt.Sprint(typeInfo, left.getSingleEntry().getName())
+			case *returnTypeNode:
+				typeInfo = fmt.Sprint(left.getSingleEntry().getName(), typeInfo)
+			case *idNode:
+				id = left.getTable().getSingleEntry().getName()
+			case *scopeNode:
+				scope = left.getTable().getSingleEntry().getName()
 
 			}
 
 			left = left.getRightSibling()
 		}
 		typeRec := newTypeRecord(typeInfo)
-		funcDeclEntry.SetTypeEntry(typeRec)
-		n.table.addRecord(funcDeclEntry)
+		funcDefEntry.SetTypeEntry(typeRec)
+		id = fmt.Sprint(scope, typeSepeator, id)
+		funcDefEntry.SetNameEntry(id)
+		funcDefEntry.SetTablelink(n.getTable())
+		if !v.globalTable.exist(id) {
+			v.globalTable.addRecord(funcDefEntry)
+		} else {
+			fmt.Println("error redeclaration of function not allowed")
+		}
 
 	}
 
@@ -600,7 +614,11 @@ func (v *tableVisitor) visitStatBlock(n *statBlockNode) {
 		switch left.(type) {
 		case *localVarNode:
 			record := newRecord(left.getTable().getSingleEntry().getName(), left.getTable().getSingleEntry().getKind(), "", left.getTable().getSingleEntry().getType(), nil)
-			n.table.addRecord(record)
+			if !n.table.exist(record.getName()) {
+				n.table.addRecord(record)
+			}else{
+				fmt.Println("same declr in scope")
+			}
 		}
 		left = left.getRightSibling()
 	}
@@ -648,13 +666,20 @@ func (v *tableVisitor) visitProgram(n *program) {
 	fmt.Println(v.globalTable.records)
 	for _, x := range v.globalTable.keys {
 		link := v.globalTable.records[x].getLink()
+		switch v.globalTable.records[x].getKind(){ 
+		case "funcdef":
+			fmt.Println("func")
+			fmt.Println(v.globalTable.records[x])
+			fmt.Println(v.globalTable.records[x].getType())
+
+		}
 		fmt.Println("-------" + v.globalTable.records[x].getName() + "-------")
 		for _, n := range link.keys {
 			fmt.Println(link.records[n])
 			fmt.Println(link.records[n].getType())
 			fmt.Println("----------")
 		}
-		fmt.Println("-----class-done-----")
+		fmt.Println("------done-----")
 	}
 
 }

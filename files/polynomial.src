@@ -20,3 +20,16 @@ class LINEAR isa POLYNOMIAL {
   public  function evaluate: (x: float) => float;
 };
 
+function QUADRATIC::constructor(A: float, B: float, C: float)
+{
+  self.a = A;
+  self.b = B;
+  self.c = C;
+localvar resulta: float[2];
+localvar resultb: float[][];
+localvar resultc: float;
+localvar resultb: float;
+
+
+}
+
