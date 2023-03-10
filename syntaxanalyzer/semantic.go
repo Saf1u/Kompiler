@@ -22,40 +22,40 @@ func init() {
 	semanticActions = make(map[string]func(*semanticStack))
 	semanticActions["S1"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&idNode{identifier: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.Push(&idNode{identifier: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		ss.writeNode(id, fmt.Sprint("Id|", ss.mostRecentTokenValue.TokenValue))
 
 	}
 	semanticActions["S2"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&typeNode{typeName: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.Push(&typeNode{typeName: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		ss.writeNode(id, fmt.Sprint("type|", ss.mostRecentTokenValue.TokenValue))
 
 	}
 	semanticActions["S2E"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&returnTypeNode{typeName: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.Push(&returnTypeNode{typeName: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		ss.writeNode(id, fmt.Sprint("returnType|", ss.mostRecentTokenValue.TokenValue))
 
 	}
 	semanticActions["S3"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&epsilonNode{nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.Push(&epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}})
 	}
 	semanticActions["S5X"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&dimNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.Push(&dimNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		ss.writeNode(id, fmt.Sprint("DimNode|", ss.mostRecentTokenValue.TokenValue))
 	}
 	semanticActions["S4X"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&dimNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.Push(&dimNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		ss.writeNode(id, fmt.Sprint("DimNode|", ""))
 
 	}
 	semanticActions["S5"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&intLitNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.Push(&intLitNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		ss.writeNode(id, fmt.Sprint("IntLit|", ss.mostRecentTokenValue.TokenValue))
 	}
 
@@ -74,7 +74,7 @@ func init() {
 		if len(container) == 0 {
 			id := getNextID()
 			ss.writeBlank(id)
-			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
 		ss.writeNode(id, ("DimList"))
@@ -86,7 +86,7 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		arrNode := &dimListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		arrNode := &dimListNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		arrNode.AdoptChildren(first, arrNode)
 		ss.Push(arrNode)
 
@@ -94,7 +94,7 @@ func init() {
 	semanticActions["S7"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.writeNode(id, ("localVarDeclNode"))
-		localVarNode := &localVarNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		localVarNode := &localVarNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
 		case *dimListNode:
@@ -128,7 +128,7 @@ func init() {
 	}
 	semanticActions["S8"] = func(ss *semanticStack) {
 		id := getNextID()
-		dot := &dotNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		dot := &dotNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		ss.writeNode(id, ("DotNode"))
 		term := ss.Pop()
 		termb := ss.Pop()
@@ -154,7 +154,7 @@ func init() {
 		if len(container) == 0 {
 			id := getNextID()
 			ss.writeBlank(id)
-			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
 		ss.writeNode(id, ("IndiceList"))
@@ -166,7 +166,7 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		arrNode := &indiceListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		arrNode := &indiceListNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		arrNode.AdoptChildren(first, arrNode)
 		ss.Push(arrNode)
 
@@ -188,7 +188,7 @@ func init() {
 			panic(reflect.TypeOf(v))
 		}
 		id := getNextID()
-		varN := &varNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		varN := &varNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		idTok.MakeSibling(indiceList, idTok)
 		varN.AdoptChildren(idTok, varN)
 		ss.writeNode(id, ("VarNode"))
@@ -212,7 +212,7 @@ func init() {
 			panic(reflect.TypeOf(v))
 		}
 		id := getNextID()
-		funcCall := &functionCall{nodeImplementation: &nodeImplementation{diagramID: id}}
+		funcCall := &functionCall{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		idTok.MakeSibling(indiceList, idTok)
 		funcCall.AdoptChildren(idTok, funcCall)
 		ss.writeNode(id, ("funcCall"))
@@ -224,7 +224,7 @@ func init() {
 
 	semanticActions["S13"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&floatNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.Push(&floatNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		ss.writeNode(id, fmt.Sprint("FloatLit|", ss.mostRecentTokenValue.TokenValue))
 
 	}
@@ -236,7 +236,7 @@ func init() {
 		id := getNextID()
 		ss.writeNode(id, ("NotNode"))
 		ss.writeEdge(id, factor.getDiagramID())
-		not := &notNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		not := &notNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		not.AdoptChildren(factor, not)
 		ss.Push(not)
 	}
@@ -250,19 +250,19 @@ func init() {
 	semanticActions["S16"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.writeNode(id, fmt.Sprint("SignNode|", ss.mostRecentTokenValue.TokenValue))
-		sign := &signNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}}
+		sign := &signNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}}
 		ss.Push(sign)
 	}
 	semanticActions["S20"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.writeNode(id, fmt.Sprint("addNode|", ss.mostRecentTokenValue.TokenValue))
-		add := &addNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}}
+		add := &addNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}}
 		ss.Push(add)
 	}
 	semanticActions["S18"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.writeNode(id, fmt.Sprint("multNode|", ss.mostRecentTokenValue.TokenValue))
-		mul := &multNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}}
+		mul := &multNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}}
 		ss.Push(mul)
 	}
 	semanticActions["S21"] = func(ss *semanticStack) {
@@ -314,7 +314,7 @@ func init() {
 		if len(container) == 0 {
 			id := getNextID()
 			ss.writeBlank(id)
-			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
 		ss.writeNode(id, ("AParamListNode"))
@@ -325,14 +325,14 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		paramNode := &paramListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		paramNode := &paramListNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		paramNode.AdoptChildren(first, paramNode)
 		ss.Push(paramNode)
 
 	}
 	semanticActions["S23"] = func(ss *semanticStack) {
 		id := getNextID()
-		paramNode := &relOpNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}}
+		paramNode := &relOpNode{value: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}}
 		ss.Push(paramNode)
 		val := fmt.Sprint("relOpNode|", "neq")
 		if ss.mostRecentTokenValue.TokenValue != "<>" {
@@ -357,7 +357,7 @@ func init() {
 	}
 	semanticActions["S25"] = func(ss *semanticStack) {
 		id := getNextID()
-		paramNode := &readStatementNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		paramNode := &readStatementNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		ss.Push(paramNode)
 		ss.writeNode(id, ("ReadStatementNode"))
 	}
@@ -377,7 +377,7 @@ func init() {
 		expr := ss.Pop()
 		identifier := ss.Pop()
 		id := getNextID()
-		assignNode := &assignStatNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		assignNode := &assignStatNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		ss.writeNode(id, ("assignStat"))
 		assignNode.AdoptChildren(identifier, assignNode)
 		assignNode.AdoptChildren(expr, assignNode)
@@ -396,7 +396,7 @@ func init() {
 		idTok := ss.Pop()
 
 		id := getNextID()
-		varN := &varNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		varN := &varNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		indiceList.MakeSibling(idTok, indiceList)
 		varN.AdoptChildren(indiceList, varN)
 		ss.writeNode(id, ("VarNode"))
@@ -415,7 +415,7 @@ func init() {
 
 		idTok := ss.Pop()
 		id := getNextID()
-		funcCall := &functionCall{nodeImplementation: &nodeImplementation{diagramID: id}}
+		funcCall := &functionCall{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		indiceList.MakeSibling(idTok, indiceList)
 		funcCall.AdoptChildren(indiceList, funcCall)
 		ss.writeNode(id, ("funcCall"))
@@ -426,7 +426,7 @@ func init() {
 	}
 	semanticActions["S30"] = func(ss *semanticStack) {
 		id := getNextID()
-		write := &writeNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		write := &writeNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		ss.writeNode(id, ("WriteStatementNode"))
 		varNode := ss.Pop()
 		write.AdoptChildren(varNode, write)
@@ -436,7 +436,7 @@ func init() {
 
 	semanticActions["S31"] = func(ss *semanticStack) {
 		id := getNextID()
-		ret := &returnNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		ret := &returnNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		ss.writeNode(id, ("ReturnStatementNode"))
 		varNode := ss.Pop()
 		ret.AdoptChildren(varNode, ret)
@@ -458,7 +458,7 @@ func init() {
 		if len(container) == 0 {
 			id := getNextID()
 			ss.writeBlank(id)
-			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
 		ss.writeNode(id, ("StatBlock"))
@@ -469,14 +469,14 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		paramNode := &statBlockNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		paramNode := &statBlockNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		paramNode.AdoptChildren(first, paramNode)
 		ss.Push(paramNode)
 	}
 	semanticActions["S33"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.writeNode(id, ("IfStat"))
-		ifNode := &ifStatementNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		ifNode := &ifStatementNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		statBlocka := ss.Pop()
 		statBlockb := ss.Pop()
 		relExpr := ss.Pop()
@@ -501,7 +501,7 @@ func init() {
 	semanticActions["S34"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.writeNode(id, ("WhileStat"))
-		whileNode := &whileStatementNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		whileNode := &whileStatementNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		statBlocka := ss.Pop()
 		relExpr := ss.Pop()
 		switch v := statBlocka.(type) {
@@ -530,7 +530,7 @@ func init() {
 		if len(container) == 0 {
 			id := getNextID()
 			ss.writeBlank(id)
-			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
 		ss.writeNode(id, ("fParamListNode"))
@@ -541,7 +541,7 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		paramNode := &fparamListNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		paramNode := &fparamListNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		paramNode.AdoptChildren(first, paramNode)
 		ss.Push(paramNode)
 
@@ -549,7 +549,7 @@ func init() {
 	semanticActions["S36"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.writeNode(id, ("FuncDef"))
-		funcNode := &funcDefNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		funcNode := &funcDefNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		statBlock := ss.Pop()
 		typeN := ss.Pop()
 		fParams := ss.Pop()
@@ -582,12 +582,12 @@ func init() {
 		}
 		var scope node
 		if idTok.(*idNode).identifier == "" {
-			scope = &scopeNode{nodeImplementation: &nodeImplementation{diagramID: idTok.getDiagramID()}}
+			scope = &scopeNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: idTok.getDiagramID()}}
 			idTok = scopeTok
 			ss.writeNode(idTok.getDiagramID(), fmt.Sprint("Id|", idTok.(*idNode).identifier))
 
 		} else {
-			scope = &scopeNode{nodeImplementation: &nodeImplementation{diagramID: scopeTok.getDiagramID()}, identifier: scopeTok.(*idNode).identifier}
+			scope = &scopeNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: scopeTok.getDiagramID()}, identifier: scopeTok.(*idNode).identifier}
 			ss.writeNode(scope.getDiagramID(), fmt.Sprint("ScopeNode|", scopeTok.(*idNode).identifier))
 		}
 		typeN.MakeSibling(statBlock, typeN)
@@ -607,24 +607,24 @@ func init() {
 	semanticActions["S37"] = func(ss *semanticStack) {
 		scopeId := getNextID()
 		ss.writeNode(scopeId, fmt.Sprint("Id|", "constructor"))
-		scope := &idNode{nodeImplementation: &nodeImplementation{diagramID: scopeId}, identifier: "constructor"}
+		scope := &idNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: scopeId}, identifier: "constructor"}
 		ss.Push(scope)
 	}
 	semanticActions["S38"] = func(ss *semanticStack) {
 		scopeId := getNextID()
 		ss.writeNode(scopeId, ("scopeNode| "))
-		scope := &idNode{nodeImplementation: &nodeImplementation{diagramID: scopeId}, identifier: ""}
+		scope := &idNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: scopeId}, identifier: ""}
 		ss.Push(scope)
 	}
 	semanticActions["S39"] = func(ss *semanticStack) {
 		Id := getNextID()
 		ss.writeNode(Id, ("returntype| "))
-		typeN := &returnTypeNode{nodeImplementation: &nodeImplementation{diagramID: Id}, typeName: ""}
+		typeN := &returnTypeNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: Id}, typeName: ""}
 		ss.Push(typeN)
 	}
 	semanticActions["S40"] = func(ss *semanticStack) {
 		id := getNextID()
-		ss.Push(&idNode{identifier: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
+		ss.Push(&idNode{identifier: ss.mostRecentTokenValue.TokenValue, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id, lineNumber: ss.mostRecentTokenValue.LineNumber}})
 		//ss.writeNode(id, fmt.Sprint("Id|", ss.mostRecentTokenValue))
 	}
 	semanticActions["S41"] = func(ss *semanticStack) {
@@ -633,13 +633,13 @@ func init() {
 		if visibility != "private" && visibility != "public" {
 			visibility = ""
 		}
-		ss.Push(&visibilityNode{identifier: visibility, nodeImplementation: &nodeImplementation{diagramID: id}})
+		ss.Push(&visibilityNode{identifier: visibility, nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}})
 		ss.writeNode(id, fmt.Sprint("VisibilityNode|", visibility))
 	}
 	semanticActions["S42"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.writeNode(id, ("ClassVarDeclNode"))
-		VarNode := &ClassVarNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		VarNode := &ClassVarNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		container := make([]node, 0)
 		switch v := ss.Pop().(type) {
 		case *dimListNode:
@@ -680,7 +680,7 @@ func init() {
 	semanticActions["S43"] = func(ss *semanticStack) {
 		id := getNextID()
 		ss.writeNode(id, ("FuncDecl"))
-		funcDecl := &funcDeclNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		funcDecl := &funcDeclNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		typeN := ss.Pop()
 		fParams := ss.Pop()
 		idTok := ss.Pop()
@@ -734,7 +734,7 @@ func init() {
 		if len(container) == 0 {
 			id := getNextID()
 			ss.writeBlank(id)
-			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
 		ss.writeNode(id, ("InheritanceNode"))
@@ -745,13 +745,13 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		inhertitNode := &inheritanceNode{nodeImplementation: &nodeImplementation{diagramID: id}}
+		inhertitNode := &inheritanceNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		inhertitNode.AdoptChildren(first, inhertitNode)
 		ss.Push(inhertitNode)
 
 	}
 	semanticActions["S45"] = func(ss *semanticStack) {
-		paramNode := &classMarkerPseudoNode{nodeImplementation: &nodeImplementation{}}
+		paramNode := &classMarkerPseudoNode{nodeImplementation: &nodeImplementation{table: makeTable()}}
 		ss.Push(paramNode)
 	}
 	semanticActions["S46"] = func(ss *semanticStack) {
@@ -784,7 +784,7 @@ func init() {
 		if len(container) == 0 {
 			id := getNextID()
 			ss.writeBlank(id)
-			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{diagramID: fmt.Sprint("none", id)}})
+			container = append(container, &epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: fmt.Sprint("none", id)}})
 		}
 		id := getNextID()
 		ss.writeNode(id, ("ClassDecl"))
@@ -795,7 +795,7 @@ func init() {
 		for i := 0; i < len(container); i++ {
 			ss.writeEdge(id, container[i].getDiagramID())
 		}
-		class := &classDecl{nodeImplementation: &nodeImplementation{diagramID: id}}
+		class := &classDecl{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: id}}
 		class.AdoptChildren(first, class)
 		ss.Push(class)
 
@@ -803,22 +803,24 @@ func init() {
 
 	semanticActions["GROUPACTION"] = func(ss *semanticStack) {
 		id := getNextID()
-		classList := &classListNode{&nodeImplementation{diagramID: id}}
+		classList := &classListNode{&nodeImplementation{table: makeTable(), diagramID: id}}
 		ss.writeNode(id, ("ClassList"))
 		id = getNextID()
-		funcList := &funcDefListNode{&nodeImplementation{diagramID: id}}
+		funcList := &funcDefListNode{&nodeImplementation{table: makeTable(), diagramID: id}}
 		ss.writeNode(id, ("FuncDeflList"))
 		id = getNextID()
-		progNode := &program{&nodeImplementation{diagramID: id}}
+		progNode := &program{&nodeImplementation{table: makeTable(), diagramID: id}}
 		ss.writeNode(id, ("Prog"))
 		id = getNextID()
-		progBlockNode := &programBlockNode{&nodeImplementation{diagramID: id}}
+		progBlockNode := &programBlockNode{&nodeImplementation{table: makeTable(), diagramID: id}}
 		ss.writeNode(id, ("ProgramBlock"))
+		classContainer := []node{}
+		functionContainer := []node{}
 		for val := ss.Pop(); val != nil; {
 			switch val.(type) {
 			case *classDecl:
 				ss.writeEdge(classList.getDiagramID(), val.getDiagramID())
-				classList.AdoptChildren(val, classList)
+				classContainer = append(classContainer, val)
 				val = ss.Pop()
 			case *funcDefNode:
 				// panic(reflect.TypeOf(val.getLeftMostChild().getRightSibling()))
@@ -828,11 +830,28 @@ func init() {
 				} else {
 					ss.writeEdge(funcList.getDiagramID(), val.getDiagramID())
 					funcList.AdoptChildren(val, funcList)
+					functionContainer = append(functionContainer, val)
 				}
 				val = ss.Pop()
 			default:
 				panic(reflect.TypeOf(val))
 			}
+		}
+		if len(functionContainer) == 0 {
+			id := getNextID()
+			ss.writeBlank(id)
+			functionContainer = append(functionContainer, &epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: fmt.Sprint("none", id)}})
+		}
+		if len(classContainer) == 0 {
+			id := getNextID()
+			ss.writeBlank(id)
+			classContainer = append(classContainer, &epsilonNode{nodeImplementation: &nodeImplementation{table: makeTable(), diagramID: fmt.Sprint("none", id)}})
+		}
+		for i := len(classContainer) - 1; i >= 0; i-- {
+			classList.AdoptChildren(classContainer[i], classList)
+		}
+		for i := len(functionContainer) - 1; i >= 0; i-- {
+			funcList.AdoptChildren(functionContainer[i], funcList)
 		}
 		progNode.AdoptChildren(progBlockNode, progNode)
 		progNode.AdoptChildren(funcList, progNode)
@@ -892,22 +911,104 @@ type node interface {
 	AdoptChildren(node, node)
 	getDiagramID() string
 	Accept(visitor)
+	getSingleEntry() *symbolTableRecord
+	getTable() *symbolTable
 }
 
 type symbolTable struct {
-	records []symbolTableRecord
+	records map[string]*symbolTableRecord
+	keys []string
 }
 
+func (s *symbolTable) addRecord(record *symbolTableRecord) {
+	s.records[record.name] = record
+	s.keys=append(s.keys, record.name)
+}
+func (s *symbolTable) getSingleEntry() *symbolTableRecord {
+	var record *symbolTableRecord
+	for _, r := range s.records {
+		record = r
+		break
+	}
+	return record
+
+}
+func (s *symbolTable) getEntry(name string) *symbolTableRecord {
+	return s.records[name]
+}
+func (s *symbolTable) exist(name string) bool {
+	_, ok := s.records[name]
+	return ok
+}
+func (s *symbolTable) getRecords(name string) []*symbolTableRecord {
+	records:=make([]*symbolTableRecord,0)
+	for _,key:=range s.keys{
+		records = append(records, s.records[key])
+	}
+	return records
+}
+
+func makeTable() *symbolTable {
+	return &symbolTable{make(map[string]*symbolTableRecord),make([]string, 0)}
+}
+
+// read-only record except link
 type symbolTableRecord struct {
-	name      string
-	kind      string
-	typeEntry typeRecord
-	link      *symbolTable
+	name       string
+	kind       string
+	visibility string
+	typeEntry  *typeRecord
+	link       *symbolTable
+}
+
+func newRecord(name string, kind string, visibility string, typeEntry *typeRecord, ref *symbolTable) *symbolTableRecord {
+	return &symbolTableRecord{name, kind, visibility, typeEntry, ref}
+}
+
+func (s *symbolTableRecord) getName() string {
+	return s.name
+}
+func (s *symbolTableRecord) getKind() string {
+	return s.kind
+}
+func (s *symbolTableRecord) getType() *typeRecord {
+	return s.typeEntry
+}
+func (s *symbolTableRecord) getLink() *symbolTable {
+	return s.link
+}
+func (s *symbolTableRecord) getVisibility() string {
+	return s.visibility
+}
+func (s *symbolTableRecord) SetNameEntry(name string) {
+	s.name = name
+}
+func (s *symbolTableRecord) SetKindEntry(kind string) {
+	s.kind = kind
+}
+func (s *symbolTableRecord) SetTypeEntry(typeRec *typeRecord) {
+	s.typeEntry = typeRec
+}
+func (s *symbolTableRecord) SetVisibilityEntry(visibility string) {
+	s.visibility = visibility
 }
 
 type typeRecord struct {
-	typeInfo   string
-	dimensions []int
+	typeInfo string
+}
+
+func newTypeRecord(typeInfo string) *typeRecord {
+	return &typeRecord{typeInfo: typeInfo}
+}
+
+func (t *typeRecord) equal(typeIn *typeRecord) bool {
+	return t.typeInfo == typeIn.typeInfo
+}
+func (t *typeRecord) Type() string {
+	return t.typeInfo
+}
+func (t *typeRecord) String() string {
+	return t.typeInfo
 }
 
 type nodeImplementation struct {
@@ -916,7 +1017,7 @@ type nodeImplementation struct {
 	leftmostChild   node
 	rightMost       node
 	lineNumber      int
-	table           symbolTable
+	table           *symbolTable
 	diagramID       string
 }
 
@@ -1459,6 +1560,15 @@ func (i *nodeImplementation) AdoptChildren(y node, self node) {
 			left = left.getRightSibling()
 		}
 	}
+
+}
+func (i *nodeImplementation) getSingleEntry() *symbolTableRecord {
+	return i.table.getSingleEntry()
+
+}
+func (i *nodeImplementation) getTable() *symbolTable {
+
+	return i.table
 
 }
 
