@@ -954,6 +954,38 @@ func (s *symbolTable) getRecords() []*symbolTableRecord {
 	}
 	return records
 }
+func (s *symbolTable) print(padding int) int {
+	height := 3
+	fmt.Printf("%*s-----------------------------------------------------------------------------------------------------------\n", padding, "")
+	fmt.Printf("%*s|   name              |   kind               |  visibility          |   typeEntry              |   link   |\n", padding, "")
+	//fmt.Println("|   name    |   kind   |  visibility |   typeEntry              |   link   |")
+	fmt.Printf("%*s-----------------------------------------------------------------------------------------------------------\n", padding, "")
+
+	for _, key := range s.keys {
+		typeInfo := ""
+		if s.records[key].typeEntry != nil {
+			typeInfo = s.records[key].typeEntry.typeInfo
+		}
+		fmt.Printf("%*s|%-21s|%-22s|%-22s|%-26s", padding, "", s.records[key].name, s.records[key].kind, s.records[key].visibility, typeInfo)
+		if s.records[key].getLink() == nil {
+			fmt.Printf("|%10s", "nil")
+
+			fmt.Print("|")
+			fmt.Println()
+			fmt.Printf("%*s-----------------------------------------------------------------------------------------------------------\n", padding, "")
+			height += 2
+		} else {
+			fmt.Printf("|%10s", "ptr")
+			fmt.Print("|")
+			fmt.Println()
+			fmt.Printf("%*s-----------------------------------------------------------------------------------------------------------\n", padding, "")
+			height = s.records[key].getLink().print(padding*2) + height
+			fmt.Printf("%*s-----------------------------------------------------------------------------------------------------------\n", padding, "")
+			height++
+		}
+	}
+	return height
+}
 
 func makeTable() *symbolTable {
 	return &symbolTable{make(map[string]*symbolTableRecord), make([]string, 0)}

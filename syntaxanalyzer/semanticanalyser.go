@@ -665,23 +665,23 @@ func (v *tableVisitor) visitAssign(n *assignStatNode) {
 
 }
 func (v *tableVisitor) visitProgram(n *program) {
-	fmt.Println(v.globalTable.records)
-	for _, x := range v.globalTable.keys {
-		link := v.globalTable.records[x].getLink()
-		switch v.globalTable.records[x].getKind() {
-		case "funcdef":
-			fmt.Println("func")
-			fmt.Println(v.globalTable.records[x])
-			fmt.Println(v.globalTable.records[x].getType())
+	v.globalTable.print(10)
+	// for _, x := range v.globalTable.keys {
+	// 	link := v.globalTable.records[x].getLink()
+	// 	switch v.globalTable.records[x].getKind() {
+	// 	case "funcdef":
+	// 		fmt.Println("func")
+	// 		fmt.Println(v.globalTable.records[x])
+	// 		fmt.Println(v.globalTable.records[x].getType())
 
-		}
-		fmt.Println("-------" + v.globalTable.records[x].getName() + "-------")
-		for _, n := range link.keys {
-			fmt.Println(link.records[n])
-			fmt.Println(link.records[n].getType())
-			fmt.Println("----------")
-		}
-		fmt.Println("------done-----")
-	}
+	// 	}
+	// 	fmt.Println("-------" + v.globalTable.records[x].getName() + "-------")
+	// 	for _, n := range link.keys {
+	// 		fmt.Println(link.records[n])
+	// 		fmt.Println(link.records[n].getType())
+	// 		fmt.Println("----------")
+	// 	}
+	// 	fmt.Println("------done-----")
+	// }
 
 }
