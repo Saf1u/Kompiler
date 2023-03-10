@@ -273,16 +273,16 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 		case "inheritance":
 			inheritanceList = entry.getName()
 		case "funcdecl", "variable":
-			if !n.table.exist(entry.name) {
+			if !n.table.existWithKind(entry.name, entry.kind) {
 				n.table.addRecord(newRecord(entry.name, entry.kind, entry.visibility, entry.getType(), nil))
 			} else {
-				fmt.Println("error redeclaration of var not allowed")
+				fmt.Println("error redeclaration of type not allowed")
 			}
 		}
 		left = left.getRightSibling()
 
 	}
-	if !v.globalTable.exist(id) {
+	if !v.globalTable.existWithKind(id, "class") {
 		v.globalTable.addRecord(newRecord(id, "class", "", nil, n.getTable()))
 	} else {
 		fmt.Println("error redeclaration of class not allowed")
@@ -466,7 +466,7 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 		id = fmt.Sprint(scope, typeSepeator, id)
 		funcDefEntry.SetNameEntry(id)
 		funcDefEntry.SetTablelink(n.getTable())
-		if !v.globalTable.exist(id) {
+		if !v.globalTable.existWithKind(id, funcDefEntry.getKind()) {
 			v.globalTable.addRecord(funcDefEntry)
 		} else {
 			fmt.Println("error redeclaration of function not allowed")
@@ -533,14 +533,16 @@ func (v *tableVisitor) visitLocalVarDecl(n *localVarNode) {
 		left := n.getLeftMostChild()
 		for left != nil {
 			entry := left.getSingleEntry()
-			switch entry.getKind() {
-			case "dimensionList":
-				typeInfo = fmt.Sprint(typeInfo, entry.getName())
-			case "type":
-				typeInfo = fmt.Sprint(entry.getName(), typeInfo)
-			case "id":
-				localVarEntry.SetNameEntry(entry.getName())
+			if entry != nil {
+				switch entry.getKind() {
+				case "dimensionList":
+					typeInfo = fmt.Sprint(typeInfo, entry.getName())
+				case "type":
+					typeInfo = fmt.Sprint(entry.getName(), typeInfo)
+				case "id":
+					localVarEntry.SetNameEntry(entry.getName())
 
+				}
 			}
 
 			left = left.getRightSibling()
@@ -616,7 +618,7 @@ func (v *tableVisitor) visitStatBlock(n *statBlockNode) {
 			record := newRecord(left.getTable().getSingleEntry().getName(), left.getTable().getSingleEntry().getKind(), "", left.getTable().getSingleEntry().getType(), nil)
 			if !n.table.exist(record.getName()) {
 				n.table.addRecord(record)
-			}else{
+			} else {
 				fmt.Println("same declr in scope")
 			}
 		}
@@ -666,7 +668,7 @@ func (v *tableVisitor) visitProgram(n *program) {
 	fmt.Println(v.globalTable.records)
 	for _, x := range v.globalTable.keys {
 		link := v.globalTable.records[x].getLink()
-		switch v.globalTable.records[x].getKind(){ 
+		switch v.globalTable.records[x].getKind() {
 		case "funcdef":
 			fmt.Println("func")
 			fmt.Println(v.globalTable.records[x])

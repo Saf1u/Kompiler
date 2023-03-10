@@ -916,12 +916,12 @@ type node interface {
 
 type symbolTable struct {
 	records map[string]*symbolTableRecord
-	keys []string
+	keys    []string
 }
 
 func (s *symbolTable) addRecord(record *symbolTableRecord) {
 	s.records[record.name] = record
-	s.keys=append(s.keys, record.name)
+	s.keys = append(s.keys, record.name)
 }
 func (s *symbolTable) getSingleEntry() *symbolTableRecord {
 	var record *symbolTableRecord
@@ -939,16 +939,24 @@ func (s *symbolTable) exist(name string) bool {
 	_, ok := s.records[name]
 	return ok
 }
+func (s *symbolTable) existWithKind(name string, kind string) bool {
+	if !s.exist(name) {
+		return false
+	} else {
+		return s.records[name].kind == kind
+	}
+
+}
 func (s *symbolTable) getRecords() []*symbolTableRecord {
-	records:=make([]*symbolTableRecord,0)
-	for _,key:=range s.keys{
+	records := make([]*symbolTableRecord, 0)
+	for _, key := range s.keys {
 		records = append(records, s.records[key])
 	}
 	return records
 }
 
 func makeTable() *symbolTable {
-	return &symbolTable{make(map[string]*symbolTableRecord),make([]string, 0)}
+	return &symbolTable{make(map[string]*symbolTableRecord), make([]string, 0)}
 }
 
 // read-only record except link
@@ -1335,7 +1343,7 @@ type epsilonNode struct {
 }
 
 func (i *epsilonNode) Accept(v visitor) {
-	
+
 	n := i.getLeftMostChild()
 	for n != nil {
 		n.Accept(v)
