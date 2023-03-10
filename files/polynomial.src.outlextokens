@@ -50,6 +50,6 @@
 
 [function, function, 51][id, test, 51][lpar, (, 51][rpar, ), 51][arrow, =>, 51][id, int, 51]
 [lcurbr, {, 52]
-[localvar, localvar, 53][id, f1, 53][colon, :, 53][id, LINEAR, 53][lsqbr, [, 53][intlit, 2, 53][rsqbr, ], 53][lsqbr, [, 53][rsqbr, ], 53][semi, ;, 53]
+
 [rcurbr, }, 54]
 

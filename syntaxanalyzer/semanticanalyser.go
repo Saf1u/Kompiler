@@ -385,6 +385,7 @@ func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
 		for left != nil {
 			entry := left.getSingleEntry()
 			typeEntry := entry.getType()
+			n.table.addRecord(entry)
 			typeInfo = fmt.Sprint(typeInfo, typeSepeator, typeEntry)
 			left = left.getRightSibling()
 
@@ -449,7 +450,15 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 					n.getTable().addRecord(record)
 				}
 			case *fparamListNode:
-				typeInfo = fmt.Sprint(typeInfo, left.getSingleEntry().getName())
+				records := left.getTable().getRecords()
+				for _, record := range records {
+					switch record.getKind() {
+					case "variable":
+						record.SetKindEntry("parameter")
+						n.getTable().addRecord(record)
+					}
+				}
+				typeInfo = fmt.Sprint(typeInfo, left.getTable().getEntry("fparamList"))
 			case *returnTypeNode:
 				typeInfo = fmt.Sprint(left.getSingleEntry().getName(), typeInfo)
 			case *idNode:

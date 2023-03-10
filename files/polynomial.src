@@ -50,5 +50,5 @@ function main() => void
 
 function test() => int
 {
-  localvar f1: LINEAR[2][];
+  
 }
