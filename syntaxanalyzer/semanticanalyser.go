@@ -5,6 +5,41 @@ import (
 )
 
 const typeSepeator = "|"
+const (
+	ID            = "id"
+	INHERITANCE   = "inheritance"
+	VARIABLE      = "variable"
+	FUNCDECL      = "funcdecl"
+	CLASS         = "class"
+	TYPE          = "type"
+	VISIBILITY    = "visibility"
+	DIMENSIONLIST = "dimensionList"
+	DIMENSION     = "dimension"
+	FPARAMLIST    = "fparamList"
+	RETURNTYPE    = "returnType"
+	FUNCDEF       = "funcdef"
+)
+
+/*
+functions: X|Y
+X possible scope
+y possible name
+
+func params
+x:[|ni]*
+x return type
+ni any num of params whre i>=1
+*/
+const (
+	sameDeclarationInScopeError = "%s %s aready declared:line %d"
+)
+
+var errorBin =map[int][]string{}
+
+func saveError(n node, record *symbolTableRecord) {
+	errorBin[n.getLineNumber()] = append(errorBin[n.getLineNumber()], fmt.Sprintf(sameDeclarationInScopeError, record.getKind(),record.getName(), n.getLineNumber()))
+
+}
 
 type visitor interface {
 	visit(node)
@@ -268,24 +303,26 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 		entry := left.getSingleEntry()
 		// n.table.addRecord(entry)
 		switch entry.getKind() {
-		case "id":
+		case ID:
 			id = entry.getName()
-		case "inheritance":
+		case INHERITANCE:
 			inheritanceList = entry.getName()
-		case "funcdecl", "variable":
-			if !n.table.existWithKind(entry.name, entry.kind) {
+		case FUNCDECL, VARIABLE:
+			if !n.table.exist(entry.name, entry.kind) {
 				n.table.addRecord(newRecord(entry.name, entry.kind, entry.visibility, entry.getType(), nil))
 			} else {
-				fmt.Println("error redeclaration of type not allowed")
+				saveError(n,entry)
 			}
 		}
 		left = left.getRightSibling()
 
 	}
-	if !v.globalTable.existWithKind(id, "class") {
-		v.globalTable.addRecord(newRecord(id, "class", "", nil, n.getTable()))
+	class := newRecord(id, CLASS, "", nil, n.getTable())
+	if !v.globalTable.exist(id, CLASS) {
+
+		v.globalTable.addRecord(class)
 	} else {
-		fmt.Println("error redeclaration of class not allowed")
+		saveError(n,class)
 	}
 	fmt.Println("ignore:" + inheritanceList)
 
@@ -298,7 +335,7 @@ func (v *tableVisitor) visitClassList(n *classListNode) {
 
 // visitClassVarDecl provides a mock function with given fields: n*
 func (v *tableVisitor) visitClassVarDecl(n *ClassVarNode) {
-	classVarEntry := newRecord("", "variable", "", nil, nil)
+	classVarEntry := newRecord("", VARIABLE, "", nil, nil)
 	typeInfo := ""
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
@@ -307,13 +344,13 @@ func (v *tableVisitor) visitClassVarDecl(n *ClassVarNode) {
 		for left != nil {
 			entry := left.getSingleEntry()
 			switch entry.getKind() {
-			case "visibility":
+			case VISIBILITY:
 				classVarEntry.SetVisibilityEntry(entry.getName())
-			case "dimensionList":
+			case DIMENSIONLIST:
 				typeInfo = fmt.Sprint(typeInfo, entry.getName())
-			case "type":
+			case TYPE:
 				typeInfo = fmt.Sprint(entry.getName(), typeInfo)
-			case "id":
+			case ID:
 				classVarEntry.SetNameEntry(entry.getName())
 
 			}
@@ -335,7 +372,7 @@ func (v *tableVisitor) visitDim(n *dimNode) {
 		//TODO: DANGER!!!
 		dimType = fmt.Sprint("[", n.value, "]")
 	}
-	record := newRecord(dimType, "dimension", "", newTypeRecord(""), nil)
+	record := newRecord(dimType, DIMENSION, "", newTypeRecord(""), nil)
 	n.table.addRecord(record)
 }
 
@@ -353,7 +390,7 @@ func (v *tableVisitor) visitDimList(n *dimListNode) {
 		}
 
 	}
-	record := newRecord(listType, "dimensionList", "", newTypeRecord(""), nil)
+	record := newRecord(listType, DIMENSIONLIST, "", newTypeRecord(""), nil)
 	n.table.addRecord(record)
 }
 
@@ -374,7 +411,7 @@ func (v *tableVisitor) visitFloatLit(n *floatNode) {
 
 // visitFparamlist provides a mock function with given fields: n*
 func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
-	fParamEntry := newRecord("", "fparamList", "", nil, nil)
+	fParamEntry := newRecord("", FPARAMLIST, "", nil, nil)
 	typeInfo := ""
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
@@ -404,21 +441,23 @@ func (v *tableVisitor) visitFuncCall(n *functionCall) {
 
 // visitFuncDecl provides a mock function with given fields: n*
 func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
-	funcDeclEntry := newRecord("", "funcdecl", "", nil, nil)
+	funcDeclEntry := newRecord("", FUNCDECL, "", nil, nil)
 	typeInfo := ""
 	switch n.getLeftMostChild().(type) {
 	default:
 		left := n.getLeftMostChild()
 		for left != nil {
-			entry := left.getSingleEntry()
-			switch entry.getKind() {
-			case "visibility":
+			switch left.(type) {
+			case *visibilityNode:
+				entry := left.getSingleEntry()
 				funcDeclEntry.SetVisibilityEntry(entry.getName())
-			case "fparamList":
-				typeInfo = fmt.Sprint(typeInfo, entry.getName())
-			case "returnType":
+			case *fparamListNode:
+				typeInfo = fmt.Sprint(typeInfo, left.getTable().getEntryByType(FPARAMLIST).getName())
+			case *returnTypeNode:
+				entry := left.getSingleEntry()
 				typeInfo = fmt.Sprint(entry.getName(), typeInfo)
-			case "id":
+			case *idNode:
+				entry := left.getSingleEntry()
 				funcDeclEntry.SetNameEntry(entry.getName())
 
 			}
@@ -435,7 +474,7 @@ func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
 
 // visitFuncDef provides a mock function with given fields: n*
 func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
-	funcDefEntry := newRecord("", "funcdef", "", nil, nil)
+	funcDefEntry := newRecord("", FUNCDEF, "", nil, nil)
 	scope := ""
 	id := ""
 	typeInfo := ""
@@ -453,12 +492,15 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 				records := left.getTable().getRecords()
 				for _, record := range records {
 					switch record.getKind() {
-					case "variable":
+					case VARIABLE:
 						record.SetKindEntry("parameter")
 						n.getTable().addRecord(record)
+					case FPARAMLIST:
+						typeInfo = fmt.Sprint(typeInfo, record.getName())
 					}
+
 				}
-				typeInfo = fmt.Sprint(typeInfo, left.getTable().getEntry("fparamList"))
+
 			case *returnTypeNode:
 				typeInfo = fmt.Sprint(left.getSingleEntry().getName(), typeInfo)
 			case *idNode:
@@ -475,10 +517,10 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 		id = fmt.Sprint(scope, typeSepeator, id)
 		funcDefEntry.SetNameEntry(id)
 		funcDefEntry.SetTablelink(n.getTable())
-		if !v.globalTable.existWithKind(id, funcDefEntry.getKind()) {
+		if !v.globalTable.exist(id, funcDefEntry.getKind()) {
 			v.globalTable.addRecord(funcDefEntry)
 		} else {
-			fmt.Println("error redeclaration of function not allowed")
+			saveError(n,funcDefEntry)
 		}
 
 	}
@@ -492,7 +534,7 @@ func (v *tableVisitor) visitFuncDefList(n *funcDefListNode) {
 
 // visitId provides a mock function with given fields: n*
 func (v *tableVisitor) visitId(n *idNode) {
-	record := newRecord(n.identifier, "id", "", newTypeRecord(""), nil)
+	record := newRecord(n.identifier, ID, "", newTypeRecord(""), nil)
 	n.table.addRecord(record)
 
 }
@@ -504,7 +546,7 @@ func (v *tableVisitor) visitIndiceList(n *indiceListNode) {
 
 // visitInheritance provides a mock function with given fields: n*
 func (v *tableVisitor) visitInheritance(n *inheritanceNode) {
-	inheritanceEntry := newRecord("", "inheritance", "", nil, nil)
+	inheritanceEntry := newRecord("", INHERITANCE, "", nil, nil)
 	typeInfo := ""
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
@@ -534,7 +576,7 @@ func (v *tableVisitor) visitIntlit(n *intLitNode) {
 // visitLocalVarDecl provides a mock function with given fields: n*
 func (v *tableVisitor) visitLocalVarDecl(n *localVarNode) {
 
-	localVarEntry := newRecord("", "variable", "", nil, nil)
+	localVarEntry := newRecord("", VARIABLE, "", nil, nil)
 	typeInfo := ""
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
@@ -544,11 +586,11 @@ func (v *tableVisitor) visitLocalVarDecl(n *localVarNode) {
 			entry := left.getSingleEntry()
 			if entry != nil {
 				switch entry.getKind() {
-				case "dimensionList":
+				case DIMENSIONLIST:
 					typeInfo = fmt.Sprint(typeInfo, entry.getName())
-				case "type":
+				case TYPE:
 					typeInfo = fmt.Sprint(entry.getName(), typeInfo)
-				case "id":
+				case ID:
 					localVarEntry.SetNameEntry(entry.getName())
 
 				}
@@ -600,7 +642,7 @@ func (v *tableVisitor) visitReturn(n *returnNode) {
 
 // visitReturnType provides a mock function with given fields: n*
 func (v *tableVisitor) visitReturnType(n *returnTypeNode) {
-	record := newRecord(n.typeName+":", "returnType", "", newTypeRecord(""), nil)
+	record := newRecord(n.typeName+":", RETURNTYPE, "", newTypeRecord(""), nil)
 	n.table.addRecord(record)
 
 }
@@ -625,10 +667,10 @@ func (v *tableVisitor) visitStatBlock(n *statBlockNode) {
 		switch left.(type) {
 		case *localVarNode:
 			record := newRecord(left.getTable().getSingleEntry().getName(), left.getTable().getSingleEntry().getKind(), "", left.getTable().getSingleEntry().getType(), nil)
-			if !n.table.exist(record.getName()) {
+			if !n.table.exist(record.getName(), VARIABLE) {
 				n.table.addRecord(record)
 			} else {
-				fmt.Println("same declr in scope")
+				saveError(n,record)
 			}
 		}
 		left = left.getRightSibling()
@@ -638,7 +680,7 @@ func (v *tableVisitor) visitStatBlock(n *statBlockNode) {
 
 // visitType provides a mock function with given fields: n*
 func (v *tableVisitor) visitType(n *typeNode) {
-	record := newRecord(n.typeName, "type", "", newTypeRecord(""), nil)
+	record := newRecord(n.typeName, TYPE, "", newTypeRecord(""), nil)
 	n.table.addRecord(record)
 
 }
@@ -650,7 +692,7 @@ func (v *tableVisitor) visitVar(n *varNode) {
 
 // visitVisiblity provides a mock function with given fields: n*
 func (v *tableVisitor) visitVisiblity(n *visibilityNode) {
-	record := newRecord(n.identifier, "visibility", "", newTypeRecord(""), nil)
+	record := newRecord(n.identifier, VISIBILITY, "", newTypeRecord(""), nil)
 	n.table.addRecord(record)
 
 }
@@ -675,22 +717,7 @@ func (v *tableVisitor) visitAssign(n *assignStatNode) {
 }
 func (v *tableVisitor) visitProgram(n *program) {
 	v.globalTable.print(10)
-	// for _, x := range v.globalTable.keys {
-	// 	link := v.globalTable.records[x].getLink()
-	// 	switch v.globalTable.records[x].getKind() {
-	// 	case "funcdef":
-	// 		fmt.Println("func")
-	// 		fmt.Println(v.globalTable.records[x])
-	// 		fmt.Println(v.globalTable.records[x].getType())
-
-	// 	}
-	// 	fmt.Println("-------" + v.globalTable.records[x].getName() + "-------")
-	// 	for _, n := range link.keys {
-	// 		fmt.Println(link.records[n])
-	// 		fmt.Println(link.records[n].getType())
-	// 		fmt.Println("----------")
-	// 	}
-	// 	fmt.Println("------done-----")
-	// }
+	fmt.Println(errorBin)
+	
 
 }

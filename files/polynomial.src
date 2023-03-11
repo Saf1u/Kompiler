@@ -3,6 +3,7 @@
 
 class POLYNOMIAL {
   public function evaluate: (x: float) => float;
+  private attribute evaluate: float;
 };
 
 class LINEAR isa POLYNOMIAL {
@@ -12,13 +13,7 @@ class LINEAR isa POLYNOMIAL {
   public  function evaluate: (x: float) => float;
 };
 
-class LINEAR isa POLYNOMIAL {
-  private attribute a: float;
-  private attribute b: float;
-  private attribute c: float;
-  public  constructor: (A: float, B: float, C: float);
-  public  function evaluate: (x: float) => float;
-};
+
 
 function QUADRATIC::constructor(A: float, B: int, C: float[])
 {
@@ -32,6 +27,11 @@ localvar resultc: color;
 
 
 }
+
+
+
+
+
 function main() => void
 {
   localvar f1: LINEAR(2, 3.5);
@@ -48,7 +48,11 @@ function main() => void
 }
 
 
+
 function test() => int
 {
   
 }
+
+
+
