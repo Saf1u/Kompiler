@@ -912,7 +912,7 @@ type node interface {
 	Accept(visitor)
 	getSingleEntry() *symbolTableRecord
 	getTable() *symbolTable
-	getLineNumber()int
+	getLineNumber() int
 }
 
 type symbolTable struct {
@@ -921,12 +921,18 @@ type symbolTable struct {
 }
 
 func (s *symbolTable) addRecord(record *symbolTableRecord) {
-	key:=fmt.Sprint(record.name,"|",record.kind)
-	s.records[key]=record
-	s.keys=append(s.keys, key)
+	concType := ""
+	typeInfo := record.getType()
+	if typeInfo != nil {
+		concType = typeInfo.typeInfo
+	}
+	if record.kind != FUNCDECL && record.kind != FUNCDEF {
+		concType = ""
+	}
+	key := fmt.Sprint(record.name, "|", record.kind, "|", concType)
+	s.records[key] = record
+	s.keys = append(s.keys, key)
 
-
-	
 }
 func (s *symbolTable) getSingleEntry() *symbolTableRecord {
 	var record *symbolTableRecord
@@ -937,9 +943,7 @@ func (s *symbolTable) getSingleEntry() *symbolTableRecord {
 	return record
 
 }
-func (s *symbolTable) getEntry(name string) *symbolTableRecord {
-	return s.records[name]
-}
+
 func (s *symbolTable) getEntryByType(kind string) *symbolTableRecord {
 	for _, record := range s.records {
 		if record.kind == kind {
@@ -948,8 +952,23 @@ func (s *symbolTable) getEntryByType(kind string) *symbolTableRecord {
 	}
 	return nil
 }
-func (s *symbolTable) exist(name string,kind string) bool {
-	key:=fmt.Sprint(name,"|",kind)
+func (s *symbolTable) getEntryByName(name string) *symbolTableRecord {
+	for _, record := range s.records {
+		if record.name == name {
+			return record
+		}
+	}
+	return nil
+}
+func (s *symbolTable) exist(name string, kind string, typeInfo *typeRecord) bool {
+	concType := ""
+	if typeInfo != nil {
+		concType = typeInfo.typeInfo
+	}
+	if kind != FUNCDECL && kind != FUNCDEF {
+		concType = ""
+	}
+	key := fmt.Sprint(name, "|", kind, "|", concType)
 	_, ok := s.records[key]
 	return ok
 }
@@ -1003,12 +1022,16 @@ type symbolTableRecord struct {
 	name       string
 	kind       string
 	visibility string
+	line       int
 	typeEntry  *typeRecord
 	link       *symbolTable
 }
 
-func newRecord(name string, kind string, visibility string, typeEntry *typeRecord, ref *symbolTable) *symbolTableRecord {
-	return &symbolTableRecord{name, kind, visibility, typeEntry, ref}
+func newRecord(name string, kind string, visibility string,line int, typeEntry *typeRecord, ref *symbolTable) *symbolTableRecord {
+	return &symbolTableRecord{name, kind, visibility,line, typeEntry, ref}
+}
+func (s *symbolTableRecord) getLine() int {
+	return s.line
 }
 
 func (s *symbolTableRecord) getName() string {
@@ -1637,7 +1660,7 @@ func (i *nodeImplementation) getLeftMostSibling(self node) node {
 	}
 	return i.leftmostSibling
 }
-func(i*nodeImplementation)getLineNumber()int{
+func (i *nodeImplementation) getLineNumber() int {
 	return i.lineNumber
 }
 

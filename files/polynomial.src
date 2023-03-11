@@ -11,25 +11,20 @@ class LINEAR isa POLYNOMIAL {
   private attribute evaluate: float;
   public  constructor: (A: float, B: float[]);
   public  function evaluate: (x: float) => float;
+  public  function evaluate: () => void;
 };
 
 
 
 function QUADRATIC::constructor(A: float, B: int, C: float[])
 {
-  self.a = A;
-  self.b = B;
-  self.c = C;
+self.a = A;
+self.b = B;
+self.c = C;
 localvar resulta: float[2];
 localvar resultb: float[][];
 localvar resultc: color;
-
-
-
 }
-
-
-
 
 
 function main() => void
@@ -53,6 +48,9 @@ function test() => int
 {
   
 }
-
+function test(x:string) => int
+{
+  
+}
 
 

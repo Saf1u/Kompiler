@@ -8,8 +8,10 @@ func main() {
 
 	s := syntaxanalyzer.NewSyntaxAnalyzer()
 	astRoot := s.Parse()
-	visitor := syntaxanalyzer.NewTableVisitor()
+	visitors := syntaxanalyzer.NewTableVisitor()
 
-	astRoot.Accept(visitor)
+	for _, visitor := range visitors {
+		astRoot.Accept(visitor)
+	}
 
 }
