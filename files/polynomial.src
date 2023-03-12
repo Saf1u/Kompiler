@@ -3,17 +3,19 @@
 
 class POLYNOMIAL {
   public function evaluate: (x: float) => float;
+  public  function darkevaluate: (x: float) => float;
   private attribute evaluate: float;
 };
 
-class LINEAR isa POLYNOMIAL {
+class LINEAR isa POLYNOMIAL,QUADRATIC {
   private attribute a: float;
   private attribute evaluate: float;
   public  constructor: (A: float, B: float[]);
   public  function evaluate: (x: float) => float;
-  public  function evaluate: () => void;
+  public  function darkevaluate: (x: float,y:int) => float;
+
 };
-class QUADRATIC isa POLYNOMIAL {
+class QUADRATIC  {
   public  constructor: (A: float, B: float[]);
    public  function evaluate: (x:int) => int;
 };

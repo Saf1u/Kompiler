@@ -32,10 +32,13 @@ x return type
 ni any num of params whre i>=1
 */
 const (
-	sameDeclarationInScopeError = "%s %s aready declared:line %d"
-	classNotDeclaredError       = "class \"%s\" not declared so function \"%s\" has no class:line %d"
-	functionNotDeclaredError    = "function \"%s\" not declared in class \"%s\" :line %d"
-	functionOverrloadWarn       = "function \"%s\" is being overloaded:line %d"
+	sameDeclarationInScopeError         = "%s %s aready declared:line %d"
+	classNotDeclaredError               = "class \"%s\" not declared so function \"%s\" has no class:line %d"
+	functionNotDeclaredError            = "function \"%s\" not declared in class \"%s\" :line %d"
+	functionOverrloadWarn               = "function \"%s\" is being overloaded:line %d"
+	inheritedClassNotDeclaredError      = "class \"%s\" not declared so cannot be inherited:line %d"
+	inheritedClassAlreadyInheritedError = "class \"%s\" already inherited:line %d"
+	shadowWarn                          = "member \"%s\" is being shadowed:line %d"
 )
 
 var errorBin = map[int][]string{}
@@ -289,17 +292,11 @@ func (v *defaultVisitor) visitAssign(n *assignStatNode) {
 
 }
 func (v *defaultVisitor) visitProgram(n *program) {
-	v.getGlobalTable().print(10)
-	fmt.Println(errorBin)
 
 }
 
 type declarationVisitor struct {
 	*defaultVisitor
-}
-
-func (v *declarationVisitor) visitClassDecl(n *classDecl) {
-
 }
 
 func (v *declarationVisitor) visitProgram(n *program) {
@@ -323,7 +320,67 @@ func (v *declarationVisitor) visitProgram(n *program) {
 
 		}
 	}
-	fmt.Println(errorBin)
+	v.getGlobalTable().print(10)
+	for _, line := range errorBin {
+		for _, e := range line {
+			fmt.Println(e)
+		}
+	}
+
+}
+
+func (v *declarationVisitor) visitClassDecl(n *classDecl) {
+	left := n.getLeftMostChild()
+	for left != nil {
+		switch left.(type) {
+		case *inheritanceNode:
+			inheritanceList := strings.Split(left.getTable().getSingleEntry().getName(), "|")
+			for _, inheritedClass := range inheritanceList {
+				if inheritedClass != "" {
+					class := v.getGlobalTable().getEntry(
+						map[int]interface{}{
+							FILTER_NAME: inheritedClass,
+						},
+					)
+					if class == nil {
+						saveErrorNew(left.getLineNumber(), inheritedClassNotDeclaredError, inheritedClass)
+					} else {
+
+						entry := n.getTable().getEntry(
+							map[int]interface{}{
+								FILTER_NAME: inheritedClass,
+								FILTER_KIND: CLASS,
+							})
+						if entry != nil {
+							saveErrorNew(left.getLineNumber(), inheritedClassAlreadyInheritedError, inheritedClass)
+						} else {
+							inheritedClassTable := class.getLink()
+							switch inheritedClassTable.getEntry(map[int]interface{}{FILTER_NAME: inheritedClass, FILTER_KIND: CLASS}) {
+							case nil:
+								
+							default:
+								inheritedClass := newRecord(inheritedClass, "class", "", left.getLineNumber(), nil, inheritedClassTable)
+								n.getTable().addRecord(inheritedClass)
+								currentClassRecords := n.getTable().getRecords()
+								for _, record := range currentClassRecords {
+									if inheritedClassTable.exist(record.getName(), record.getKind(), record.getType()) {
+										switch record.getKind() {
+										default:
+											saveErrorNew(record.getLine(), shadowWarn, record.getName())
+										}
+									}
+								}
+							}
+
+						}
+
+					}
+				}
+			}
+
+		}
+		left = left.getRightSibling()
+	}
 
 }
 
@@ -366,8 +423,7 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 				if exist := n.getTable().getEntry(map[int]interface{}{
 					FILTER_KIND: entry.kind,
 					FILTER_NAME: entry.name,
-				}); exist != nil{
-					fmt.Println("error reg")
+				}); exist != nil {
 					saveErrorNew(entry.getLine(), functionOverrloadWarn, entry.getName())
 				}
 				n.getTable().addRecord(newRecord(entry.getName(), entry.getKind(), entry.getVisibility(), entry.getLine(), entry.getType(), nil))
