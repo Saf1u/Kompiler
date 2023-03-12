@@ -299,6 +299,9 @@ func (v *defaultVisitor) visitProgram(n *program) {
 type declarationVisitor struct {
 	*defaultVisitor
 }
+type inheritVisitor struct {
+	*defaultVisitor
+}
 
 func (v *declarationVisitor) visitProgram(n *program) {
 	entries := v.gloablTable.getRecords()
@@ -330,64 +333,137 @@ func (v *declarationVisitor) visitProgram(n *program) {
 
 }
 
-func (v *declarationVisitor) visitClassDecl(n *classDecl) {
-	left := n.getLeftMostChild()
-	for left != nil {
-		switch left.(type) {
-		case *inheritanceNode:
-			inheritanceList := strings.Split(left.getTable().getSingleEntry().getName(), typeSepeator)
-			for _, inheritedClass := range inheritanceList {
-				if inheritedClass != "" {
-					class := v.getGlobalTable().getEntry(
-						map[int]interface{}{
-							FILTER_NAME: inheritedClass,
-						},
-					)
-					if class == nil {
-						saveErrorNew(left.getLineNumber(), inheritedClassNotDeclaredError, inheritedClass)
-						continue
-					}
+func (v *inheritVisitor) visitClassDecl(n *classDecl) {
+	entry := n.getTable().getEntry(
+		map[int]interface{}{
+			FILTER_KIND: INHERITANCE,
+		},
+	).getName()
 
-					entry := n.getTable().getEntry(
-						map[int]interface{}{
-							FILTER_NAME: inheritedClass,
-							FILTER_KIND: CLASS,
-						})
-					if entry != nil {
-						saveErrorNew(left.getLineNumber(), inheritedClassAlreadyInheritedError, inheritedClass)
-						continue
-					}
-					inheritedClassTable := class.getLink()
-					if inheritedClassTable == n.getTable() {
-						saveErrorNew(left.getLineNumber(), cyclicDependencyError, inheritedClass)
-						continue
-					}
-					switch inheritedClassTable.getEntry(map[int]interface{}{FILTER_LINK: n.getTable()}) {
+	inheritanceList := strings.Split(entry, typeSepeator)
+	for _, inheritedClass := range inheritanceList {
+		if inheritedClass != "" {
+			class := v.getGlobalTable().getEntry(
+				map[int]interface{}{
+					FILTER_NAME: inheritedClass,
+				},
+			)
+			if class == nil {
+				saveErrorNew(n.getLineNumber(), inheritedClassNotDeclaredError, inheritedClass)
+				continue
+			}
 
-					case nil:
-						inheritedClass := newRecord(inheritedClass, "class", "", left.getLineNumber(), nil, inheritedClassTable)
-						n.getTable().addRecord(inheritedClass)
-						currentClassRecords := n.getTable().getRecords()
-						for _, record := range currentClassRecords {
-							if inheritedClassTable.exist(record.getName(), record.getKind(), record.getType()) {
-								switch record.getKind() {
-								default:
-									saveErrorNew(record.getLine(), shadowWarn, record.getName())
-								}
-							}
-						}
-					default:
-						saveErrorNew(left.getLineNumber(), cyclicDependencyError, inheritedClass)
+			entry := n.getTable().getEntry(
+				map[int]interface{}{
+					FILTER_NAME: inheritedClass,
+					FILTER_KIND: CLASS,
+				})
+			if entry != nil {
+				saveErrorNew(n.getLineNumber(), inheritedClassAlreadyInheritedError, inheritedClass)
+				continue
+			}
+			inheritedClassTable := class.getLink()
+			if inheritedClassTable == n.getTable() {
+				saveErrorNew(n.getLineNumber(), cyclicDependencyError, inheritedClass)
+				continue
+			}
+			check := map[string]bool{
+				inheritedClass: true,
+			}
+			switch cyclicChecker(v.getGlobalTable(), inheritedClass, n.getTable(), check) {
 
-					}
+			case false:
+				inheritedClass := newRecord(inheritedClass, "class", "", n.getLineNumber(), nil, inheritedClassTable)
+				n.getTable().addRecord(inheritedClass)
+			case true:
+				saveErrorNew(n.getLineNumber(), cyclicDependencyError, inheritedClass)
 
-				}
 			}
 
 		}
-		left = left.getRightSibling()
 	}
 
+}
+func (v *declarationVisitor) visitClassDecl(n *classDecl) {
+	// table := n.getTable().getRecords()
+	// for _, record := range table {
+	// 	if record.getKind() == CLASS {
+	// 		recursiveInherianceShadowCheck(table, record.getLink())
+	// 	}
+
+	// }
+}
+func cyclicChecker(gloablTable *symbolTable, starter string, classToFind *symbolTable, visited map[string]bool) bool {
+
+	class := gloablTable.getEntry(
+		map[int]interface{}{
+			FILTER_NAME: starter,
+		},
+	)
+	entry := class.getLink().getEntry(
+		map[int]interface{}{
+			FILTER_KIND: INHERITANCE,
+		},
+	).getName()
+
+	inheritanceList := strings.Split(entry, typeSepeator)
+	for _, inheritedClass := range inheritanceList {
+		if inheritedClass != "" {
+			class := gloablTable.getEntry(
+				map[int]interface{}{
+					FILTER_NAME: inheritedClass,
+				},
+			)
+
+			if class != nil {
+				if class.getLink() == classToFind {
+					return true
+				} else {
+					if _, ok := visited[inheritedClass]; !ok {
+						ret := cyclicChecker(gloablTable, inheritedClass, classToFind, visited)
+						if ret {
+							return ret
+						}
+					}
+				}
+
+			}
+		}
+	}
+
+	return false
+
+}
+
+func recursiveInherianceShadowCheck(currentClassRecords []*symbolTableRecord, inheritedClassTable *symbolTable) {
+	for _, record := range currentClassRecords {
+		switch record.getKind() {
+		case CLASS:
+			recursiveInherianceShadowCheck(record.getLink().getRecords(), inheritedClassTable)
+		default:
+			if inheritedClassTable.exist(record.getName(), record.getKind(), record.getType()) {
+				switch record.getKind() {
+				default:
+					saveErrorNew(record.getLine(), shadowWarn, record.getName())
+					// if record.getLine() == 20 && record.getName() == "evaluate" {
+					// 	x := inheritedClassTable.getEntry(
+					// 		map[int]interface{}{
+					// 			FILTER_NAME: record.getName(),
+					// 			FILTER_KIND: record.getKind(),
+					// 		},
+					// 	)
+					// 	fmt.Println("x:", x)
+					// 	fmt.Println(x.getType().typeInfo)
+					// 	fmt.Println(record)
+					// 	fmt.Println(record.getType().typeInfo)
+					// 	for k, v := range inheritedClassTable.records {
+					// 		fmt.Println(k, " ", v)
+					// 	}
+					// }
+				}
+			}
+		}
+	}
 }
 
 type tableVisitor struct {
@@ -398,6 +474,7 @@ func NewTableVisitor() []visitor {
 	gloablTable := makeTable()
 	visitors := make([]visitor, 0)
 	visitors = append(visitors, &tableVisitor{&defaultVisitor{gloablTable: gloablTable}})
+	visitors = append(visitors, &inheritVisitor{&defaultVisitor{gloablTable: gloablTable}})
 	visitors = append(visitors, &declarationVisitor{&defaultVisitor{gloablTable: gloablTable}})
 	return visitors
 }
@@ -415,7 +492,6 @@ func (v *tableVisitor) visitAdd(n *addNode) {
 func (v *tableVisitor) visitClassDecl(n *classDecl) {
 	left := n.getLeftMostChild()
 	id := ""
-	inheritanceList := ""
 	for left != nil {
 		entry := left.getSingleEntry()
 		// n.table.addRecord(entry)
@@ -423,7 +499,7 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 		case ID:
 			id = entry.getName()
 		case INHERITANCE:
-			inheritanceList = entry.getName()
+			n.getTable().addRecord(newRecord(entry.getName(), INHERITANCE, "", entry.getLine(), nil, nil))
 		case FUNCDECL, VARIABLE:
 			if !n.getTable().exist(entry.getName(), entry.getKind(), entry.getType()) {
 				if exist := n.getTable().getEntry(map[int]interface{}{
@@ -447,7 +523,6 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 	} else {
 		saveError(n, class)
 	}
-	fmt.Println("ignore:" + inheritanceList)
 
 }
 
