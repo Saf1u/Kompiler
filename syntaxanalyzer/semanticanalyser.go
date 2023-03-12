@@ -33,13 +33,16 @@ ni any num of params whre i>=1
 */
 const (
 	sameDeclarationInScopeError = "%s %s aready declared:line %d"
-	classNotDeclaredError       = "class %s not declared so function %s has no class:line %d"
+	classNotDeclaredError       = "class \"%s\" not declared so function \"%s\" has no class:line %d"
+	functionNotDeclaredError    = "function \"%s\" not declared in class \"%s\" :line %d"
+	functionOverrloadWarn       = "function \"%s\" is being overloaded:line %d"
 )
 
 var errorBin = map[int][]string{}
 
-func saveErrorNew(lineNum int, err string, args ...string) {
-	err = fmt.Sprintf(err, args, lineNum)
+func saveErrorNew(lineNum int, err string, args ...any) {
+	args = append(args, lineNum)
+	err = fmt.Sprintf(err, args...)
 	errorBin[lineNum] = append(errorBin[lineNum], err)
 
 }
@@ -93,7 +96,8 @@ type visitor interface {
 type defaultVisitor struct {
 	gloablTable *symbolTable
 }
-func (v *defaultVisitor) getGlobalTable()*symbolTable{
+
+func (v *defaultVisitor) getGlobalTable() *symbolTable {
 	return v.gloablTable
 }
 
@@ -285,12 +289,13 @@ func (v *defaultVisitor) visitAssign(n *assignStatNode) {
 
 }
 func (v *defaultVisitor) visitProgram(n *program) {
+	v.getGlobalTable().print(10)
+	fmt.Println(errorBin)
 
 }
 
 type declarationVisitor struct {
 	*defaultVisitor
-	
 }
 
 func (v *declarationVisitor) visitClassDecl(n *classDecl) {
@@ -298,20 +303,27 @@ func (v *declarationVisitor) visitClassDecl(n *classDecl) {
 }
 
 func (v *declarationVisitor) visitProgram(n *program) {
-	entries := n.getTable().getRecords()
+	entries := v.gloablTable.getRecords()
 	for _, entry := range entries {
 		if entry.getKind() == FUNCDEF {
 			name := entry.getName()
 			parts := strings.Split(name, typeSepeator)
 			if parts[0] != "" {
-				class := n.getTable().getEntryByName(parts[0])
+				class := v.getGlobalTable().getEntryByName(parts[0])
 				if class == nil {
 					saveErrorNew(entry.getLine(), classNotDeclaredError, parts[0], parts[1])
+				} else {
+					function := class.getLink().getEntryByName(parts[1])
+					if function == nil {
+						saveErrorNew(entry.getLine(), functionNotDeclaredError, parts[1], parts[0])
+					}
 				}
+
 			}
 
 		}
 	}
+	fmt.Println(errorBin)
 
 }
 
@@ -350,8 +362,15 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 		case INHERITANCE:
 			inheritanceList = entry.getName()
 		case FUNCDECL, VARIABLE:
-			if !n.table.exist(entry.getName(), entry.getKind(), entry.getType()) {
-				n.table.addRecord(newRecord(entry.getName(), entry.getKind(), entry.getVisibility(), entry.getLine(), entry.getType(), nil))
+			if !n.getTable().exist(entry.getName(), entry.getKind(), entry.getType()) {
+				if exist := n.getTable().getEntry(map[int]interface{}{
+					FILTER_KIND: entry.kind,
+					FILTER_NAME: entry.name,
+				}); exist != nil{
+					fmt.Println("error reg")
+					saveErrorNew(entry.getLine(), functionOverrloadWarn, entry.getName())
+				}
+				n.getTable().addRecord(newRecord(entry.getName(), entry.getKind(), entry.getVisibility(), entry.getLine(), entry.getType(), nil))
 			} else {
 				saveError(left, entry)
 			}
@@ -494,7 +513,7 @@ func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
 				entry := left.getSingleEntry()
 				funcDeclEntry.SetVisibilityEntry(entry.getName())
 			case *fparamListNode:
-				typeInfo = fmt.Sprint(typeInfo, left.getTable().getEntryByType(FPARAMLIST).getName())
+				typeInfo = fmt.Sprint(typeInfo, left.getTable().getEntryByKind(FPARAMLIST).getName())
 			case *returnTypeNode:
 				entry := left.getSingleEntry()
 				typeInfo = fmt.Sprint(entry.getName(), typeInfo)
@@ -756,8 +775,4 @@ func (v *tableVisitor) visitifStatement(n *ifStatementNode) {
 
 func (v *tableVisitor) visitAssign(n *assignStatNode) {
 
-}
-func (v *tableVisitor) visitProgram(n *program) {
-	v.getGlobalTable().print(10)
-	fmt.Println(errorBin)
 }

@@ -13,8 +13,14 @@ class LINEAR isa POLYNOMIAL {
   public  function evaluate: (x: float) => float;
   public  function evaluate: () => void;
 };
+class QUADRATIC isa POLYNOMIAL {
+  public  constructor: (A: float, B: float[]);
+   public  function evaluate: (x:int) => int;
+};
 
+function QUADRATIC::evaluate () => void{
 
+}
 
 function QUADRATIC::constructor(A: float, B: int, C: float[])
 {
@@ -25,6 +31,7 @@ localvar resulta: float[2];
 localvar resultb: float[][];
 localvar resultc: color;
 }
+
 
 
 function main() => void

@@ -6,9 +6,16 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 var globalIDPool int = 0
+
+const (
+	FILTER_TYPE = iota
+	FILTER_NAME
+	FILTER_KIND
+)
 
 func getNextID() string {
 	next := globalIDPool
@@ -929,10 +936,24 @@ func (s *symbolTable) addRecord(record *symbolTableRecord) {
 	if record.kind != FUNCDECL && record.kind != FUNCDEF {
 		concType = ""
 	}
-	key := fmt.Sprint(record.name, "|", record.kind, "|", concType)
+	params := strings.Split(concType, ":")
+	key := fmt.Sprint(record.name, "|", record.kind, "|", params[1:])
 	s.records[key] = record
 	s.keys = append(s.keys, key)
 
+}
+func (s *symbolTable) exist(name string, kind string, typeInfo *typeRecord) bool {
+	concType := ""
+	if typeInfo != nil {
+		concType = typeInfo.typeInfo
+	}
+	if kind != FUNCDECL && kind != FUNCDEF {
+		concType = ""
+	}
+	params := strings.Split(concType, ":")
+	key := fmt.Sprint(name, "|", kind, "|", params[1:])
+	_, ok := s.records[key]
+	return ok
 }
 func (s *symbolTable) getSingleEntry() *symbolTableRecord {
 	var record *symbolTableRecord
@@ -943,8 +964,43 @@ func (s *symbolTable) getSingleEntry() *symbolTableRecord {
 	return record
 
 }
+func (s *symbolTable) getEntry(req map[int]interface{}) *symbolTableRecord {
+	records := s.records
+	for filterType, val := range req {
+		switch filterType {
+		case FILTER_KIND:
+			kind := val.(string)
+			records = filter(records, kind, func(s *symbolTableRecord) string { return s.getKind() })
+		case FILTER_NAME:
+			name := val.(string)
+			records = filter(records, name, func(s *symbolTableRecord) string { return s.getName() })
+			
+		case FILTER_TYPE:
+			typeIn := val.(*typeRecord).typeInfo
+			records = filter(records, typeIn, func(s *symbolTableRecord) string { return s.getType().typeInfo })
+			fmt.Println(records)
+		}
+	}
+	if len(records) == 0 {
+		return nil
+	}
+	for _, rec := range records {
+		return rec
+	}
+	return nil
+}
 
-func (s *symbolTable) getEntryByType(kind string) *symbolTableRecord {
+func filter(records map[string]*symbolTableRecord, filter string, filterFunc func(*symbolTableRecord) string) map[string]*symbolTableRecord {
+	temp := make(map[string]*symbolTableRecord)
+	for key, record := range records {
+		if filterFunc(record) == filter {
+			temp[key] = record
+		}
+	}
+	return temp
+}
+
+func (s *symbolTable) getEntryByKind(kind string) *symbolTableRecord {
 	for _, record := range s.records {
 		if record.kind == kind {
 			return record
@@ -959,18 +1015,6 @@ func (s *symbolTable) getEntryByName(name string) *symbolTableRecord {
 		}
 	}
 	return nil
-}
-func (s *symbolTable) exist(name string, kind string, typeInfo *typeRecord) bool {
-	concType := ""
-	if typeInfo != nil {
-		concType = typeInfo.typeInfo
-	}
-	if kind != FUNCDECL && kind != FUNCDEF {
-		concType = ""
-	}
-	key := fmt.Sprint(name, "|", kind, "|", concType)
-	_, ok := s.records[key]
-	return ok
 }
 
 func (s *symbolTable) getRecords() []*symbolTableRecord {
@@ -1027,8 +1071,8 @@ type symbolTableRecord struct {
 	link       *symbolTable
 }
 
-func newRecord(name string, kind string, visibility string,line int, typeEntry *typeRecord, ref *symbolTable) *symbolTableRecord {
-	return &symbolTableRecord{name, kind, visibility,line, typeEntry, ref}
+func newRecord(name string, kind string, visibility string, line int, typeEntry *typeRecord, ref *symbolTable) *symbolTableRecord {
+	return &symbolTableRecord{name, kind, visibility, line, typeEntry, ref}
 }
 func (s *symbolTableRecord) getLine() int {
 	return s.line
