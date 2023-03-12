@@ -1,29 +1,32 @@
 // ====== struct declarations ====== //
 
 
-class POLYNOMIAL isa egg{
-  public function evaluate: (x: float) => float;
-  public  function darkevaluate: (x: float) => float;
-  private attribute evaluate: float;
-    public  function darkevaluate: (x: float,y:int) => float;
+class POLYNOMIAL isa egg,keg{
+   // public  function evaluate: (x: float) => float;
+
 };
 
-class LINEAR isa POLYNOMIAL{
+class LINEAR isa POLYNOMIAL {
   private attribute a: float;
   private attribute evaluate: float;
-  public  function evaluate: (x: float) => float;
   public  function darkevaluate: (x: float,y:int) => float;
 };
 class QUADRATIC isa LINEAR  {
   public  constructor: (A: float, B: float[]);
-   public  function evaluate: (x:int) => int;
+   public  function evaluate: (x:float) => int;
+   public  function paluate: (x: float) => float;
+    private attribute a: float;
 };
-class egg isa keg{
+
+class egg{
 
 };
-class keg {
-
+class keg{
+public  function evaluate: (x: float) => float;
 };
+
+
+
 
 function QUADRATIC::evaluate () => void{
 

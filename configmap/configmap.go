@@ -12,7 +12,7 @@ func init() {
 	conf = make(map[string]interface{})
 	var file string
 	var deriveOut bool
-	flag.StringVar(&file, "file", "files/bubbleSort.src", "file to tokenize")
+	flag.StringVar(&file, "file", "files/polynomial.src", "file to tokenize")
 	flag.BoolVar(&deriveOut, "deriveOut", false, "build left derivation tree")
 	flag.Parse()
 	if file == "" {

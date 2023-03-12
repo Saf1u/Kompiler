@@ -974,14 +974,25 @@ func (s *symbolTable) getEntry(req map[int]interface{}) *symbolTableRecord {
 			records = filter(records, kind, func(s *symbolTableRecord) interface{} { return s.getKind() })
 		case FILTER_NAME:
 			name := val.(string)
-			records = filter(records, name, func(s *symbolTableRecord) interface{}  { return s.getName() })
-			
+			records = filter(records, name, func(s *symbolTableRecord) interface{} { return s.getName() })
+
 		case FILTER_TYPE:
-			typeIn := val.(*typeRecord).typeInfo
-			records = filter(records, typeIn, func(s *symbolTableRecord) interface{}  { return s.getType().typeInfo })
+			typeWrapper := val.(*typeRecord)
+			typeIn := ""
+			if typeWrapper != nil {
+				typeIn = typeWrapper.typeInfo
+			}
+			records = filter(records, typeIn, func(s *symbolTableRecord) interface{} {
+				typeWrapperFunc := s.getType()
+				typeInFunc := ""
+				if typeWrapperFunc != nil {
+					typeInFunc = typeWrapperFunc.typeInfo
+				}
+				return typeInFunc
+			})
 		case FILTER_LINK:
 			typeIn := val.(*symbolTable)
-			records = filter(records, typeIn, func(s *symbolTableRecord) interface{}  { return s.getLink()})
+			records = filter(records, typeIn, func(s *symbolTableRecord) interface{} { return s.getLink() })
 		}
 	}
 	if len(records) == 0 {

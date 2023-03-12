@@ -324,7 +324,7 @@ func (v *declarationVisitor) visitProgram(n *program) {
 
 		}
 	}
-	v.getGlobalTable().print(10)
+	// v.getGlobalTable().print(10)
 	for _, line := range errorBin {
 		for _, e := range line {
 			fmt.Println(e)
@@ -384,15 +384,7 @@ func (v *inheritVisitor) visitClassDecl(n *classDecl) {
 	}
 
 }
-func (v *declarationVisitor) visitClassDecl(n *classDecl) {
-	// table := n.getTable().getRecords()
-	// for _, record := range table {
-	// 	if record.getKind() == CLASS {
-	// 		recursiveInherianceShadowCheck(table, record.getLink())
-	// 	}
 
-	// }
-}
 func cyclicChecker(gloablTable *symbolTable, starter string, classToFind *symbolTable, visited map[string]bool) bool {
 
 	class := gloablTable.getEntry(
@@ -435,33 +427,42 @@ func cyclicChecker(gloablTable *symbolTable, starter string, classToFind *symbol
 
 }
 
-func recursiveInherianceShadowCheck(currentClassRecords []*symbolTableRecord, inheritedClassTable *symbolTable) {
-	for _, record := range currentClassRecords {
+func (v *declarationVisitor) visitClassDecl(n *classDecl) {
+	table := n.getTable()
+	marker := make(map[*symbolTable]bool)
+	for _, record := range table.getRecords() {
+		if record.getKind() == CLASS {
+			recursiveInheritanceShadowCheck(table, record.getLink(), marker, v.getGlobalTable())
+		}
+
+	}
+}
+
+func recursiveInheritanceShadowCheck(currentClassRecords *symbolTable, inheritedClassTable *symbolTable, marker map[*symbolTable]bool, globalTable *symbolTable) {
+	if _, ok := marker[inheritedClassTable]; ok {
+		return
+	}
+
+	marker[inheritedClassTable] = true
+	for _, record := range inheritedClassTable.getRecords() {
 		switch record.getKind() {
 		case CLASS:
-			recursiveInherianceShadowCheck(record.getLink().getRecords(), inheritedClassTable)
+			recursiveInheritanceShadowCheck(currentClassRecords, record.getLink(), marker, globalTable)
 		default:
-			if inheritedClassTable.exist(record.getName(), record.getKind(), record.getType()) {
+
+			if currentClassRecords.exist(record.getName(), record.getKind(), record.getType()) {
 				switch record.getKind() {
-				default:
-					saveErrorNew(record.getLine(), shadowWarn, record.getName())
-					// if record.getLine() == 20 && record.getName() == "evaluate" {
-					// 	x := inheritedClassTable.getEntry(
-					// 		map[int]interface{}{
-					// 			FILTER_NAME: record.getName(),
-					// 			FILTER_KIND: record.getKind(),
-					// 		},
-					// 	)
-					// 	fmt.Println("x:", x)
-					// 	fmt.Println(x.getType().typeInfo)
-					// 	fmt.Println(record)
-					// 	fmt.Println(record.getType().typeInfo)
-					// 	for k, v := range inheritedClassTable.records {
-					// 		fmt.Println(k, " ", v)
-					// 	}
-					// }
+				case VARIABLE, FUNCDECL:
+					entry := currentClassRecords.getEntry(
+						map[int]interface{}{
+							FILTER_NAME: record.getName(),
+							FILTER_KIND: record.getKind(),
+						},
+					)
+					saveErrorNew(entry.getLine(), shadowWarn, entry.getName())
 				}
 			}
+
 		}
 	}
 }
