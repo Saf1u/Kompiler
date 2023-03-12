@@ -15,6 +15,7 @@ const (
 	FILTER_TYPE = iota
 	FILTER_NAME
 	FILTER_KIND
+	FILTER_LINK
 )
 
 func getNextID() string {
@@ -970,15 +971,17 @@ func (s *symbolTable) getEntry(req map[int]interface{}) *symbolTableRecord {
 		switch filterType {
 		case FILTER_KIND:
 			kind := val.(string)
-			records = filter(records, kind, func(s *symbolTableRecord) string { return s.getKind() })
+			records = filter(records, kind, func(s *symbolTableRecord) interface{} { return s.getKind() })
 		case FILTER_NAME:
 			name := val.(string)
-			records = filter(records, name, func(s *symbolTableRecord) string { return s.getName() })
+			records = filter(records, name, func(s *symbolTableRecord) interface{}  { return s.getName() })
 			
 		case FILTER_TYPE:
 			typeIn := val.(*typeRecord).typeInfo
-			records = filter(records, typeIn, func(s *symbolTableRecord) string { return s.getType().typeInfo })
-			fmt.Println(records)
+			records = filter(records, typeIn, func(s *symbolTableRecord) interface{}  { return s.getType().typeInfo })
+		case FILTER_LINK:
+			typeIn := val.(*symbolTable)
+			records = filter(records, typeIn, func(s *symbolTableRecord) interface{}  { return s.getLink()})
 		}
 	}
 	if len(records) == 0 {
@@ -990,7 +993,7 @@ func (s *symbolTable) getEntry(req map[int]interface{}) *symbolTableRecord {
 	return nil
 }
 
-func filter(records map[string]*symbolTableRecord, filter string, filterFunc func(*symbolTableRecord) string) map[string]*symbolTableRecord {
+func filter(records map[string]*symbolTableRecord, filter interface{}, filterFunc func(*symbolTableRecord) interface{}) map[string]*symbolTableRecord {
 	temp := make(map[string]*symbolTableRecord)
 	for key, record := range records {
 		if filterFunc(record) == filter {

@@ -39,6 +39,7 @@ const (
 	inheritedClassNotDeclaredError      = "class \"%s\" not declared so cannot be inherited:line %d"
 	inheritedClassAlreadyInheritedError = "class \"%s\" already inherited:line %d"
 	shadowWarn                          = "member \"%s\" is being shadowed:line %d"
+	cyclicDependencyError               = "class \"%s\" is being cyclicly inherited:line %d"
 )
 
 var errorBin = map[int][]string{}
@@ -334,7 +335,7 @@ func (v *declarationVisitor) visitClassDecl(n *classDecl) {
 	for left != nil {
 		switch left.(type) {
 		case *inheritanceNode:
-			inheritanceList := strings.Split(left.getTable().getSingleEntry().getName(), "|")
+			inheritanceList := strings.Split(left.getTable().getSingleEntry().getName(), typeSepeator)
 			for _, inheritedClass := range inheritanceList {
 				if inheritedClass != "" {
 					class := v.getGlobalTable().getEntry(
@@ -344,37 +345,42 @@ func (v *declarationVisitor) visitClassDecl(n *classDecl) {
 					)
 					if class == nil {
 						saveErrorNew(left.getLineNumber(), inheritedClassNotDeclaredError, inheritedClass)
-					} else {
+						continue
+					}
 
-						entry := n.getTable().getEntry(
-							map[int]interface{}{
-								FILTER_NAME: inheritedClass,
-								FILTER_KIND: CLASS,
-							})
-						if entry != nil {
-							saveErrorNew(left.getLineNumber(), inheritedClassAlreadyInheritedError, inheritedClass)
-						} else {
-							inheritedClassTable := class.getLink()
-							switch inheritedClassTable.getEntry(map[int]interface{}{FILTER_NAME: inheritedClass, FILTER_KIND: CLASS}) {
-							case nil:
-								
-							default:
-								inheritedClass := newRecord(inheritedClass, "class", "", left.getLineNumber(), nil, inheritedClassTable)
-								n.getTable().addRecord(inheritedClass)
-								currentClassRecords := n.getTable().getRecords()
-								for _, record := range currentClassRecords {
-									if inheritedClassTable.exist(record.getName(), record.getKind(), record.getType()) {
-										switch record.getKind() {
-										default:
-											saveErrorNew(record.getLine(), shadowWarn, record.getName())
-										}
-									}
+					entry := n.getTable().getEntry(
+						map[int]interface{}{
+							FILTER_NAME: inheritedClass,
+							FILTER_KIND: CLASS,
+						})
+					if entry != nil {
+						saveErrorNew(left.getLineNumber(), inheritedClassAlreadyInheritedError, inheritedClass)
+						continue
+					}
+					inheritedClassTable := class.getLink()
+					if inheritedClassTable == n.getTable() {
+						saveErrorNew(left.getLineNumber(), cyclicDependencyError, inheritedClass)
+						continue
+					}
+					switch inheritedClassTable.getEntry(map[int]interface{}{FILTER_LINK: n.getTable()}) {
+
+					case nil:
+						inheritedClass := newRecord(inheritedClass, "class", "", left.getLineNumber(), nil, inheritedClassTable)
+						n.getTable().addRecord(inheritedClass)
+						currentClassRecords := n.getTable().getRecords()
+						for _, record := range currentClassRecords {
+							if inheritedClassTable.exist(record.getName(), record.getKind(), record.getType()) {
+								switch record.getKind() {
+								default:
+									saveErrorNew(record.getLine(), shadowWarn, record.getName())
 								}
 							}
-
 						}
+					default:
+						saveErrorNew(left.getLineNumber(), cyclicDependencyError, inheritedClass)
 
 					}
+
 				}
 			}
 
