@@ -40,6 +40,7 @@ const (
 	inheritedClassAlreadyInheritedError = "class \"%s\" already inherited:line %d"
 	shadowWarn                          = "member \"%s\" is being shadowed:line %d"
 	cyclicDependencyError               = "class \"%s\" is being cyclicly inherited:line %d"
+	functionNotDefinedError             = "function \"%s\" declared in class \"%s\" not defined:line %d"
 )
 
 var errorBin = map[int][]string{}
@@ -314,7 +315,14 @@ func (v *declarationVisitor) visitProgram(n *program) {
 				if class == nil {
 					saveErrorNew(entry.getLine(), classNotDeclaredError, parts[0], parts[1])
 				} else {
-					function := class.getLink().getEntryByName(parts[1])
+					function := class.getLink().getEntry(
+
+						map[int]interface{}{
+							FILTER_NAME: parts[1],
+							FILTER_KIND: FUNCDECL,
+							FILTER_TYPE: entry.getType(),
+						},
+					)
 					if function == nil {
 						saveErrorNew(entry.getLine(), functionNotDeclaredError, parts[1], parts[0])
 					}
@@ -324,7 +332,7 @@ func (v *declarationVisitor) visitProgram(n *program) {
 
 		}
 	}
-	// v.getGlobalTable().print(10)
+	v.getGlobalTable().print(10)
 	for _, line := range errorBin {
 		for _, e := range line {
 			fmt.Println(e)
@@ -429,13 +437,36 @@ func cyclicChecker(gloablTable *symbolTable, starter string, classToFind *symbol
 
 func (v *declarationVisitor) visitClassDecl(n *classDecl) {
 	table := n.getTable()
+	className := v.getGlobalTable().getEntry(
+		map[int]interface{}{
+			FILTER_LINK: table,
+		},
+	).getName()
+
 	marker := make(map[*symbolTable]bool)
 	for _, record := range table.getRecords() {
 		if record.getKind() == CLASS {
 			recursiveInheritanceShadowCheck(table, record.getLink(), marker, v.getGlobalTable())
+
+		}
+		if record.getKind() == FUNCDECL {
+			entry := v.getGlobalTable().getEntry(
+				map[int]interface{}{
+					FILTER_NAME: fmt.Sprint(className, typeSepeator, record.getName()),
+					FILTER_KIND: FUNCDEF,
+					FILTER_TYPE: record.getType(),
+				},
+			)
+			if entry == nil {
+				saveErrorNew(record.getLine(), functionNotDefinedError, record.getName(), className)
+			} else {
+				record.SetTablelink(entry.getLink())
+			}
+
 		}
 
 	}
+
 }
 
 func recursiveInheritanceShadowCheck(currentClassRecords *symbolTable, inheritedClassTable *symbolTable, marker map[*symbolTable]bool, globalTable *symbolTable) {
