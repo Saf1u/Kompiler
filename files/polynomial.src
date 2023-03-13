@@ -46,9 +46,10 @@ localvar resultc: color;
 
 
 
-function main() => void
+function main(f1:float) => void
 {
   localvar f1: LINEAR(2, 3.5);
+  //x=id[1][2][x][1*2+4*6+3+5/3];
   localvar f2: QUADRATIC(-2.0, 1.0, 0.0);
   localvar counter: integer ;	
   counter = id.id.id.id;

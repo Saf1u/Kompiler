@@ -19,6 +19,14 @@ const (
 	FPARAMLIST    = "fparamList"
 	RETURNTYPE    = "returnType"
 	FUNCDEF       = "funcdef"
+	INTLIT        = "intlit"
+	FLOATLIT      = "floatlit"
+	INTEGER       = "INTEGER"
+	FLOAT         = "FLOAT"
+	TYPE_ERR      = "ERR"
+	INDEXING_ERR  = "ERRIN"
+	ACTIVE_VAR    = "VAR_ENTRY_FOR_A_SCOPE"
+	ACTIVE_PARAMETER="PARAM_ENTRY_FOR_A_SCOPE"
 )
 
 /*
@@ -41,6 +49,7 @@ const (
 	shadowWarn                          = "member \"%s\" is being shadowed:line %d"
 	cyclicDependencyError               = "class \"%s\" is being cyclicly inherited:line %d"
 	functionNotDefinedError             = "function \"%s\" declared in class \"%s\" not defined:line %d"
+	funcParameterShadowed               = "function parameter \"%s\" is being shadowed:line %d"
 )
 
 var errorBin = map[int][]string{}
@@ -97,9 +106,15 @@ type visitor interface {
 	visitFuncCall(*functionCall)
 	visitProgram(*program)
 	visitAssign(*assignStatNode)
+	propagateScope(string)
+	getGlobalTable() *symbolTable 
 }
 type defaultVisitor struct {
 	gloablTable *symbolTable
+}
+
+func (v *defaultVisitor) propagateScope(s string) {
+
 }
 
 func (v *defaultVisitor) getGlobalTable() *symbolTable {
@@ -296,6 +311,94 @@ func (v *defaultVisitor) visitAssign(n *assignStatNode) {
 func (v *defaultVisitor) visitProgram(n *program) {
 
 }
+
+type typeCheckVisitor struct {
+	*defaultVisitor
+	scope string
+}
+func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
+	v.scope = scopeInfo
+}
+
+// func (v *typeCheckVisitor) visitAdd(n *intLitNode) {
+// 	leftop := n.getLeftMostChild()
+// 	rightop := leftop.getRightSibling()
+// 	typeLeftOp := leftop.getTable().getSingleEntry().getType()
+// 	typeRightOp := rightop.getTable().getSingleEntry().getType()
+// 	var rec *symbolTableRecord
+// 	if !typeLeftOp.equal(typeRightOp) {
+// 		fmt.Println("type mismatch")
+// 		rec = newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+
+// 	} else {
+// 		rec = newRecord(typeLeftOp.typeInfo, typeLeftOp.typeInfo, "", n.getLineNumber(), newTypeRecord(typeLeftOp.typeInfo), nil)
+// 	}
+// 	n.getTable().addRecord(rec)
+// }
+// func (v *typeCheckVisitor) visitMult(n *intLitNode) {
+// 	leftop := n.getLeftMostChild()
+// 	rightop := leftop.getRightSibling()
+// 	typeLeftOp := leftop.getTable().getSingleEntry().getType()
+// 	typeRightOp := rightop.getTable().getSingleEntry().getType()
+// 	var rec *symbolTableRecord
+// 	if !typeLeftOp.equal(typeRightOp) || typeLeftOp.String() == TYPE_ERR || typeRightOp.String() == TYPE_ERR {
+// 		fmt.Println("type mismatch")
+// 		rec = newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+
+// 	} else {
+// 		rec = newRecord(typeLeftOp.String(), typeLeftOp.String(), "", n.getLineNumber(), newTypeRecord(typeLeftOp.String()), nil)
+// 	}
+// 	n.getTable().addRecord(rec)
+// }
+
+// func (v *typeCheckVisitor) visitIntlit(n *intLitNode) {
+// 	intRec := newRecord(INTLIT, INTLIT, "", n.getLineNumber(), newTypeRecord(INTLIT), nil)
+// 	n.getTable().addRecord(intRec)
+// }
+// func (v *typeCheckVisitor) visitFloatLit(n *intLitNode) {
+// 	floatRec := newRecord(FLOATLIT, FLOATLIT, "", n.getLineNumber(), newTypeRecord(FLOATLIT), nil)
+// 	n.getTable().addRecord(floatRec)
+// }
+// func (v *typeCheckVisitor) visitNot(n *intLitNode) {
+// 	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+// 	n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
+
+// }
+// func (v *typeCheckVisitor) visitSign(n *intLitNode) {
+// 	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+// 	n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
+
+// }
+func (v *typeCheckVisitor) visitVar(n *varNode) {
+	fmt.Println(v.scope)
+	// leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+	// n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
+
+}
+// func (v *typeCheckVisitor) visitIndiceList(n *indiceListNode) {
+// 	child := n.getLeftMostChild()
+// 	count := 0
+// 	err := false
+// 	for child != nil {
+// 		switch child.(type) {
+// 		default:
+// 			if child.getTable().getSingleEntry().getType().String() != INTLIT {
+// 				fmt.Println("indexing error indexing array with not int")
+// 				err = true
+// 			}
+// 			count++
+
+// 		case *epsilonNode:
+
+// 		}
+// 	}
+// 	if err {
+// 		n.getTable().addRecord(newRecord(INDEXING_ERR, INDEXING_ERR, "", n.getLineNumber(), newTypeRecord(INDEXING_ERR), nil))
+// 	} else {
+// 		n.getTable().addRecord(newRecord("", "", "", n.getLineNumber(), newTypeRecord(fmt.Sprint(count)), nil))
+// 	}
+
+// }
 
 type declarationVisitor struct {
 	*defaultVisitor
@@ -505,11 +608,14 @@ type tableVisitor struct {
 func NewTableVisitor() []visitor {
 	gloablTable := makeTable()
 	visitors := make([]visitor, 0)
-	visitors = append(visitors, &tableVisitor{&defaultVisitor{gloablTable: gloablTable}})
+	visitors = append(visitors, &tableVisitor{ &defaultVisitor{gloablTable: gloablTable}})
 	visitors = append(visitors, &inheritVisitor{&defaultVisitor{gloablTable: gloablTable}})
 	visitors = append(visitors, &declarationVisitor{&defaultVisitor{gloablTable: gloablTable}})
+	visitors = append(visitors, &typeCheckVisitor{ &defaultVisitor{gloablTable: gloablTable},""})
 	return visitors
 }
+
+
 
 // visit provides a mock function with given fields: n*
 func (v *tableVisitor) visit(n node) {
@@ -700,6 +806,17 @@ func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
 
 	}
 
+}
+func (v *tableVisitor) visitVar(n *varNode) {
+	// switch n.getLeftMostChild().(type) {
+	// case *idNode:
+	// 	idEntry := n.getLeftMostChild().getSingleEntry()
+	// 	variable := newRecord(idEntry.getName(), ACTIVE_VAR, v.scopeDetails, n.getLineNumber(), nil, nil)
+	// 	if !v.gloablTable.exist(idEntry.getName(), ACTIVE_VAR, nil) {
+	// 		v.getGlobalTable().addRecord(variable)
+	// 	}
+	// default:
+	// }
 }
 
 // visitFuncDef provides a mock function with given fields: n*
@@ -912,11 +1029,6 @@ func (v *tableVisitor) visitStatBlock(n *statBlockNode) {
 func (v *tableVisitor) visitType(n *typeNode) {
 	record := newRecord(n.typeName, TYPE, "", n.getLineNumber(), newTypeRecord(""), nil)
 	n.table.addRecord(record)
-
-}
-
-// visitVar provides a mock function with given fields: n*
-func (v *tableVisitor) visitVar(n *varNode) {
 
 }
 

@@ -1122,6 +1122,10 @@ func (s *symbolTableRecord) SetTypeEntry(typeRec *typeRecord) {
 func (s *symbolTableRecord) SetVisibilityEntry(visibility string) {
 	s.visibility = visibility
 }
+func (s *symbolTableRecord) String() string {
+	return fmt.Sprint(s.name, "~", s.typeEntry.typeInfo)
+
+}
 
 type typeRecord struct {
 	typeInfo string
@@ -1329,6 +1333,16 @@ type funcDefNode struct {
 }
 
 func (i *funcDefNode) Accept(v visitor) {
+	scope := i.getTable()
+	gloablTable := v.getGlobalTable()
+	entry := gloablTable.getEntry(map[int]interface{}{
+		FILTER_LINK: scope,
+	})
+	typeinfo := ""
+	if entry != nil {
+		typeinfo = entry.String()
+	}
+	v.propagateScope(typeinfo)
 	n := i.getLeftMostChild()
 	for n != nil {
 		n.Accept(v)
