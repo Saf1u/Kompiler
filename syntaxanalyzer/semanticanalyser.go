@@ -7,26 +7,26 @@ import (
 
 const typeSepeator = "|"
 const (
-	ID            = "id"
-	INHERITANCE   = "inheritance"
-	VARIABLE      = "variable"
-	FUNCDECL      = "funcdecl"
-	CLASS         = "class"
-	TYPE          = "type"
-	VISIBILITY    = "visibility"
-	DIMENSIONLIST = "dimensionList"
-	DIMENSION     = "dimension"
-	FPARAMLIST    = "fparamList"
-	RETURNTYPE    = "returnType"
-	FUNCDEF       = "funcdef"
-	INTLIT        = "intlit"
-	FLOATLIT      = "floatlit"
-	INTEGER       = "INTEGER"
-	FLOAT         = "FLOAT"
-	TYPE_ERR      = "ERR"
-	INDEXING_ERR  = "ERRIN"
-	ACTIVE_VAR    = "VAR_ENTRY_FOR_A_SCOPE"
-	ACTIVE_PARAMETER="PARAM_ENTRY_FOR_A_SCOPE"
+	ID               = "id"
+	INHERITANCE      = "inheritance"
+	VARIABLE         = "variable"
+	FUNCDECL         = "funcdecl"
+	CLASS            = "class"
+	TYPE             = "type"
+	VISIBILITY       = "visibility"
+	DIMENSIONLIST    = "dimensionList"
+	DIMENSION        = "dimension"
+	FPARAMLIST       = "fparamList"
+	RETURNTYPE       = "returnType"
+	FUNCDEF          = "funcdef"
+	INTLIT           = "intlit"
+	FLOATLIT         = "floatlit"
+	INTEGER          = "INTEGER"
+	FLOAT            = "FLOAT"
+	TYPE_ERR         = "ERR"
+	INDEXING_ERR     = "ERRIN"
+	ACTIVE_VAR       = "VAR_ENTRY_FOR_A_SCOPE"
+	ACTIVE_PARAMETER = "PARAM_ENTRY_FOR_A_SCOPE"
 )
 
 /*
@@ -58,11 +58,6 @@ func saveErrorNew(lineNum int, err string, args ...any) {
 	args = append(args, lineNum)
 	err = fmt.Sprintf(err, args...)
 	errorBin[lineNum] = append(errorBin[lineNum], err)
-
-}
-
-func saveError(n node, record *symbolTableRecord) {
-	errorBin[n.getLineNumber()] = append(errorBin[n.getLineNumber()], fmt.Sprintf(sameDeclarationInScopeError, record.getKind(), record.getName(), n.getLineNumber()))
 
 }
 
@@ -107,7 +102,7 @@ type visitor interface {
 	visitProgram(*program)
 	visitAssign(*assignStatNode)
 	propagateScope(string)
-	getGlobalTable() *symbolTable 
+	getGlobalTable() *symbolTable
 }
 type defaultVisitor struct {
 	gloablTable *symbolTable
@@ -316,6 +311,7 @@ type typeCheckVisitor struct {
 	*defaultVisitor
 	scope string
 }
+
 func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 	v.scope = scopeInfo
 }
@@ -370,11 +366,19 @@ func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 
 // }
 func (v *typeCheckVisitor) visitVar(n *varNode) {
-	fmt.Println(v.scope)
+	lookupInfo := strings.Split(v.scope, "~")
+	scope := v.getGlobalTable().getEntry(
+		map[int]interface{}{
+			FILTER_TYPE: newTypeRecord(lookupInfo[1]),
+			FILTER_NAME: lookupInfo[0],
+		},
+	)
+	fmt.Println(scope.getName())
 	// leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
 	// n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
 
 }
+
 // func (v *typeCheckVisitor) visitIndiceList(n *indiceListNode) {
 // 	child := n.getLeftMostChild()
 // 	count := 0
@@ -587,12 +591,7 @@ func recursiveInheritanceShadowCheck(currentClassRecords *symbolTable, inherited
 			if currentClassRecords.exist(record.getName(), record.getKind(), record.getType()) {
 				switch record.getKind() {
 				case VARIABLE, FUNCDECL:
-					entry := currentClassRecords.getEntry(
-						map[int]interface{}{
-							FILTER_NAME: record.getName(),
-							FILTER_KIND: record.getKind(),
-						},
-					)
+					entry := currentClassRecords.getEntry(map[int]interface{}{FILTER_NAME: record.getName(), FILTER_KIND: record.getKind()})
 					saveErrorNew(entry.getLine(), shadowWarn, entry.getName())
 				}
 			}
@@ -608,14 +607,12 @@ type tableVisitor struct {
 func NewTableVisitor() []visitor {
 	gloablTable := makeTable()
 	visitors := make([]visitor, 0)
-	visitors = append(visitors, &tableVisitor{ &defaultVisitor{gloablTable: gloablTable}})
+	visitors = append(visitors, &tableVisitor{&defaultVisitor{gloablTable: gloablTable}})
 	visitors = append(visitors, &inheritVisitor{&defaultVisitor{gloablTable: gloablTable}})
 	visitors = append(visitors, &declarationVisitor{&defaultVisitor{gloablTable: gloablTable}})
-	visitors = append(visitors, &typeCheckVisitor{ &defaultVisitor{gloablTable: gloablTable},""})
+	visitors = append(visitors, &typeCheckVisitor{&defaultVisitor{gloablTable: gloablTable}, ""})
 	return visitors
 }
-
-
 
 // visit provides a mock function with given fields: n*
 func (v *tableVisitor) visit(n node) {
@@ -648,7 +645,7 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 				}
 				n.getTable().addRecord(newRecord(entry.getName(), entry.getKind(), entry.getVisibility(), entry.getLine(), entry.getType(), nil))
 			} else {
-				saveError(left, entry)
+				saveErrorNew(entry.getLine(), sameDeclarationInScopeError, entry.getKind(), entry.getName())
 			}
 		}
 		left = left.getRightSibling()
@@ -659,7 +656,7 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 
 		v.getGlobalTable().addRecord(class)
 	} else {
-		saveError(n, class)
+		saveErrorNew(class.getLine(), sameDeclarationInScopeError, class.getKind(), class.getName())
 	}
 
 }
@@ -808,15 +805,7 @@ func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
 
 }
 func (v *tableVisitor) visitVar(n *varNode) {
-	// switch n.getLeftMostChild().(type) {
-	// case *idNode:
-	// 	idEntry := n.getLeftMostChild().getSingleEntry()
-	// 	variable := newRecord(idEntry.getName(), ACTIVE_VAR, v.scopeDetails, n.getLineNumber(), nil, nil)
-	// 	if !v.gloablTable.exist(idEntry.getName(), ACTIVE_VAR, nil) {
-	// 		v.getGlobalTable().addRecord(variable)
-	// 	}
-	// default:
-	// }
+
 }
 
 // visitFuncDef provides a mock function with given fields: n*
@@ -833,7 +822,17 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 			case *statBlockNode:
 				records := left.getTable().getRecords()
 				for _, record := range records {
-					n.getTable().addRecord(record)
+					existingRecord := n.getTable().getEntry(
+						map[int]interface{}{
+							FILTER_NAME: record.getName(),
+						},
+					)
+					if existingRecord != nil {
+						saveErrorNew(record.getLine(), sameDeclarationInScopeError,record.getKind(), record.getName())
+					} else {
+						n.getTable().addRecord(record)
+					}
+
 				}
 			case *fparamListNode:
 				records := left.getTable().getRecords()
@@ -867,7 +866,7 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 		if !v.getGlobalTable().exist(id, funcDefEntry.getKind(), funcDefEntry.getType()) {
 			v.getGlobalTable().addRecord(funcDefEntry)
 		} else {
-			saveError(n, funcDefEntry)
+			saveErrorNew(funcDefEntry.getLine(), sameDeclarationInScopeError, funcDefEntry.getKind(), funcDefEntry.getName())
 		}
 
 	}
@@ -1017,7 +1016,7 @@ func (v *tableVisitor) visitStatBlock(n *statBlockNode) {
 			if !n.table.exist(record.getName(), record.getKind(), record.getType()) {
 				n.table.addRecord(record)
 			} else {
-				saveError(n, record)
+				saveErrorNew(record.getLine(), sameDeclarationInScopeError, record.getKind(), record.getName())
 			}
 		}
 		left = left.getRightSibling()
