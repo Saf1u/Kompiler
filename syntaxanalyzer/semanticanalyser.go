@@ -615,27 +615,21 @@ func cyclicChecker(gloablTable *symbolTable, starter string, classToFind *symbol
 
 	inheritanceList := strings.Split(entry, typeSepeator)
 	for _, inheritedClass := range inheritanceList {
-		if inheritedClass != "" {
-			class := gloablTable.getEntry(
-				map[int]interface{}{
-					FILTER_NAME: inheritedClass,
-				},
-			)
-
-			if class != nil {
-				if class.getLink() == classToFind {
-					return true
-				} else {
-					if _, ok := visited[inheritedClass]; !ok {
-						ret := cyclicChecker(gloablTable, inheritedClass, classToFind, visited)
-						if ret {
-							return ret
-						}
-					}
-				}
-
+		if inheritedClass == "" {
+			continue
+		}
+		class := gloablTable.getEntry(map[int]interface{}{FILTER_NAME: inheritedClass})
+		if class == nil {
+			continue
+		}
+		if class.getLink() == classToFind {
+			return true
+		} else {
+			if _, ok := visited[inheritedClass]; !ok && cyclicChecker(gloablTable, inheritedClass, classToFind, visited) {
+				return true
 			}
 		}
+
 	}
 
 	return false
