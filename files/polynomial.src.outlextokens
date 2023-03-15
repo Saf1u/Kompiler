@@ -34,42 +34,43 @@
 
 [function, function, 35][id, QUADRATIC, 35][sr, ::, 35][constructor, constructor, 35][lpar, (, 35][id, A, 35][colon, :, 35][float, float, 35][comma, ,, 35][id, C, 35][colon, :, 35][float, float, 35][lsqbr, [, 35][rsqbr, ], 35][rpar, ), 35]
 [lcurbr, {, 36]
-[localvar, localvar, 37][id, x, 37][colon, :, 37][id, int, 37][semi, ;, 37]
+[localvar, localvar, 37][id, x, 37][colon, :, 37][id, int, 37][lsqbr, [, 37][rsqbr, ], 37][semi, ;, 37]
 [localvar, localvar, 38][id, y, 38][colon, :, 38][id, int, 38][lsqbr, [, 38][rsqbr, ], 38][semi, ;, 38]
-[id, y, 39][lsqbr, [, 39][intlit, 1, 39][rsqbr, ], 39][equal, =, 39][id, x, 39][semi, ;, 39]
-[id, y, 40][lsqbr, [, 40][intlit, 1, 40][plus, +, 40][lpar, (, 40][minus, -, 40][intlit, 1, 40][rpar, ), 40][rsqbr, ], 40][lsqbr, [, 40][intlit, 1, 40][rsqbr, ], 40][equal, =, 40][id, z, 40][semi, ;, 40]
-[blockcmt, /*self.a = A;\nself.b = B;\nself.c = C;*/, 43]
+[id, y, 39][equal, =, 39][id, x, 39][semi, ;, 39]
+[id, y, 40][lsqbr, [, 40][lpar, (, 40][intlit, 1, 40][plus, +, 40][lpar, (, 40][intlit, 1, 40][mult, *, 40][intlit, 2, 40][plus, +, 40][intlit, 3, 40][mult, *, 40][intlit, 4, 40][plus, +, 40][intlit, 6, 40][rpar, ), 40][div, /, 40][intlit, 1, 40][plus, +, 40][intlit, 2, 40][plus, +, 40][intlit, 3, 40][minus, -, 40][intlit, 1, 40][rpar, ), 40][or, or, 40][lpar, (, 40][intlit, 1, 40][plus, +, 40][intlit, 2, 40][mult, *, 40][intlit, 6, 40][plus, +, 40][intlit, 4, 40][rpar, ), 40][rsqbr, ], 40][equal, =, 40][id, z, 40][semi, ;, 40]
+[inlinecmt, // call(y[1],x,1.1,2,4,4+3-2+3);, 41]
+[blockcmt, /*self.a = A;\nself.b = B;\nself.c = C;*/, 44]
 
-[rcurbr, }, 45]
-
-
-
-[function, function, 49][id, main, 49][lpar, (, 49][id, f1, 49][colon, :, 49][float, float, 49][rpar, ), 49][arrow, =>, 49][void, void, 49]
-[lcurbr, {, 50]
-[localvar, localvar, 51][id, z1, 51][colon, :, 51][id, LINEAR, 51][lpar, (, 51][intlit, 2, 51][comma, ,, 51][floatlit, 3.5, 51][rpar, ), 51][semi, ;, 51]
-[inlinecmt, //x=id[1][2][x][1*2+4*6+3+5/3];, 52]
-[localvar, localvar, 53][id, f2, 53][colon, :, 53][id, QUADRATIC, 53][lpar, (, 53][minus, -, 53][floatlit, 2.0, 53][comma, ,, 53][floatlit, 1.0, 53][comma, ,, 53][floatlit, 0.0, 53][rpar, ), 53][semi, ;, 53]
-[localvar, localvar, 54][id, counter, 54][colon, :, 54][integer, integer, 54][semi, ;, 54]
-[inlinecmt, //counter = id.id.id.id;, 55]
-
-[while, while, 57][lpar, (, 57][id, counter, 57][leq, <=, 57][intlit, 10, 57][rpar, ), 57]
-[lcurbr, {, 58]
-[write, write, 59][lpar, (, 59][id, counter, 59][rpar, ), 59][semi, ;, 59]
-[write, write, 60][lpar, (, 60][id, f1, 60][dot, ., 60][id, evaluate, 60][lpar, (, 60][id, counter, 60][rpar, ), 60][rpar, ), 60][semi, ;, 60]
-[write, write, 61][lpar, (, 61][id, f2, 61][dot, ., 61][id, evaluate, 61][lpar, (, 61][id, counter, 61][rpar, ), 61][rpar, ), 61][semi, ;, 61]
-[rcurbr, }, 62][semi, ;, 62]
-[rcurbr, }, 63]
+[rcurbr, }, 46]
 
 
 
-[function, function, 67][id, test, 67][lpar, (, 67][rpar, ), 67][arrow, =>, 67][id, int, 67]
-[lcurbr, {, 68]
+[function, function, 50][id, main, 50][lpar, (, 50][id, f1, 50][colon, :, 50][float, float, 50][rpar, ), 50][arrow, =>, 50][void, void, 50]
+[lcurbr, {, 51]
+[localvar, localvar, 52][id, z1, 52][colon, :, 52][id, LINEAR, 52][lpar, (, 52][intlit, 2, 52][comma, ,, 52][floatlit, 3.5, 52][rpar, ), 52][semi, ;, 52]
+[inlinecmt, //x=id[1][2][x][1*2+4*6+3+5/3];, 53]
+[localvar, localvar, 54][id, f2, 54][colon, :, 54][id, QUADRATIC, 54][lpar, (, 54][minus, -, 54][floatlit, 2.0, 54][comma, ,, 54][floatlit, 1.0, 54][comma, ,, 54][floatlit, 0.0, 54][rpar, ), 54][semi, ;, 54]
+[localvar, localvar, 55][id, counter, 55][colon, :, 55][integer, integer, 55][semi, ;, 55]
+[inlinecmt, //counter = id.id.id.id;, 56]
 
-[rcurbr, }, 70]
-[function, function, 71][id, test, 71][lpar, (, 71][id, x, 71][colon, :, 71][id, string, 71][rpar, ), 71][arrow, =>, 71][id, int, 71]
-[lcurbr, {, 72]
+[while, while, 58][lpar, (, 58][id, counter, 58][leq, <=, 58][intlit, 10, 58][rpar, ), 58]
+[lcurbr, {, 59]
+[write, write, 60][lpar, (, 60][id, counter, 60][rpar, ), 60][semi, ;, 60]
+[write, write, 61][lpar, (, 61][id, f1, 61][dot, ., 61][id, evaluate, 61][lpar, (, 61][id, counter, 61][rpar, ), 61][rpar, ), 61][semi, ;, 61]
+[write, write, 62][lpar, (, 62][id, f2, 62][dot, ., 62][id, evaluate, 62][lpar, (, 62][id, counter, 62][rpar, ), 62][rpar, ), 62][semi, ;, 62]
+[rcurbr, }, 63][semi, ;, 63]
+[rcurbr, }, 64]
 
-[rcurbr, }, 74]
+
+
+[function, function, 68][id, test, 68][lpar, (, 68][rpar, ), 68][arrow, =>, 68][id, int, 68]
+[lcurbr, {, 69]
+
+[rcurbr, }, 71]
+[function, function, 72][id, test, 72][lpar, (, 72][id, x, 72][colon, :, 72][id, string, 72][rpar, ), 72][arrow, =>, 72][id, int, 72]
+[lcurbr, {, 73]
+
+[rcurbr, }, 75]
 
 
 

@@ -34,10 +34,11 @@ function QUADRATIC::evaluate (x:float) => int{
 
 function QUADRATIC::constructor(A: float, C: float[])
 {
-  localvar x: int;
+  localvar x: int[];
   localvar y:int[];
-  y[1]=x;
-  y[1+(-1.1)]=z;
+  y=x;
+  y[(1+(1*2+3*4+6)/1+2+3-1)or(1+2*6+4)]=z;
+ // call(y[1],x,1.1,2,4,4+3-2+3);
 /*self.a = A;
 self.b = B;
 self.c = C;*/

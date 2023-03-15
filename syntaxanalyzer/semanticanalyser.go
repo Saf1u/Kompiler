@@ -2,7 +2,7 @@ package syntaxanalyzer
 
 import (
 	"fmt"
-	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -20,10 +20,10 @@ const (
 	FPARAMLIST       = "fparamList"
 	RETURNTYPE       = "returnType"
 	FUNCDEF          = "funcdef"
-	INTLIT           = "intlit"
-	FLOATLIT         = "floatlit"
-	INTEGER          = "INTEGER"
-	FLOAT            = "FLOAT"
+	INTLIT           = "int"
+	FLOATLIT         = "float"
+	INTEGER          = "int"
+	FLOAT            = "float"
 	TYPE_ERR         = "ERR"
 	INDEXING_ERR     = "ERRIN"
 	ACTIVE_VAR       = "VAR_ENTRY_FOR_A_SCOPE"
@@ -56,6 +56,7 @@ const (
 	typeMismatchError                   = "varaible \"%s\" not used with declared type line:%d"
 	cannotAssignError                   = "cannot assign mismatched types line:%d"
 	arithmeticError                     = "cannot operate on mismatched types line:%d"
+	undeclaredClassError                = "accessing member of undeclared class \"%s\" line:%d"
 )
 
 var errorBin = map[int][]string{}
@@ -326,6 +327,35 @@ type typeCheckVisitor struct {
 func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 	v.scope = scopeInfo
 }
+func (v *typeCheckVisitor) visitDot(n *dotNode) {
+	// leftop := n.getLeftMostChild()
+	// rightop := leftop.getRightSibling()
+	// typeLeftOp := leftop.getTable().getSingleEntry().getType()
+	// typeRightOp := rightop.getTable().getSingleEntry().getType()
+	// if typeLeftOp.typeInfo == TYPE_ERR || typeRightOp.typeInfo == TYPE_ERR {
+	// 	saveErrorNew(n.getLineNumber(), arithmeticError)
+	// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+	// 	n.getTable().addRecord(rec)
+	// 	return
+	// }
+	// class := v.getGlobalTable().getEntry(
+	// 	map[int]interface{}{
+	// 		FILTER_NAME: typeLeftOp.typeInfo,
+	// 	},
+	// )
+	// if class == nil {
+	// 	saveErrorNew(n.getLineNumber(), undeclaredClassError, typeLeftOp.typeInfo)
+	// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+	// 	n.getTable().addRecord(rec)
+	// 	return
+	// }
+	// classMember := class.getLink().getEntry(
+	// 	map[int]interface{}{
+	// 		FILTER_NAME: rightop.getSingleEntry().getName(),
+	// 	},
+	// )
+
+}
 
 func (v *typeCheckVisitor) visitAdd(n *addNode) {
 	leftop := n.getLeftMostChild()
@@ -341,6 +371,15 @@ func (v *typeCheckVisitor) visitAdd(n *addNode) {
 		rec = newRecord(typeLeftOp.typeInfo, typeLeftOp.typeInfo, "", n.getLineNumber(), newTypeRecord(typeLeftOp.typeInfo), nil)
 	}
 	n.getTable().addRecord(rec)
+}
+func (v *typeCheckVisitor) visitParamlist(n *paramListNode) {
+	// left := n.getLeftMostChild()
+	// typeInfo := "|"
+	// for left != nil {
+	// 	typeInfo = fmt.Sprintln(typeInfo, left.getSingleEntry().getType().typeInfo, "|")
+	// 	left = left.getRightSibling()
+	// }
+	// fmt.Println("paramTypeInfo:", typeInfo)
 }
 
 func (v *typeCheckVisitor) visitMult(n *multNode) {
@@ -437,13 +476,17 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 		return
 	}
 	typeEntry := entry.getType().typeInfo
-
-	if typeInfoId != "" {
-		typeInfoId = fmt.Sprint("^", typeInfoId, indiceList.getType().typeInfo)
-	} else {
-		typeInfoId = fmt.Sprint("^[a-zA-Z]*", indiceList.getType().typeInfo)
+	actualIndexCount := 0
+	for _, char := range typeEntry {
+		if char == '[' {
+			actualIndexCount++
+		}
 	}
-	if ok, _ := regexp.MatchString(typeInfoId, typeEntry); !ok {
+	usedIndexCount, err := strconv.Atoi(indiceList.getType().typeInfo)
+	if err != nil {
+		panic(err)
+	}
+	if actualIndexCount-usedIndexCount < 0 {
 		saveErrorNew(n.getLineNumber(), typeMismatchError, identifier)
 		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
@@ -455,7 +498,22 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	} else {
 		basetype = typeEntry
 	}
-	n.getTable().addRecord(newRecord("type", "type", "", n.getLineNumber(), newTypeRecord(basetype), nil))
+	if typeInfoId != "" {
+		if basetype != typeInfoId {
+			saveErrorNew(n.getLineNumber(), typeMismatchError, identifier)
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+		}
+	} else {
+		typeInfoId = basetype
+	}
+
+	indexToAdd := actualIndexCount - usedIndexCount
+	for indexToAdd != 0 {
+		typeInfoId = fmt.Sprint(typeInfoId, "[]")
+		indexToAdd--
+	}
+	n.getTable().addRecord(newRecord(identifier, "type", "", n.getLineNumber(), newTypeRecord(typeInfoId), nil))
 
 }
 func recursivelySearchForId(classTable *symbolTable, identifier string) *symbolTableRecord {
@@ -485,7 +543,7 @@ func recursivelySearchForId(classTable *symbolTable, identifier string) *symbolT
 
 func (v *typeCheckVisitor) visitIndiceList(n *indiceListNode) {
 	child := n.getLeftMostChild()
-	indices := ""
+	counter := 0
 	for child != nil {
 		switch child.(type) {
 		case *epsilonNode:
@@ -495,15 +553,13 @@ func (v *typeCheckVisitor) visitIndiceList(n *indiceListNode) {
 				saveErrorNew(n.getLineNumber(), invalidIndexType)
 				return
 			}
-			indices = fmt.Sprint(indices, "\\[[^\\]]*\\]")
+			counter++
 
 		}
 		child = child.getRightSibling()
 	}
 
-	indices = fmt.Sprint(indices, "$")
-
-	n.getTable().addRecord(newRecord("list", "sqrbrackets", "", n.getLineNumber(), newTypeRecord(indices), nil))
+	n.getTable().addRecord(newRecord("list", "sqrbrackets", "", n.getLineNumber(), newTypeRecord(fmt.Sprint(counter)), nil))
 
 }
 
