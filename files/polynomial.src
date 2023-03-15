@@ -3,7 +3,7 @@
 
 class POLYNOMIAL isa zo {
    // public  function evaluate: (x: float) => float;
-   //  private attribute z:int;
+   //  private attribute z:integer;
 
 };
 
@@ -14,12 +14,12 @@ class LINEAR isa POLYNOMIAL {
 };
 class QUADRATIC isa LINEAR  {
   public  constructor: (A: float, B: float[]);
-   public  function evaluate: (x:float) => int;
+   public  function evaluate: (x:float) => integer;
 };
 
 class zo {
-   // private attribute z:int;
-     private attribute z:int;
+   // private attribute z:integer;
+     private attribute z:integer;
 };
 
 
@@ -28,17 +28,17 @@ class zo {
 
 
 
-function QUADRATIC::evaluate (x:float) => int{
+function QUADRATIC::evaluate (x:float) => integer{
 
 }
 
 function QUADRATIC::constructor(A: float, C: float[])
 {
-  localvar x: int[];
-  localvar y:int[];
-  y=x;
+  localvar x: integer[];
+  localvar y:integer[];
+  localvar h:integer[];
   y[(1+(1*2+3*4+6)/1+2+3-1)or(1+2*6+4)]=z;
- // call(y[1],x,1.1,2,4,4+3-2+3);
+  call(y[1],x,1.1,2,4,4+3-2+3,h);
 /*self.a = A;
 self.b = B;
 self.c = C;*/
@@ -65,11 +65,11 @@ function main(f1:float) => void
 
 
 
-function test() => int
+function test() => integer
 {
   
 }
-function test(x:string) => int
+function test(x:string) => integer
 {
   
 }

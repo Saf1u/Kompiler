@@ -20,9 +20,9 @@ const (
 	FPARAMLIST       = "fparamList"
 	RETURNTYPE       = "returnType"
 	FUNCDEF          = "funcdef"
-	INTLIT           = "int"
+	INTLIT           = "integer"
 	FLOATLIT         = "float"
-	INTEGER          = "int"
+	INTEGER          = "integer"
 	FLOAT            = "float"
 	TYPE_ERR         = "ERR"
 	INDEXING_ERR     = "ERRIN"
@@ -57,6 +57,7 @@ const (
 	cannotAssignError                   = "cannot assign mismatched types line:%d"
 	arithmeticError                     = "cannot operate on mismatched types line:%d"
 	undeclaredClassError                = "accessing member of undeclared class \"%s\" line:%d"
+	noOperationsAllowedOnArrays         = "operations not allowed on array types line:%d"
 )
 
 var errorBin = map[int][]string{}
@@ -366,20 +367,29 @@ func (v *typeCheckVisitor) visitAdd(n *addNode) {
 	if !typeLeftOp.equal(typeRightOp) {
 		saveErrorNew(n.getLineNumber(), arithmeticError)
 		rec = newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
 
-	} else {
-		rec = newRecord(typeLeftOp.typeInfo, typeLeftOp.typeInfo, "", n.getLineNumber(), newTypeRecord(typeLeftOp.typeInfo), nil)
 	}
+	if strings.ContainsRune(typeLeftOp.typeInfo, '[') || strings.ContainsRune(typeRightOp.typeInfo, '[') {
+		saveErrorNew(n.getLineNumber(), noOperationsAllowedOnArrays)
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+
+	}
+	rec = newRecord(typeLeftOp.typeInfo, typeLeftOp.typeInfo, "", n.getLineNumber(), newTypeRecord(typeLeftOp.typeInfo), nil)
+
 	n.getTable().addRecord(rec)
 }
 func (v *typeCheckVisitor) visitParamlist(n *paramListNode) {
-	// left := n.getLeftMostChild()
-	// typeInfo := "|"
-	// for left != nil {
-	// 	typeInfo = fmt.Sprintln(typeInfo, left.getSingleEntry().getType().typeInfo, "|")
-	// 	left = left.getRightSibling()
-	// }
-	// fmt.Println("paramTypeInfo:", typeInfo)
+	left := n.getLeftMostChild()
+	typeInfo := "|"
+	for left != nil {
+		typeInfo = fmt.Sprint(typeInfo, left.getSingleEntry().getType().typeInfo, "|")
+		left = left.getRightSibling()
+	}
+	n.getTable().addRecord(newRecord("paramaters", "parameters", "", n.getLineNumber(), newTypeRecord(typeInfo), nil))
 }
 
 func (v *typeCheckVisitor) visitMult(n *multNode) {
@@ -391,10 +401,19 @@ func (v *typeCheckVisitor) visitMult(n *multNode) {
 	if !typeLeftOp.equal(typeRightOp) {
 		saveErrorNew(n.getLineNumber(), arithmeticError)
 		rec = newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
 
-	} else {
-		rec = newRecord(typeLeftOp.String(), typeLeftOp.String(), "", n.getLineNumber(), newTypeRecord(typeLeftOp.String()), nil)
 	}
+	if strings.ContainsRune(typeLeftOp.typeInfo, '[') || strings.ContainsRune(typeRightOp.typeInfo, '[') {
+		saveErrorNew(n.getLineNumber(), noOperationsAllowedOnArrays)
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+
+	}
+	rec = newRecord(typeLeftOp.String(), typeLeftOp.String(), "", n.getLineNumber(), newTypeRecord(typeLeftOp.String()), nil)
+
 	n.getTable().addRecord(rec)
 }
 
@@ -422,6 +441,13 @@ func (v *typeCheckVisitor) visitAssign(n *assignStatNode) {
 	rightOp := n.getLeftMostChild().getRightSibling().getSingleEntry()
 	if !(leftOp.getType().typeInfo != TYPE_ERR && rightOp.getType().typeInfo != TYPE_ERR && leftOp.getType().typeInfo == rightOp.getType().typeInfo) {
 		saveErrorNew(n.getLineNumber(), cannotAssignError)
+	}
+	if strings.ContainsRune(leftOp.getType().typeInfo, '[') || strings.ContainsRune(rightOp.getType().typeInfo, '[') {
+		saveErrorNew(n.getLineNumber(), noOperationsAllowedOnArrays)
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+
 	}
 
 }
