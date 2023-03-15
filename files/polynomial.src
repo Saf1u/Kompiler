@@ -3,16 +3,23 @@
 
 class POLYNOMIAL  {
    // public  function evaluate: (x: float) => float;
+   //  private attribute z:int;
 
 };
 
 class LINEAR isa POLYNOMIAL {
   private attribute a: float;
   private attribute evaluate: float;
+  
 };
-class QUADRATIC isa LINEAR  {
+class QUADRATIC isa LINEAR,zo  {
   public  constructor: (A: float, B: float[]);
    public  function evaluate: (x:float) => int;
+};
+
+class zo{
+   // private attribute z:int;
+     private attribute z:int;
 };
 
 
@@ -27,25 +34,25 @@ function QUADRATIC::evaluate (x:float) => int{
 
 function QUADRATIC::constructor(A: float, C: float[])
 {
-self.a = A;
+  localvar x: int;
+  localvar y:int;
+  y=x;
+  y=z;
+/*self.a = A;
 self.b = B;
-self.c = C;
-localvar resulta: float[2];
-localvar A: float[2];
-localvar C: float[2];
-localvar resultb: float[][];
-localvar resultc: color;
+self.c = C;*/
+
 }
 
 
 
 function main(f1:float) => void
 {
-  localvar f1: LINEAR(2, 3.5);
+  localvar z1: LINEAR(2, 3.5);
   //x=id[1][2][x][1*2+4*6+3+5/3];
   localvar f2: QUADRATIC(-2.0, 1.0, 0.0);
   localvar counter: integer ;	
-  counter = id.id.id.id;
+  //counter = id.id.id.id;
 
   while(counter <= 10)
   {

@@ -393,6 +393,7 @@ func init() {
 		ss.writeEdge(assignNode.getDiagramID(), expr.getDiagramID())
 		ss.writeEdge(assignNode.getDiagramID(), identifier.getDiagramID())
 	}
+	
 	semanticActions["S28"] = func(ss *semanticStack) {
 		indiceList := ss.Pop()
 		switch v := indiceList.(type) {
@@ -405,8 +406,8 @@ func init() {
 
 		id := getNextID()
 		varN := &varNode{nodeImplementation: &nodeImplementation{lineNumber: ss.mostRecentTokenValue.LineNumber, table: makeTable(), diagramID: id}}
-		indiceList.MakeSibling(idTok, indiceList)
-		varN.AdoptChildren(indiceList, varN)
+		idTok.MakeSibling(indiceList, idTok)
+		varN.AdoptChildren(idTok, varN)
 		ss.writeNode(id, ("VarNode"))
 		ss.writeEdge(varN.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(varN.getDiagramID(), idTok.getDiagramID())
@@ -966,6 +967,13 @@ func (s *symbolTable) getSingleEntry() *symbolTableRecord {
 
 }
 func (s *symbolTable) getEntry(req map[int]interface{}) *symbolTableRecord {
+	records := s.getEntries(req)
+	if len(records) == 0 {
+		return nil
+	}
+	return records[0]
+}
+func (s *symbolTable) getEntries(req map[int]interface{}) []*symbolTableRecord {
 	records := s.records
 	for filterType, val := range req {
 		switch filterType {
@@ -995,13 +1003,12 @@ func (s *symbolTable) getEntry(req map[int]interface{}) *symbolTableRecord {
 			records = filter(records, typeIn, func(s *symbolTableRecord) interface{} { return s.getLink() })
 		}
 	}
-	if len(records) == 0 {
-		return nil
+	recordsContainer := make([]*symbolTableRecord, 0)
+	for _, record := range records {
+		recordsContainer = append(recordsContainer, record)
 	}
-	for _, rec := range records {
-		return rec
-	}
-	return nil
+
+	return recordsContainer
 }
 
 func filter(records map[string]*symbolTableRecord, filter interface{}, filterFunc func(*symbolTableRecord) interface{}) map[string]*symbolTableRecord {

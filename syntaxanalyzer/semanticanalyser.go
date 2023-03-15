@@ -2,6 +2,7 @@ package syntaxanalyzer
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -50,6 +51,10 @@ const (
 	cyclicDependencyError               = "class \"%s\" is being cyclicly inherited:line %d"
 	functionNotDefinedError             = "function \"%s\" declared in class \"%s\" not defined:line %d"
 	funcParameterShadowed               = "function parameter \"%s\" is being shadowed:line %d"
+	varNotDeclaredError                 = "variable  \"%s\" not declared in current scope:line %d"
+	invalidIndexType                    = "only integers are valid indexes:line %d"
+	typeMismatchError                   = "varaible \"%s\" not used with declared type line:%d"
+	cannotAssignError                   = "cannot assign mismatched types line:%d"
 )
 
 var errorBin = map[int][]string{}
@@ -304,7 +309,11 @@ func (v *defaultVisitor) visitAssign(n *assignStatNode) {
 
 }
 func (v *defaultVisitor) visitProgram(n *program) {
-
+	for _, line := range errorBin {
+		for _, e := range line {
+			fmt.Println(e)
+		}
+	}
 }
 
 type typeCheckVisitor struct {
@@ -347,24 +356,33 @@ func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 // 	n.getTable().addRecord(rec)
 // }
 
-// func (v *typeCheckVisitor) visitIntlit(n *intLitNode) {
-// 	intRec := newRecord(INTLIT, INTLIT, "", n.getLineNumber(), newTypeRecord(INTLIT), nil)
-// 	n.getTable().addRecord(intRec)
-// }
-// func (v *typeCheckVisitor) visitFloatLit(n *intLitNode) {
-// 	floatRec := newRecord(FLOATLIT, FLOATLIT, "", n.getLineNumber(), newTypeRecord(FLOATLIT), nil)
-// 	n.getTable().addRecord(floatRec)
-// }
-// func (v *typeCheckVisitor) visitNot(n *intLitNode) {
-// 	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
-// 	n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
+func (v *typeCheckVisitor) visitIntlit(n *intLitNode) {
+	intRec := newRecord(INTLIT, INTLIT, "", n.getLineNumber(), newTypeRecord(INTLIT), nil)
+	n.getTable().addRecord(intRec)
+}
 
-// }
-// func (v *typeCheckVisitor) visitSign(n *intLitNode) {
-// 	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
-// 	n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
+func (v *typeCheckVisitor) visitFloatLit(n *floatNode) {
+	floatRec := newRecord(FLOATLIT, FLOATLIT, "", n.getLineNumber(), newTypeRecord(FLOATLIT), nil)
+	n.getTable().addRecord(floatRec)
+}
+func (v *typeCheckVisitor) visitNot(n *notNode) {
+	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+	n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
 
-// }
+}
+func (v *typeCheckVisitor) visitSign(n *signNode) {
+	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+	n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
+
+}
+func (v *typeCheckVisitor) visitAssign(n *assignStatNode) {
+	leftOp := n.getLeftMostChild().getSingleEntry()
+	rightOp := n.getLeftMostChild().getRightSibling().getSingleEntry()
+	if !(leftOp.getType().typeInfo != TYPE_ERR && rightOp.getType().typeInfo != TYPE_ERR && leftOp.getType().typeInfo == rightOp.getType().typeInfo) {
+		saveErrorNew(n.getLineNumber(), cannotAssignError)
+	}
+
+}
 func (v *typeCheckVisitor) visitVar(n *varNode) {
 	lookupInfo := strings.Split(v.scope, "~")
 	scope := v.getGlobalTable().getEntry(
@@ -373,36 +391,118 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 			FILTER_NAME: lookupInfo[0],
 		},
 	)
-	fmt.Println(scope.getName())
-	// leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
-	// n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
+
+	left := n.getLeftMostChild().getSingleEntry()
+	indiceList := n.getLeftMostChild().getRightSibling().getTable().getEntry(
+		map[int]interface{}{
+			FILTER_NAME: "list",
+		},
+	)
+	if left.getType().typeInfo == TYPE_ERR || indiceList == nil {
+		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		return
+	}
+	identifier := left.getName()
+	typeInfoId := left.getType().typeInfo
+	isMethod := false
+	class := strings.Split(lookupInfo[0], typeSepeator)[0]
+	if class != "" {
+		isMethod = true
+	}
+	entry := scope.getLink().getEntry(
+		map[int]interface{}{
+			FILTER_NAME: identifier,
+		},
+	)
+	if !isMethod && entry == nil {
+		saveErrorNew(n.getLineNumber(), varNotDeclaredError, identifier)
+		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		return
+	}
+	if entry == nil {
+		classTable := v.getGlobalTable().getEntry(
+			map[int]interface{}{
+				FILTER_NAME: class,
+				FILTER_KIND: CLASS,
+			},
+		).getLink()
+		entry = recursivelySearchForId(classTable, identifier)
+	}
+	if entry == nil {
+		saveErrorNew(n.getLineNumber(), varNotDeclaredError, identifier)
+		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		return
+	}
+	typeEntry := entry.getType().typeInfo
+
+	if typeInfoId != "" {
+		typeInfoId = fmt.Sprint("^", typeInfoId, indiceList.getType().typeInfo)
+	} else {
+		typeInfoId = fmt.Sprint("^[a-z]*", indiceList.getType().typeInfo)
+	}
+	if ok, _ := regexp.MatchString(typeInfoId, typeEntry); !ok {
+		saveErrorNew(n.getLineNumber(), typeMismatchError, identifier)
+		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		return
+	}
+	index := strings.IndexRune(typeEntry, '[')
+	basetype := ""
+	if index != -1 {
+		basetype = typeEntry[0:index]
+	} else {
+		basetype = typeEntry
+	}
+	n.getTable().addRecord(newRecord("type", "type", "", n.getLineNumber(), newTypeRecord(basetype), nil))
 
 }
+func recursivelySearchForId(classTable *symbolTable, identifier string) *symbolTableRecord {
 
-// func (v *typeCheckVisitor) visitIndiceList(n *indiceListNode) {
-// 	child := n.getLeftMostChild()
-// 	count := 0
-// 	err := false
-// 	for child != nil {
-// 		switch child.(type) {
-// 		default:
-// 			if child.getTable().getSingleEntry().getType().String() != INTLIT {
-// 				fmt.Println("indexing error indexing array with not int")
-// 				err = true
-// 			}
-// 			count++
+	record := classTable.getEntry(
+		map[int]interface{}{
+			FILTER_NAME: identifier,
+			FILTER_KIND: VARIABLE,
+		},
+	)
+	if record != nil {
+		return record
+	}
+	inheritedClasses := classTable.getEntries(
+		map[int]interface{}{
+			FILTER_KIND: CLASS,
+		},
+	)
+	for _, class := range inheritedClasses {
+		record := recursivelySearchForId(class.getLink(), identifier)
+		if record != nil {
+			return record
+		}
+	}
+	return nil
+}
 
-// 		case *epsilonNode:
+func (v *typeCheckVisitor) visitIndiceList(n *indiceListNode) {
+	child := n.getLeftMostChild()
+	indices := ""
+	for child != nil {
+		switch child.(type) {
+		case *epsilonNode:
+		default:
+			if child.getTable().getSingleEntry().getType().String() != INTLIT {
+				n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+				saveErrorNew(n.getLineNumber(), invalidIndexType)
+				return
+			}
+			indices = fmt.Sprint(indices, "\\[[^\\]]*\\]")
 
-// 		}
-// 	}
-// 	if err {
-// 		n.getTable().addRecord(newRecord(INDEXING_ERR, INDEXING_ERR, "", n.getLineNumber(), newTypeRecord(INDEXING_ERR), nil))
-// 	} else {
-// 		n.getTable().addRecord(newRecord("", "", "", n.getLineNumber(), newTypeRecord(fmt.Sprint(count)), nil))
-// 	}
+		}
+		child = child.getRightSibling()
+	}
 
-// }
+	indices = fmt.Sprint(indices, "$")
+
+	n.getTable().addRecord(newRecord("list", "sqrbrackets", "", n.getLineNumber(), newTypeRecord(indices), nil))
+
+}
 
 type declarationVisitor struct {
 	*defaultVisitor
@@ -828,7 +928,7 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 						},
 					)
 					if existingRecord != nil {
-						saveErrorNew(record.getLine(), sameDeclarationInScopeError,record.getKind(), record.getName())
+						saveErrorNew(record.getLine(), sameDeclarationInScopeError, record.getKind(), record.getName())
 					} else {
 						n.getTable().addRecord(record)
 					}
