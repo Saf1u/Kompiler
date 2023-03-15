@@ -1,7 +1,7 @@
 // ====== struct declarations ====== //
 
 
-class POLYNOMIAL  {
+class POLYNOMIAL isa zo {
    // public  function evaluate: (x: float) => float;
    //  private attribute z:int;
 
@@ -12,12 +12,12 @@ class LINEAR isa POLYNOMIAL {
   private attribute evaluate: float;
   
 };
-class QUADRATIC isa LINEAR,zo  {
+class QUADRATIC isa LINEAR  {
   public  constructor: (A: float, B: float[]);
    public  function evaluate: (x:float) => int;
 };
 
-class zo{
+class zo {
    // private attribute z:int;
      private attribute z:int;
 };
@@ -35,9 +35,9 @@ function QUADRATIC::evaluate (x:float) => int{
 function QUADRATIC::constructor(A: float, C: float[])
 {
   localvar x: int;
-  localvar y:int;
-  y=x;
-  y=z;
+  localvar y:int[];
+  y[1]=x;
+  y[1+(-1.1)]=z;
 /*self.a = A;
 self.b = B;
 self.c = C;*/

@@ -55,6 +55,7 @@ const (
 	invalidIndexType                    = "only integers are valid indexes:line %d"
 	typeMismatchError                   = "varaible \"%s\" not used with declared type line:%d"
 	cannotAssignError                   = "cannot assign mismatched types line:%d"
+	arithmeticError                     = "cannot operate on mismatched types line:%d"
 )
 
 var errorBin = map[int][]string{}
@@ -309,6 +310,7 @@ func (v *defaultVisitor) visitAssign(n *assignStatNode) {
 
 }
 func (v *defaultVisitor) visitProgram(n *program) {
+	fmt.Println("------")
 	for _, line := range errorBin {
 		for _, e := range line {
 			fmt.Println(e)
@@ -325,36 +327,37 @@ func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 	v.scope = scopeInfo
 }
 
-// func (v *typeCheckVisitor) visitAdd(n *intLitNode) {
-// 	leftop := n.getLeftMostChild()
-// 	rightop := leftop.getRightSibling()
-// 	typeLeftOp := leftop.getTable().getSingleEntry().getType()
-// 	typeRightOp := rightop.getTable().getSingleEntry().getType()
-// 	var rec *symbolTableRecord
-// 	if !typeLeftOp.equal(typeRightOp) {
-// 		fmt.Println("type mismatch")
-// 		rec = newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+func (v *typeCheckVisitor) visitAdd(n *addNode) {
+	leftop := n.getLeftMostChild()
+	rightop := leftop.getRightSibling()
+	typeLeftOp := leftop.getTable().getSingleEntry().getType()
+	typeRightOp := rightop.getTable().getSingleEntry().getType()
+	var rec *symbolTableRecord
+	if !typeLeftOp.equal(typeRightOp) {
+		saveErrorNew(n.getLineNumber(), arithmeticError)
+		rec = newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
 
-// 	} else {
-// 		rec = newRecord(typeLeftOp.typeInfo, typeLeftOp.typeInfo, "", n.getLineNumber(), newTypeRecord(typeLeftOp.typeInfo), nil)
-// 	}
-// 	n.getTable().addRecord(rec)
-// }
-// func (v *typeCheckVisitor) visitMult(n *intLitNode) {
-// 	leftop := n.getLeftMostChild()
-// 	rightop := leftop.getRightSibling()
-// 	typeLeftOp := leftop.getTable().getSingleEntry().getType()
-// 	typeRightOp := rightop.getTable().getSingleEntry().getType()
-// 	var rec *symbolTableRecord
-// 	if !typeLeftOp.equal(typeRightOp) || typeLeftOp.String() == TYPE_ERR || typeRightOp.String() == TYPE_ERR {
-// 		fmt.Println("type mismatch")
-// 		rec = newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+	} else {
+		rec = newRecord(typeLeftOp.typeInfo, typeLeftOp.typeInfo, "", n.getLineNumber(), newTypeRecord(typeLeftOp.typeInfo), nil)
+	}
+	n.getTable().addRecord(rec)
+}
 
-// 	} else {
-// 		rec = newRecord(typeLeftOp.String(), typeLeftOp.String(), "", n.getLineNumber(), newTypeRecord(typeLeftOp.String()), nil)
-// 	}
-// 	n.getTable().addRecord(rec)
-// }
+func (v *typeCheckVisitor) visitMult(n *multNode) {
+	leftop := n.getLeftMostChild()
+	rightop := leftop.getRightSibling()
+	typeLeftOp := leftop.getTable().getSingleEntry().getType()
+	typeRightOp := rightop.getTable().getSingleEntry().getType()
+	var rec *symbolTableRecord
+	if !typeLeftOp.equal(typeRightOp) {
+		saveErrorNew(n.getLineNumber(), arithmeticError)
+		rec = newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+
+	} else {
+		rec = newRecord(typeLeftOp.String(), typeLeftOp.String(), "", n.getLineNumber(), newTypeRecord(typeLeftOp.String()), nil)
+	}
+	n.getTable().addRecord(rec)
+}
 
 func (v *typeCheckVisitor) visitIntlit(n *intLitNode) {
 	intRec := newRecord(INTLIT, INTLIT, "", n.getLineNumber(), newTypeRecord(INTLIT), nil)
@@ -438,7 +441,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	if typeInfoId != "" {
 		typeInfoId = fmt.Sprint("^", typeInfoId, indiceList.getType().typeInfo)
 	} else {
-		typeInfoId = fmt.Sprint("^[a-z]*", indiceList.getType().typeInfo)
+		typeInfoId = fmt.Sprint("^[a-zA-Z]*", indiceList.getType().typeInfo)
 	}
 	if ok, _ := regexp.MatchString(typeInfoId, typeEntry); !ok {
 		saveErrorNew(n.getLineNumber(), typeMismatchError, identifier)

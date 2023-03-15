@@ -1,7 +1,7 @@
 [inlinecmt, // ====== struct declarations ====== //, 1]
 
 
-[class, class, 4][id, POLYNOMIAL, 4][lcurbr, {, 4]
+[class, class, 4][id, POLYNOMIAL, 4][isa, isa, 4][id, zo, 4][lcurbr, {, 4]
 [inlinecmt, // public  function evaluate: (x: float) => float;, 5]
 [inlinecmt, //  private attribute z:int;, 6]
 
@@ -12,7 +12,7 @@
 [private, private, 12][attribute, attribute, 12][id, evaluate, 12][colon, :, 12][float, float, 12][semi, ;, 12]
 
 [rcurbr, }, 14][semi, ;, 14]
-[class, class, 15][id, QUADRATIC, 15][isa, isa, 15][id, LINEAR, 15][comma, ,, 15][id, zo, 15][lcurbr, {, 15]
+[class, class, 15][id, QUADRATIC, 15][isa, isa, 15][id, LINEAR, 15][lcurbr, {, 15]
 [public, public, 16][constructor, constructor, 16][colon, :, 16][lpar, (, 16][id, A, 16][colon, :, 16][float, float, 16][comma, ,, 16][id, B, 16][colon, :, 16][float, float, 16][lsqbr, [, 16][rsqbr, ], 16][rpar, ), 16][semi, ;, 16]
 [public, public, 17][function, function, 17][id, evaluate, 17][colon, :, 17][lpar, (, 17][id, x, 17][colon, :, 17][float, float, 17][rpar, ), 17][arrow, =>, 17][id, int, 17][semi, ;, 17]
 [rcurbr, }, 18][semi, ;, 18]
@@ -35,9 +35,9 @@
 [function, function, 35][id, QUADRATIC, 35][sr, ::, 35][constructor, constructor, 35][lpar, (, 35][id, A, 35][colon, :, 35][float, float, 35][comma, ,, 35][id, C, 35][colon, :, 35][float, float, 35][lsqbr, [, 35][rsqbr, ], 35][rpar, ), 35]
 [lcurbr, {, 36]
 [localvar, localvar, 37][id, x, 37][colon, :, 37][id, int, 37][semi, ;, 37]
-[localvar, localvar, 38][id, y, 38][colon, :, 38][id, int, 38][semi, ;, 38]
-[id, y, 39][equal, =, 39][id, x, 39][semi, ;, 39]
-[id, y, 40][equal, =, 40][id, z, 40][semi, ;, 40]
+[localvar, localvar, 38][id, y, 38][colon, :, 38][id, int, 38][lsqbr, [, 38][rsqbr, ], 38][semi, ;, 38]
+[id, y, 39][lsqbr, [, 39][intlit, 1, 39][rsqbr, ], 39][equal, =, 39][id, x, 39][semi, ;, 39]
+[id, y, 40][lsqbr, [, 40][intlit, 1, 40][plus, +, 40][lpar, (, 40][minus, -, 40][intlit, 1, 40][rpar, ), 40][rsqbr, ], 40][lsqbr, [, 40][intlit, 1, 40][rsqbr, ], 40][equal, =, 40][id, z, 40][semi, ;, 40]
 [blockcmt, /*self.a = A;\nself.b = B;\nself.c = C;*/, 43]
 
 [rcurbr, }, 45]
