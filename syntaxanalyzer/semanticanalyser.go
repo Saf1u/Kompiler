@@ -428,11 +428,25 @@ func (v *typeCheckVisitor) visitFloatLit(n *floatNode) {
 }
 func (v *typeCheckVisitor) visitNot(n *notNode) {
 	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+	if strings.ContainsRune(leftop, '[') {
+		saveErrorNew(n.getLineNumber(), noOperationsAllowedOnArrays)
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+
+	}
 	n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
 
 }
 func (v *typeCheckVisitor) visitSign(n *signNode) {
 	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+	if strings.ContainsRune(leftop, '[') {
+		saveErrorNew(n.getLineNumber(), noOperationsAllowedOnArrays)
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+
+	}
 	n.getTable().addRecord(newRecord(leftop, leftop, "", n.getLineNumber(), newTypeRecord(leftop), nil))
 
 }
