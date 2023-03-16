@@ -1,49 +1,15 @@
-[function, function, 1][id, mainMan, 1][lpar, (, 1][id, x, 1][colon, :, 1][integer, integer, 1][rpar, ), 1][arrow, =>, 1][id, int, 1][lcurbr, {, 1]
-
-[rcurbr, }, 3]
 
 
-[function, function, 6][id, main, 6][lpar, (, 6][rpar, ), 6][arrow, =>, 6][void, void, 6]
-[lcurbr, {, 7]
-[localvar, localvar, 8][id, a, 8][colon, :, 8][id, z, 8][semi, ;, 8]
-[inlinecmt, //a.b.c();, 9]
-[inlinecmt, //a.c().d();, 10]
-[inlinecmt, // mainMan(2);, 11]
-[inlinecmt, //.d.e().f().g();, 12]
-[id, a, 13][dot, ., 13][id, idb, 13][lsqbr, [, 13][intlit, 1, 13][rsqbr, ], 13][lsqbr, [, 13][intlit, 2, 13][rsqbr, ], 13][lsqbr, [, 13][intlit, 3, 13][rsqbr, ], 13][lsqbr, [, 13][intlit, 2, 13][rsqbr, ], 13][dot, ., 13][id, idc, 13][lsqbr, [, 13][intlit, 2, 13][rsqbr, ], 13][lsqbr, [, 13][intlit, 3, 13][rsqbr, ], 13][dot, ., 13][id, idd, 13][lsqbr, [, 13][intlit, 2, 13][rsqbr, ], 13][lsqbr, [, 13][intlit, 3, 13][rsqbr, ], 13][equal, =, 13][intlit, 3, 13][semi, ;, 13]
-[rcurbr, }, 14]
 
-[class, class, 16][id, op, 16][lcurbr, {, 16]
-[private, private, 17][attribute, attribute, 17][id, b, 17][colon, :, 17][id, z, 17][lsqbr, [, 17][rsqbr, ], 17][lsqbr, [, 17][rsqbr, ], 17][lsqbr, [, 17][rsqbr, ], 17][semi, ;, 17]
-[rcurbr, }, 18][semi, ;, 18]
+[function, function, 4][id, main, 4][lpar, (, 4][rpar, ), 4][arrow, =>, 4][void, void, 4]
+[lcurbr, {, 5]
+[blockcmt, /*localvar a:z;\n  //a.b.c();\n //a.c().d();\n // mainMan(2);\n  //.d.e().f().g();\n  a.idb[1][2][3][2].idc[2][3].idd[2][3]=3;*/, 11]
+[inlinecmt, //read(id.id.id[1][2][3].id.id().id.id[1].id[1][1].id().ida);, 12]
+[id, id, 13][equal, =, 13][id, a, 13][dot, ., 13][id, b, 13][dot, ., 13][id, c, 13][lpar, (, 13][rpar, ), 13][mult, *, 13][intlit, 2, 13][semi, ;, 13]
+[id, a, 14][dot, ., 14][id, b, 14][dot, ., 14][id, c, 14][lpar, (, 14][rpar, ), 14][semi, ;, 14]
+[rcurbr, }, 15]
 
-[class, class, 20][id, z, 20][lcurbr, {, 20]
-[public, public, 21][function, function, 21][id, c, 21][colon, :, 21][lpar, (, 21][rpar, ), 21][arrow, =>, 21][id, next, 21][semi, ;, 21]
-[private, private, 22][attribute, attribute, 22][id, idb, 22][colon, :, 22][id, next, 22][lsqbr, [, 22][intlit, 1, 22][rsqbr, ], 22][lsqbr, [, 22][intlit, 2, 22][rsqbr, ], 22][lsqbr, [, 22][intlit, 3, 22][rsqbr, ], 22][lsqbr, [, 22][intlit, 4, 22][rsqbr, ], 22][semi, ;, 22]
-
-[rcurbr, }, 24][semi, ;, 24]
-
-[class, class, 26][id, next, 26][lcurbr, {, 26]
-[public, public, 27][function, function, 27][id, d, 27][colon, :, 27][lpar, (, 27][rpar, ), 27][arrow, =>, 27][id, next, 27][semi, ;, 27]
-[private, private, 28][attribute, attribute, 28][id, c, 28][colon, :, 28][id, g, 28][lsqbr, [, 28][rsqbr, ], 28][lsqbr, [, 28][rsqbr, ], 28][semi, ;, 28]
-[private, private, 29][attribute, attribute, 29][id, idc, 29][colon, :, 29][id, rev, 29][lsqbr, [, 29][rsqbr, ], 29][lsqbr, [, 29][rsqbr, ], 29][semi, ;, 29]
-[rcurbr, }, 30][semi, ;, 30]
-
-[function, function, 32][id, z, 32][sr, ::, 32][id, c, 32][lpar, (, 32][rpar, ), 32][arrow, =>, 32][id, next, 32][lcurbr, {, 32]
-
-[rcurbr, }, 34]
-[function, function, 35][id, next, 35][sr, ::, 35][id, d, 35][lpar, (, 35][rpar, ), 35][arrow, =>, 35][id, next, 35][lcurbr, {, 35]
-
-[rcurbr, }, 37]
-[class, class, 38][id, g, 38][lcurbr, {, 38]
-[public, public, 39][function, function, 39][id, p, 39][colon, :, 39][lpar, (, 39][rpar, ), 39][arrow, =>, 39][id, next, 39][semi, ;, 39]
-[rcurbr, }, 40][semi, ;, 40]
-[function, function, 41][id, g, 41][sr, ::, 41][id, p, 41][lpar, (, 41][rpar, ), 41][arrow, =>, 41][id, next, 41][lcurbr, {, 41]
-
-[rcurbr, }, 43]
-[class, class, 44][id, rev, 44][lcurbr, {, 44]
-[private, private, 45][attribute, attribute, 45][id, idd, 45][colon, :, 45][integer, integer, 45][lsqbr, [, 45][rsqbr, ], 45][lsqbr, [, 45][rsqbr, ], 45][semi, ;, 45]
-[rcurbr, }, 46][semi, ;, 46]
+[blockcmt, /*class op{\nprivate attribute b:z[][][];\n};\n\nclass z{\n public  function c: () => next;\n  private attribute idb:next[1][2][3][4];\n\n};\n\nclass next{\n public  function d: () => next;\n private attribute c:g[][];\n private attribute idc:rev[][];\n};\n\nfunction z::c()=>next{\n\n}\nfunction next::d()=>next{\n  \n}\nclass g{\n public  function p: () => next;\n};\nfunction g::p()=>next{\n\n}\nclass rev{\n private attribute idd:integer[][];\n};*/, 47]
 
 
 
