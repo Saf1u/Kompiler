@@ -331,33 +331,7 @@ type typeCheckVisitor struct {
 func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 	v.scope = scopeInfo
 }
-func (v *typeCheckVisitor) visitDot(n *dotNode) {
-	leftop := n.getLeftMostChild()
-	rightop := leftop.getRightSibling()
 
-	typeLeftOp := leftop.getTable().getSingleEntry().getType().String()
-	if typeLeftOp == TYPE_ERR {
-		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-		n.getTable().addRecord(rec)
-		return
-	}
-	scope := v.getGlobalTable().getEntry(
-		map[int]interface{}{
-			FILTER_KIND: CLASS,
-			FILTER_NAME: typeLeftOp,
-		},
-	)
-	if scope == nil {
-		saveErrorNew(n.getLineNumber(), "class \"%s\" does not exist line:%d", typeLeftOp)
-		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-		n.getTable().addRecord(rec)
-		return
-	}
-	identifier := rightop.(*idNode).identifier
-	rec := newRecord(identifier, "", "", n.getLineNumber(), newTypeRecord(typeLeftOp), nil)
-	n.getTable().addRecord(rec)
-
-}
 
 func (v *typeCheckVisitor) visitAdd(n *addNode) {
 	leftop := n.getLeftMostChild()
@@ -545,15 +519,52 @@ func (v *typeCheckVisitor) visitAssign(n *assignStatNode) {
 	}
 
 }
+func (v *typeCheckVisitor) visitRelOp(n *relOpNode) {
+	leftOp := n.getLeftMostChild().getSingleEntry()
+	rightOp := n.getLeftMostChild().getRightSibling().getSingleEntry()
+	if !(leftOp.getType().typeInfo != TYPE_ERR && rightOp.getType().typeInfo != TYPE_ERR && leftOp.getType().typeInfo == rightOp.getType().typeInfo) {
+		saveErrorNew(n.getLineNumber(), "error cannot compare types line:%d")
+	}
+	if strings.ContainsRune(leftOp.getType().typeInfo, '[') || strings.ContainsRune(rightOp.getType().typeInfo, '[') {
+		saveErrorNew(n.getLineNumber(), noOperationsAllowedOnArrays)
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+
+	}
+
+}
+
+func (v *typeCheckVisitor) visitDot(n *dotNode) {
+	leftop := n.getLeftMostChild()
+	rightop := leftop.getRightSibling()
+
+	typeLeftOp := leftop.getTable().getSingleEntry().getType().String()
+	if typeLeftOp == TYPE_ERR {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	scope := v.getGlobalTable().getEntry(
+		map[int]interface{}{
+			FILTER_KIND: CLASS,
+			FILTER_NAME: typeLeftOp,
+		},
+	)
+	if scope == nil {
+		saveErrorNew(n.getLineNumber(), "class \"%s\" does not exist line:%d", typeLeftOp)
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	identifier := rightop.(*idNode).identifier
+	rec := newRecord(identifier, "", "", n.getLineNumber(), newTypeRecord(typeLeftOp), nil)
+	n.getTable().addRecord(rec)
+
+}
 func (v *typeCheckVisitor) visitVar(n *varNode) {
 	lookupInfo := strings.Split(v.scope, "~")
 	var scope *symbolTableRecord
-	/*
-	   	   dot
-	      /   \
-	     var  var
-
-	*/
 	scope = v.getGlobalTable().getEntry(
 		map[int]interface{}{
 			FILTER_TYPE: newTypeRecord(lookupInfo[1]),
