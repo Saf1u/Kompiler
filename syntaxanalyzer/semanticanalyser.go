@@ -2,6 +2,7 @@ package syntaxanalyzer
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -41,23 +42,25 @@ x return type
 ni any num of params whre i>=1
 */
 const (
-	sameDeclarationInScopeError         = "%s %s aready declared:line %d"
-	classNotDeclaredError               = "class \"%s\" not declared so function \"%s\" has no class:line %d"
-	functionNotDeclaredError            = "function \"%s\" not declared in class \"%s\" :line %d"
-	functionOverrloadWarn               = "function \"%s\" is being overloaded:line %d"
-	inheritedClassNotDeclaredError      = "class \"%s\" not declared so cannot be inherited:line %d"
-	inheritedClassAlreadyInheritedError = "class \"%s\" already inherited:line %d"
-	shadowWarn                          = "member \"%s\" is being shadowed:line %d"
-	cyclicDependencyError               = "class \"%s\" is being cyclicly inherited:line %d"
-	functionNotDefinedError             = "function \"%s\" declared in class \"%s\" not defined:line %d"
-	funcParameterShadowed               = "function parameter \"%s\" is being shadowed:line %d"
-	varNotDeclaredError                 = "variable  \"%s\" not declared in current scope:line %d"
-	invalidIndexType                    = "only integers are valid indexes:line %d"
-	typeMismatchError                   = "varaible \"%s\" not used with declared type line:%d"
-	cannotAssignError                   = "cannot assign mismatched types line:%d"
-	arithmeticError                     = "cannot operate on mismatched types line:%d"
-	undeclaredClassError                = "accessing member of undeclared class \"%s\" line:%d"
-	noOperationsAllowedOnArrays         = "operations not allowed on array types line:%d"
+	sameDeclarationInScopeError               = "%s %s aready declared:line %d"
+	classNotDeclaredError                     = "class \"%s\" not declared so function \"%s\" has no class:line %d"
+	functionNotDeclaredError                  = "function \"%s\" not declared in class \"%s\" :line %d"
+	functionOverrloadWarn                     = "function \"%s\" is being overloaded:line %d"
+	inheritedClassNotDeclaredError            = "class \"%s\" not declared so cannot be inherited:line %d"
+	inheritedClassAlreadyInheritedError       = "class \"%s\" already inherited:line %d"
+	shadowWarn                                = "member \"%s\" is being shadowed:line %d"
+	cyclicDependencyError                     = "class \"%s\" is being cyclicly inherited:line %d"
+	functionNotDefinedError                   = "function \"%s\" declared in class \"%s\" not defined:line %d"
+	funcParameterShadowed                     = "function parameter \"%s\" is being shadowed:line %d"
+	varNotDeclaredError                       = "variable  \"%s\" not declared in current scope:line %d"
+	invalidIndexType                          = "only integers are valid indexes:line %d"
+	typeMismatchError                         = "varaible \"%s\" not used with declared type line:%d"
+	cannotAssignError                         = "cannot assign mismatched types line:%d"
+	arithmeticError                           = "cannot operate on mismatched types line:%d"
+	undeclaredClassError                      = "accessing member of undeclared class \"%s\" line:%d"
+	noOperationsAllowedOnArrays               = "operations not allowed on array types line:%d"
+	functionNotDeclaredWithSignatureError     = "function \"%s\" not declared in class \"%s\" with such signature :line %d"
+	functionNotDeclaredWithSignatureErrorFree = "function \"%s\" not declared  :line %d"
 )
 
 var errorBin = map[int][]string{}
@@ -329,32 +332,119 @@ func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 	v.scope = scopeInfo
 }
 func (v *typeCheckVisitor) visitDot(n *dotNode) {
-	// leftop := n.getLeftMostChild()
-	// rightop := leftop.getRightSibling()
-	// typeLeftOp := leftop.getTable().getSingleEntry().getType()
-	// typeRightOp := rightop.getTable().getSingleEntry().getType()
-	// if typeLeftOp.typeInfo == TYPE_ERR || typeRightOp.typeInfo == TYPE_ERR {
-	// 	saveErrorNew(n.getLineNumber(), arithmeticError)
-	// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-	// 	n.getTable().addRecord(rec)
-	// 	return
-	// }
-	// class := v.getGlobalTable().getEntry(
-	// 	map[int]interface{}{
-	// 		FILTER_NAME: typeLeftOp.typeInfo,
-	// 	},
-	// )
-	// if class == nil {
-	// 	saveErrorNew(n.getLineNumber(), undeclaredClassError, typeLeftOp.typeInfo)
-	// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-	// 	n.getTable().addRecord(rec)
-	// 	return
-	// }
-	// classMember := class.getLink().getEntry(
-	// 	map[int]interface{}{
-	// 		FILTER_NAME: rightop.getSingleEntry().getName(),
-	// 	},
-	// )
+	leftop := n.getLeftMostChild()
+	rightop := leftop.getRightSibling()
+	switch rightop.(type) {
+	case *functionCall, *varNode:
+		// typeRightOp := rightop.getTable().getSingleEntry().getType()
+		// LeftOp := leftop.getTable().getSingleEntry()
+		// if typeRightOp.typeInfo == TYPE_ERR {
+		// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		// 	n.getTable().addRecord(rec)
+		// 	return
+		// }
+
+		// rec := newRecord(LeftOp.getName(), typeRightOp.typeInfo, "", n.getLineNumber(), newTypeRecord(typeRightOp.typeInfo), nil)
+		// n.getTable().addRecord(rec)
+		// return
+	case *idNode:
+		typeLeftOp := leftop.getTable().getSingleEntry().getType().String()
+		if typeLeftOp == TYPE_ERR {
+			rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+			n.getTable().addRecord(rec)
+			return
+		}
+		scope := v.getGlobalTable().getEntry(
+			map[int]interface{}{
+				FILTER_KIND: CLASS,
+				FILTER_NAME: typeLeftOp,
+			},
+		)
+		if scope == nil {
+			saveErrorNew(n.getLineNumber(), "class \"%s\" does not exist line:%d", typeLeftOp)
+			rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+			n.getTable().addRecord(rec)
+			return
+		}
+		identifier := rightop.(*idNode).identifier
+		// filter := VARIABLE
+		// switch n.getParent().(type) {
+		// case *functionCall:
+		// 	filter = FUNCDECL
+
+		// }
+		// entry := scope.getLink().getEntry(
+		// 	map[int]interface{}{
+		// 		FILTER_KIND: filter,
+		// 		FILTER_NAME: identifier,
+		// 	},
+		// )
+		// if entry == nil {
+		// 	saveErrorNew(n.getLineNumber(), "member \"%s\" does not exist in class \"%s\" line:%d", identifier, typeLeftOp)
+		// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		// 	n.getTable().addRecord(rec)
+		// 	return
+		// }
+		// typeinfo := entry.getType().typeInfo
+		// if filter == FUNCDECL {
+		// 	index := strings.IndexRune(typeinfo, ':')
+		// 	if index == -1 {
+		// 		panic("should not happen")
+		// 	}
+		// 	typeinfo = typeinfo[:index]
+		// }
+		rec := newRecord(identifier, "", "", n.getLineNumber(), newTypeRecord(typeLeftOp), nil)
+		n.getTable().addRecord(rec)
+		return
+
+		/*
+		   	   dot
+		      /   \
+		     var  dot
+
+		*/
+	case *dotNode:
+		// left := n.getParent().getLeftMostChild()
+		// switch left.(type) {
+		// case *varNode, *functionCall:
+		// default:
+		// 	panic("must be var or fcall")
+		// }
+		// typeInfo := left.getSingleEntry().getType().String()
+		// if strings.ContainsRune(typeInfo, '[') {
+		// 	index := strings.IndexRune(typeInfo, '[')
+		// 	typeInfo = typeInfo[:index]
+		// }
+		// if typeInfo == TYPE_ERR {
+		// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		// 	n.getTable().addRecord(rec)
+		// 	return
+
+		// }
+
+		// scope := v.getGlobalTable().getEntry(
+		// 	map[int]interface{}{
+		// 		FILTER_KIND: CLASS,
+		// 		FILTER_NAME: typeInfo,
+		// 	},
+		// )
+
+		// entry := scope.getLink().getEntry(
+		// 	map[int]interface{}{
+		// 		FILTER_NAME: n.getSingleEntry().getName(),
+		// 		FILTER_KIND: filter,
+		// 	},
+		// )
+		// if entry == nil {
+		// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		// 	n.getTable().addRecord(rec)
+		// 	return
+		// }
+		// entryType := entry.getType().String()
+		// rec := newRecord(left.getTable().getSingleEntry().getName(), "", "", n.getLineNumber(), newTypeRecord(entryType), nil)
+		// n.getTable().addRecord(rec)
+
+	}
 
 }
 
@@ -384,12 +474,91 @@ func (v *typeCheckVisitor) visitAdd(n *addNode) {
 }
 func (v *typeCheckVisitor) visitParamlist(n *paramListNode) {
 	left := n.getLeftMostChild()
-	typeInfo := "|"
+	typeInfo := ""
 	for left != nil {
-		typeInfo = fmt.Sprint(typeInfo, left.getSingleEntry().getType().typeInfo, "|")
+		switch left.(type) {
+		case *epsilonNode:
+		default:
+			typeInfo = fmt.Sprint(typeInfo, "|", left.getSingleEntry().getType().typeInfo)
+		}
 		left = left.getRightSibling()
 	}
 	n.getTable().addRecord(newRecord("paramaters", "parameters", "", n.getLineNumber(), newTypeRecord(typeInfo), nil))
+}
+func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
+	paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()
+	
+	switch n.getLeftMostChild().(type) {
+	case *idNode:
+
+		scope := v.scope
+		function := strings.Split(scope, "~")[0]
+		functionName := strings.Split(function, "|")
+		id := n.getLeftMostChild().(*idNode).identifier
+		if functionName[0] != "" {
+			methodLookup := fmt.Sprint(functionName[0], typeSepeator, id)
+			function, returnType := searchForFunction(methodLookup, v.getGlobalTable(), paramterList)
+			if function != nil {
+				n.getTable().addRecord(newRecord("return", "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
+				return
+			}
+
+		}
+		functionLookup := fmt.Sprint(typeSepeator, id)
+		possibleFunction, returnType := searchForFunction(functionLookup, v.getGlobalTable(), paramterList)
+		if possibleFunction != nil {
+			n.getTable().addRecord(newRecord(id, "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
+			return
+
+		} else {
+			saveErrorNew(n.getLineNumber(), functionNotDeclaredWithSignatureErrorFree, id)
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+
+		}
+	case *dotNode:
+		varType := n.getLeftMostChild().getSingleEntry().getType().typeInfo
+		if varType == TYPE_ERR {
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+		}
+		id := n.getLeftMostChild().getSingleEntry().getName()
+		methodName := fmt.Sprint(varType, typeSepeator, id)
+		calledFunction, returnType := searchForFunction(methodName, v.getGlobalTable(), paramterList)
+		if calledFunction == nil {
+			saveErrorNew(n.getLineNumber(), functionNotDeclaredWithSignatureError, id, varType)
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+		}
+
+		n.getTable().addRecord(newRecord(id, "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
+		return
+
+	}
+	panic("never reach here!")
+
+}
+func searchForFunction(name string, globaltable *symbolTable, paramterList string) (*symbolTableRecord, string) {
+	entries := globaltable.getEntries(map[int]interface{}{FILTER_NAME: name, FILTER_KIND: FUNCDEF})
+	var calledFunction *symbolTableRecord
+	var returnType string
+	if len(entries) != 0 {
+
+		for _, function := range entries {
+			funcType := function.getType().String()
+			index := strings.IndexRune(funcType, ':')
+			returnType = funcType[0:index]
+			parameterType := funcType[index+1:]
+			if parameterType == paramterList {
+				calledFunction = function
+				break
+			}
+		}
+		return calledFunction, returnType
+
+	}
+	return nil, returnType
+
 }
 
 func (v *typeCheckVisitor) visitMult(n *multNode) {
@@ -467,12 +636,36 @@ func (v *typeCheckVisitor) visitAssign(n *assignStatNode) {
 }
 func (v *typeCheckVisitor) visitVar(n *varNode) {
 	lookupInfo := strings.Split(v.scope, "~")
-	scope := v.getGlobalTable().getEntry(
+	var scope *symbolTableRecord
+	/*
+	   	   dot
+	      /   \
+	     var  var
+
+	*/
+	scope = v.getGlobalTable().getEntry(
 		map[int]interface{}{
 			FILTER_TYPE: newTypeRecord(lookupInfo[1]),
 			FILTER_NAME: lookupInfo[0],
 		},
 	)
+
+	isDot := false
+	if reflect.TypeOf(n.getLeftMostChild()).String() == "*syntaxanalyzer.dotNode" {
+		scope = v.getGlobalTable().getEntry(
+			map[int]interface{}{
+				FILTER_KIND: CLASS,
+				FILTER_NAME: n.getLeftMostChild().getSingleEntry().getType().String(),
+			},
+		)
+		isDot = true
+		if scope == nil {
+			saveErrorNew(n.getLineNumber(), "could not find class \"%s\" line:%d", n.getLeftMostChild().getSingleEntry().getType().String())
+			n.getTable().addRecord(newRecord(n.getLeftMostChild().getSingleEntry().getType().String(), TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+
+		}
+	}
 
 	left := n.getLeftMostChild().getSingleEntry()
 	indiceList := n.getLeftMostChild().getRightSibling().getTable().getEntry(
@@ -480,27 +673,31 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 			FILTER_NAME: "list",
 		},
 	)
+	identifier := left.getName()
 	if left.getType().typeInfo == TYPE_ERR || indiceList == nil {
-		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
-	identifier := left.getName()
+
 	typeInfoId := left.getType().typeInfo
 	isMethod := false
 	class := strings.Split(lookupInfo[0], typeSepeator)[0]
 	if class != "" {
 		isMethod = true
 	}
+
 	entry := scope.getLink().getEntry(
 		map[int]interface{}{
 			FILTER_NAME: identifier,
 		},
 	)
-	if !isMethod && entry == nil {
+
+	if !isMethod && entry == nil || isDot && entry == nil {
 		saveErrorNew(n.getLineNumber(), varNotDeclaredError, identifier)
-		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
+	//was checking scope it was called in, if a method scope it searches inheritance heirarchy
 	if entry == nil {
 		classTable := v.getGlobalTable().getEntry(
 			map[int]interface{}{
@@ -512,7 +709,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	}
 	if entry == nil {
 		saveErrorNew(n.getLineNumber(), varNotDeclaredError, identifier)
-		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
 	typeEntry := entry.getType().typeInfo
@@ -526,9 +723,10 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	if err != nil {
 		panic(err)
 	}
+	
 	if actualIndexCount-usedIndexCount < 0 {
 		saveErrorNew(n.getLineNumber(), typeMismatchError, identifier)
-		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
 	index := strings.IndexRune(typeEntry, '[')
@@ -538,10 +736,13 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	} else {
 		basetype = typeEntry
 	}
+	if isDot{
+		typeInfoId=""
+	}
 	if typeInfoId != "" {
 		if basetype != typeInfoId {
 			saveErrorNew(n.getLineNumber(), typeMismatchError, identifier)
-			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 			return
 		}
 	} else {
@@ -549,11 +750,29 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	}
 
 	indexToAdd := actualIndexCount - usedIndexCount
-	for indexToAdd != 0 {
-		typeInfoId = fmt.Sprint(typeInfoId, "[]")
-		indexToAdd--
+	if indexToAdd != 0 {
+		switch n.getParent().(type) {
+		case *paramListNode:
+			if usedIndexCount != 0 {
+				saveErrorNew(n.getLineNumber(), "array for \"%s\" must be fully indexed or not as a parameter:%d", identifier)
+				n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+				return
+			}
+			for actualIndexCount != 0 {
+				typeInfoId = fmt.Sprint(typeInfoId, "[]")
+				actualIndexCount--
+			}
+			n.getTable().addRecord(newRecord(identifier, "type", "", n.getLineNumber(), newTypeRecord(typeInfoId), nil))
+
+		default:
+			saveErrorNew(n.getLineNumber(), "array for \"%s\" must be fully indexed if not a parameter line:%d", identifier)
+			n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+		}
+
+	} else {
+		n.getTable().addRecord(newRecord(identifier, "type", "", n.getLineNumber(), newTypeRecord(typeInfoId), nil))
 	}
-	n.getTable().addRecord(newRecord(identifier, "type", "", n.getLineNumber(), newTypeRecord(typeInfoId), nil))
 
 }
 func recursivelySearchForId(classTable *symbolTable, identifier string) *symbolTableRecord {
@@ -1068,6 +1287,74 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 
 // visitFuncDefList provides a mock function with given fields: n*
 func (v *tableVisitor) visitFuncDefList(n *funcDefListNode) {
+
+}
+
+/*
+		dot
+	   /   \
+	  var  id
+*/
+func (v *typeCheckVisitor) visitId(n *idNode) {
+	// switch n.getParent().(type) {
+	// case *dotNode:
+	// default:
+	// 	return
+	// }
+	// left := n.getParent().getLeftMostChild()
+	// switch left.(type) {
+	// case *varNode, *functionCall:
+	// default:
+	// 	return
+	// }
+	// typeInfo := left.getSingleEntry().getType().String()
+	// if strings.ContainsRune(typeInfo, '[') {
+	// 	index := strings.IndexRune(typeInfo, '[')
+	// 	typeInfo = typeInfo[:index]
+	// }
+	// if typeInfo == TYPE_ERR {
+	// 	n.getTable().getSingleEntry().SetTypeEntry(newTypeRecord(TYPE_ERR))
+	// 	return
+
+	// }
+
+	// scope := v.getGlobalTable().getEntry(
+	// 	map[int]interface{}{
+	// 		FILTER_KIND: CLASS,
+	// 		FILTER_NAME: typeInfo,
+	// 	},
+	// )
+	// isFunction := false
+	// switch n.getParent().getParent().(type) {
+	// case *functionCall:
+	// 	isFunction = true
+
+	// }
+	// filter := VARIABLE
+	// if isFunction {
+	// 	filter = FUNCDECL
+	// }
+	// entry := scope.getLink().getEntry(
+	// 	map[int]interface{}{
+	// 		FILTER_NAME: n.identifier,
+	// 		FILTER_KIND: filter,
+	// 	},
+	// )
+	// if entry == nil {
+	// 	n.getTable().getSingleEntry().SetTypeEntry(newTypeRecord(TYPE_ERR))
+	// 	saveErrorNew(n.getLineNumber(), "no such member \"%s\"line:%d", n.identifier)
+	// 	return
+	// }
+	// entryType := entry.getType().String()
+
+	// if isFunction {
+	// 	index := strings.IndexRune(entryType, ':')
+	// 	if index == -1 {
+	// 		panic("shouldnt happen")
+	// 	}
+	// 	entryType = entryType[:index]
+	// }
+	// n.getTable().getSingleEntry().SetTypeEntry(newTypeRecord(entryType))
 
 }
 

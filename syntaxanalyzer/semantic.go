@@ -425,8 +425,8 @@ func init() {
 		idTok := ss.Pop()
 		id := getNextID()
 		funcCall := &functionCall{nodeImplementation: &nodeImplementation{lineNumber: ss.mostRecentTokenValue.LineNumber, table: makeTable(), diagramID: id}}
-		indiceList.MakeSibling(idTok, indiceList)
-		funcCall.AdoptChildren(indiceList, funcCall)
+		idTok.MakeSibling(indiceList,idTok)
+		funcCall.AdoptChildren(idTok, funcCall)
 		ss.writeNode(id, ("funcCall"))
 		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
 		ss.writeEdge(funcCall.getDiagramID(), idTok.getDiagramID())

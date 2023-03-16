@@ -1,92 +1,76 @@
-===================================================================================
-| table: global                                                                   |
-===================================================================================
-| class     | POLYNOMIAL                                                          |
-|    ===========================================================================  |
-|    | table: POLYNOMIAL                                                       |  |
-|    ===========================================================================  |
-|    | inherit   | none        |                                               |  |
-|    | function  | evaluate    | (float):float                     | private   |  |
-|    |     ==================================================================  |  |
-|    |	   | table: POLYNOMIAL::evaluate                                    |  |  |
-|    |	   ==================================================================  |  |
-|    |	   | param     | x           | float                                |  |  |
-|    |	   ==================================================================  |  |
-|    ==========================================================================|  |
-| class     | LINEAR                                                              |
-|    ===========================================================================  |
-|    | table: LINEAR                                                           |  |
-|    ===========================================================================  |
-|    | inherit   | POLYNOMIAL                                                  |  |
-|    | data      | a           | float                             | private   |  |
-|    | data      | b           | float                             | private   |  |
-|    | function  | build       | (float, float): LINEAR            | public    |  |
-|    |     ==================================================================  |  |
-|    |     | table: LINEAR::build                                           |  |  |
-|    |     ==================================================================  |  |
-|    |     | param     | A            | float                               |  |  |
-|    |     | param     | B            | float                               |  |  |
-|    |     | local     | new_function | LINEAR                              |  |  |
-|    |     ==================================================================  |  |
-|    | function  | evaluate    | (float):float                     | public    |  |
-|    |     ==================================================================  |  |
-|    |     | table: LINEAR::evaluate                                        |  |  |
-|    |     ==================================================================  |  |
-|    |     | param     | x            | float                               |  |  |
-|    |     | local     | result       | float                               |  |  |
-|    |     ==================================================================  |  |
-|    ===========================================================================  |
-| class     | QUADRATIC                                                           |
-|    ===========================================================================  |
-|    | table: QUADRATIC                                                        |  |
-|    ===========================================================================  |
-|    | inherit    | POLYNOMIAL                                                 |  |
-|    | data       | a           | float                            | private   |  |
-|    | data       | b           | float                            | private   |  |
-|    | data       | c           | float                            | private   |  |
-|    | function   | build       | (float, float, float): QUADRATIC | public    |  |
-|    |     ==================================================================  |  |
-|    |     | table: QUADRATIC::build                                        |  |  |
-|    |     ==================================================================  |  |
-|    |     | param     | a            | float                               |  |  |
-|    |     | param     | b            | float                               |  |  |
-|    |     | param     | c            | float                               |  |  |
-|    |     | local     | new_function | QUADRATIC                           |  |  |
-|    |     ==================================================================  |  |
-|    | function   | evaluate    | (float):float                    | public    |  |
-|    |     ==================================================================  |  |
-|    |     | table: QUADRATIC::evaluate                                     |  |  |
-|    |     ==================================================================  |  |
-|    |     | param     | x            | float                               |  |  |
-|    |     | local     | result       | float                               |  |  |
-|    |     ==================================================================  |  |
-| function    | main                                                              |
-|    ===========================================================================  |
-|    | table: ::main                                                           |  |
-|    ===========================================================================  |
-|    | local      | f1          | LINEAR                                       |  |
-|    | local      | f2          | QUADRATIC                                    |  | 
-|    | local      | counter     | integer                                      |  |
-|    ===========================================================================  |
-===================================================================================
+// ====== struct declarations ====== //
 
 
+class POLYNOMIAL isa zo {
+   // public  function evaluate: (x: float) => float;
+   //  private attribute z:integer;
 
-class POLYNOMIAL {
-  public function evaluate: (x: float) => float;
-  public  function darkevaluate: (x: float) => float;
-  private attribute evaluate: float;
-    public  function darkevaluate: (x: float,y:int) => float;
 };
 
-class LINEAR isa QUADRATIC {
+class LINEAR isa POLYNOMIAL {
   private attribute a: float;
   private attribute evaluate: float;
-  public  function evaluate: (x: float) => float;
-  public  function darkevaluate: (x: float,y:int) => float;
-
+  
 };
-class QUADRATIC isa POLYNOMIAL  {
+class QUADRATIC isa LINEAR  {
   public  constructor: (A: float, B: float[]);
-   public  function evaluate: (x:int) => int;
+   public  function evaluate: (x:float) => integer;
 };
+
+class zo {
+   // private attribute z:integer;
+     private attribute z:integer;
+};
+
+
+
+
+
+
+
+function QUADRATIC::evaluate (x:float) => integer{
+
+}
+
+function QUADRATIC::constructor(A: float, C: float[])
+{
+  localvar x: integer[];
+  localvar y:integer[];
+  localvar h:integer[];
+  y[(1+(1*2+3*4+6)/1+2+3-1)or(1+2*6+4)]=z;
+  call(y[1],x,1.1,2,4,4+3-2+3,h);
+/*self.a = A;
+self.b = B;
+self.c = C;*/
+
+}
+
+
+
+function main(f1:float) => void
+{
+  localvar z1: LINEAR(2, 3.5);
+  //x=id[1][2][x][1*2+4*6+3+5/3];
+  localvar f2: QUADRATIC(-2.0, 1.0, 0.0);
+  localvar counter: integer ;	
+  //counter = id.id.id.id;
+
+  while(counter <= 10)
+  {
+    write(counter);
+    write(f1.evaluate(counter));
+    write(f2.evaluate(counter));
+  };
+}
+
+
+
+function test() => integer
+{
+  
+}
+function test(x:string) => integer
+{
+  
+}
+

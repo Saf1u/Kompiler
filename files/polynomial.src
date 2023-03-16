@@ -1,77 +1,48 @@
-// ====== struct declarations ====== //
-
-
-class POLYNOMIAL isa zo {
-   // public  function evaluate: (x: float) => float;
-   //  private attribute z:integer;
-
-};
-
-class LINEAR isa POLYNOMIAL {
-  private attribute a: float;
-  private attribute evaluate: float;
-  
-};
-class QUADRATIC isa LINEAR  {
-  public  constructor: (A: float, B: float[]);
-   public  function evaluate: (x:float) => integer;
-};
-
-class zo {
-   // private attribute z:integer;
-     private attribute z:integer;
-};
-
-
-
-
-
-
-
-function QUADRATIC::evaluate (x:float) => integer{
-
-}
-
-function QUADRATIC::constructor(A: float, C: float[])
-{
-  localvar x: integer[];
-  localvar y:integer[];
-  localvar h:integer[];
-  y[(1+(1*2+3*4+6)/1+2+3-1)or(1+2*6+4)]=z;
-  call(y[1],x,1.1,2,4,4+3-2+3,h);
-/*self.a = A;
-self.b = B;
-self.c = C;*/
+function mainMan(x:integer) => int{
 
 }
 
 
-
-function main(f1:float) => void
+function main() => void
 {
-  localvar z1: LINEAR(2, 3.5);
-  //x=id[1][2][x][1*2+4*6+3+5/3];
-  localvar f2: QUADRATIC(-2.0, 1.0, 0.0);
-  localvar counter: integer ;	
-  //counter = id.id.id.id;
-
-  while(counter <= 10)
-  {
-    write(counter);
-    write(f1.evaluate(counter));
-    write(f2.evaluate(counter));
-  };
+ localvar a:z;
+  //a.b.c();
+ //a.c().d();
+ // mainMan(2);
+  //.d.e().f().g();
+  a.idb[1][2][3][2].idc[2][3].idd[2][3]=3;
 }
 
+class op{
+private attribute b:z[][][];
+};
 
+class z{
+ public  function c: () => next;
+  private attribute idb:next[1][2][3][4];
 
-function test() => integer
-{
+};
+
+class next{
+ public  function d: () => next;
+ private attribute c:g[][];
+ private attribute idc:rev[][];
+};
+
+function z::c()=>next{
+
+}
+function next::d()=>next{
   
 }
-function test(x:string) => integer
-{
-  
+class g{
+ public  function p: () => next;
+};
+function g::p()=>next{
+
 }
+class rev{
+ private attribute idd:integer[][];
+};
 
 

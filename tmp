@@ -182,3 +182,4 @@ paramTypeInfo: |integer|   63
 paramTypeInfo: |integer|integer[]|float|integer|integer|integer|ERR|   42
 ------
 varaible "h" not used with declared type line:42
+:|float|float[]  
