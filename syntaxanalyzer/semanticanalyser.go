@@ -332,7 +332,6 @@ func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 	v.scope = scopeInfo
 }
 
-
 func (v *typeCheckVisitor) visitAdd(n *addNode) {
 	leftop := n.getLeftMostChild()
 	rightop := leftop.getRightSibling()
@@ -370,59 +369,7 @@ func (v *typeCheckVisitor) visitParamlist(n *paramListNode) {
 	}
 	n.getTable().addRecord(newRecord("paramaters", "parameters", "", n.getLineNumber(), newTypeRecord(typeInfo), nil))
 }
-func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
-	paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()
 
-	switch n.getLeftMostChild().(type) {
-	case *idNode:
-
-		scope := v.scope
-		function := strings.Split(scope, "~")[0]
-		functionName := strings.Split(function, "|")
-		id := n.getLeftMostChild().(*idNode).identifier
-		if functionName[0] != "" {
-			methodLookup := fmt.Sprint(functionName[0], typeSepeator, id)
-			function, returnType := searchForFunction(methodLookup, v.getGlobalTable(), paramterList)
-			if function != nil {
-				n.getTable().addRecord(newRecord("return", "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
-				return
-			}
-
-		}
-		functionLookup := fmt.Sprint(typeSepeator, id)
-		possibleFunction, returnType := searchForFunction(functionLookup, v.getGlobalTable(), paramterList)
-		if possibleFunction != nil {
-			n.getTable().addRecord(newRecord(id, "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
-			return
-
-		} else {
-			saveErrorNew(n.getLineNumber(), functionNotDeclaredWithSignatureErrorFree, id)
-			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
-			return
-
-		}
-	case *dotNode:
-		varType := n.getLeftMostChild().getSingleEntry().getType().typeInfo
-		if varType == TYPE_ERR {
-			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
-			return
-		}
-		id := n.getLeftMostChild().getSingleEntry().getName()
-		methodName := fmt.Sprint(varType, typeSepeator, id)
-		calledFunction, returnType := searchForFunction(methodName, v.getGlobalTable(), paramterList)
-		if calledFunction == nil {
-			saveErrorNew(n.getLineNumber(), functionNotDeclaredWithSignatureError, id, varType)
-			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
-			return
-		}
-
-		n.getTable().addRecord(newRecord(id, "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
-		return
-
-	}
-	panic("never reach here!")
-
-}
 func searchForFunction(name string, globaltable *symbolTable, paramterList string) (*symbolTableRecord, string) {
 	entries := globaltable.getEntries(map[int]interface{}{FILTER_NAME: name, FILTER_KIND: FUNCDEF})
 	var calledFunction *symbolTableRecord
@@ -444,6 +391,43 @@ func searchForFunction(name string, globaltable *symbolTable, paramterList strin
 	}
 	return nil, returnType
 
+}
+func recursivelySearchForFunction(classTable *symbolTable, identifier string, paramterList string) (*symbolTableRecord, string) {
+	entries := classTable.getEntries(
+		map[int]interface{}{
+			FILTER_NAME: identifier,
+			FILTER_KIND: FUNCDECL,
+		},
+	)
+	var calledFunction *symbolTableRecord
+	var returnType string
+	if len(entries) != 0 {
+
+		for _, function := range entries {
+			funcType := function.getType().String()
+			index := strings.IndexRune(funcType, ':')
+			returnType = funcType[0:index]
+			parameterType := funcType[index+1:]
+			if parameterType == paramterList {
+				calledFunction = function
+				break
+			}
+		}
+		return calledFunction, returnType
+
+	}
+	inheritedClasses := classTable.getEntries(
+		map[int]interface{}{
+			FILTER_KIND: CLASS,
+		},
+	)
+	for _, class := range inheritedClasses {
+		record, returnType := recursivelySearchForFunction(class.getLink(), identifier, paramterList)
+		if record != nil {
+			return record, returnType
+		}
+	}
+	return nil, ""
 }
 
 func (v *typeCheckVisitor) visitMult(n *multNode) {
@@ -534,6 +518,75 @@ func (v *typeCheckVisitor) visitRelOp(n *relOpNode) {
 	}
 
 }
+func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
+	paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()
+
+	switch n.getLeftMostChild().(type) {
+	case *idNode:
+		scope := v.scope
+		function := strings.Split(scope, "~")[0]
+		functionName := strings.Split(function, "|")
+		id := n.getLeftMostChild().(*idNode).identifier
+		//check class scope since in mrthod for function
+		if functionName[0] != "" {
+			methodLookup := fmt.Sprint(functionName[0], typeSepeator, id)
+			function, returnType := searchForFunction(methodLookup, v.getGlobalTable(), paramterList)
+			if function != nil {
+				n.getTable().addRecord(newRecord("return", "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
+				return
+			}
+
+		}
+		//check global scioe if not found for free function
+		functionLookup := fmt.Sprint(typeSepeator, id)
+		possibleFunction, returnType := searchForFunction(functionLookup, v.getGlobalTable(), paramterList)
+		if possibleFunction != nil {
+			n.getTable().addRecord(newRecord(id, "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
+			return
+
+		} else {
+			saveErrorNew(n.getLineNumber(), functionNotDeclaredWithSignatureErrorFree, id)
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+
+		}
+	case *dotNode:
+		varType := n.getLeftMostChild().getSingleEntry().getType().typeInfo
+		if varType == TYPE_ERR {
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+		}
+
+		id := n.getLeftMostChild().getSingleEntry().getName()
+		//methodName := fmt.Sprint(varType, typeSepeator, id)
+		c := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: varType}).getLink()
+		if c == nil {
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+		}
+		calledFunction, returnType := recursivelySearchForFunction(c, id, paramterList)
+		if calledFunction == nil {
+			saveErrorNew(n.getLineNumber(), functionNotDeclaredWithSignatureError, id, varType)
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+		}
+		lookupInfo := strings.Split(v.scope, "~")
+		method := lookupInfo[0]
+		class := strings.Split(method, "|")[0]
+		//cannot access private member if not in class scope
+		if calledFunction.getVisibility() == "private" && class != varType {
+			saveErrorNew(n.getLineNumber(), "cannot access  class \"%s\" member private function \"%s\" outside of class class line:%d", varType, id)
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+		}
+
+		n.getTable().addRecord(newRecord(id, "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
+		return
+
+	}
+	panic("never reach here!")
+
+}
 
 func (v *typeCheckVisitor) visitDot(n *dotNode) {
 	leftop := n.getLeftMostChild()
@@ -565,6 +618,7 @@ func (v *typeCheckVisitor) visitDot(n *dotNode) {
 func (v *typeCheckVisitor) visitVar(n *varNode) {
 	lookupInfo := strings.Split(v.scope, "~")
 	var scope *symbolTableRecord
+	//look in function scope
 	scope = v.getGlobalTable().getEntry(
 		map[int]interface{}{
 			FILTER_TYPE: newTypeRecord(lookupInfo[1]),
@@ -613,6 +667,9 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 			FILTER_NAME: identifier,
 		},
 	)
+	if entry == nil && isDot {
+		entry = recursivelySearchForId(scope.getLink(), identifier)
+	}
 
 	if !isMethod && entry == nil || isDot && entry == nil {
 		saveErrorNew(n.getLineNumber(), varNotDeclaredError, identifier)
@@ -634,6 +691,12 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 		n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
+	//only allow private access in scope
+	if isDot && entry.getVisibility() == "private" && class != left.getType().typeInfo {
+		saveErrorNew(n.getLineNumber(), "cannot access private class \"%s\" member variable \"%s\" outside of class line:%d", left.getType().typeInfo, identifier)
+		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		return
+	}
 	typeEntry := entry.getType().typeInfo
 	actualIndexCount := 0
 	for _, char := range typeEntry {
@@ -647,7 +710,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	}
 
 	if actualIndexCount-usedIndexCount < 0 {
-		saveErrorNew(n.getLineNumber(), typeMismatchError, identifier)
+		saveErrorNew(n.getLineNumber(), "varaible \"%s\" not used with proper array indexes line:%d", identifier)
 		n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
@@ -698,7 +761,6 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 
 }
 func recursivelySearchForId(classTable *symbolTable, identifier string) *symbolTableRecord {
-
 	record := classTable.getEntry(
 		map[int]interface{}{
 			FILTER_NAME: identifier,
@@ -902,6 +964,7 @@ func (v *declarationVisitor) visitClassDecl(n *classDecl) {
 				saveErrorNew(record.getLine(), functionNotDefinedError, record.getName(), className)
 			} else {
 				record.SetTablelink(entry.getLink())
+				entry.SetVisibilityEntry(record.getVisibility())
 			}
 
 		}

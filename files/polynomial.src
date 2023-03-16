@@ -3,34 +3,28 @@
 
 function main() => void
 {
- /*localvar a:z;
+ localvar a:z;
   //a.b.c();
  //a.c().d();
  // mainMan(2);
   //.d.e().f().g();
-  a.idb[1][2][3][2].idc[2][3].idd[2][3]=3;*/
-  //read(id.id.id[1][2][3].id.id().id.id[1].id[1][1].id().ida);
-  id=(a.b().e[1][2].c()*2);
-  id=a.b.c*2;
-  id=ab();
-  iz=a.b.c[2];
-  a.b().e.c();
+ 
 }
 
-/*class op{
+class op{
 private attribute b:z[][][];
 };
 
 class z{
  public  function c: () => next;
-  private attribute idb:next[1][2][3][4];
+  public attribute idb:next[1][2][3][4];
 
 };
 
 class next{
  public  function d: () => next;
  private attribute c:g[][];
- private attribute idc:rev[][];
+  attribute idc:rev[][];
 };
 
 function z::c()=>next{
@@ -45,8 +39,30 @@ class g{
 function g::p()=>next{
 
 }
-class rev{
- private attribute idd:integer[][];
-};*/
+class rev isa chez{
+
+ public  function access: () => next;
+};
+class chez{
+   private attribute idd:integer[][];
+     attribute dez:man[][];
+
+};
+function rev::access()=>next{
+
+}
+class man isa fan{
+private function deck:(x:integer,a:z)=>void;
+};
+class fan{
+ private function hello:(x:integer)=>void;
+};
+function fan::hello(x:integer)=>void{
+
+}
+function man::deck(x:integer,a:int)=>void{
+  x=44;
+a.idb[1][2][3][2].idc[2][3].dez[2][3].hello(1);
+}
 
 
