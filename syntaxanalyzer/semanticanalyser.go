@@ -334,117 +334,28 @@ func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 func (v *typeCheckVisitor) visitDot(n *dotNode) {
 	leftop := n.getLeftMostChild()
 	rightop := leftop.getRightSibling()
-	switch rightop.(type) {
-	case *functionCall, *varNode:
-		// typeRightOp := rightop.getTable().getSingleEntry().getType()
-		// LeftOp := leftop.getTable().getSingleEntry()
-		// if typeRightOp.typeInfo == TYPE_ERR {
-		// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-		// 	n.getTable().addRecord(rec)
-		// 	return
-		// }
 
-		// rec := newRecord(LeftOp.getName(), typeRightOp.typeInfo, "", n.getLineNumber(), newTypeRecord(typeRightOp.typeInfo), nil)
-		// n.getTable().addRecord(rec)
-		// return
-	case *idNode:
-		typeLeftOp := leftop.getTable().getSingleEntry().getType().String()
-		if typeLeftOp == TYPE_ERR {
-			rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-			n.getTable().addRecord(rec)
-			return
-		}
-		scope := v.getGlobalTable().getEntry(
-			map[int]interface{}{
-				FILTER_KIND: CLASS,
-				FILTER_NAME: typeLeftOp,
-			},
-		)
-		if scope == nil {
-			saveErrorNew(n.getLineNumber(), "class \"%s\" does not exist line:%d", typeLeftOp)
-			rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-			n.getTable().addRecord(rec)
-			return
-		}
-		identifier := rightop.(*idNode).identifier
-		// filter := VARIABLE
-		// switch n.getParent().(type) {
-		// case *functionCall:
-		// 	filter = FUNCDECL
-
-		// }
-		// entry := scope.getLink().getEntry(
-		// 	map[int]interface{}{
-		// 		FILTER_KIND: filter,
-		// 		FILTER_NAME: identifier,
-		// 	},
-		// )
-		// if entry == nil {
-		// 	saveErrorNew(n.getLineNumber(), "member \"%s\" does not exist in class \"%s\" line:%d", identifier, typeLeftOp)
-		// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-		// 	n.getTable().addRecord(rec)
-		// 	return
-		// }
-		// typeinfo := entry.getType().typeInfo
-		// if filter == FUNCDECL {
-		// 	index := strings.IndexRune(typeinfo, ':')
-		// 	if index == -1 {
-		// 		panic("should not happen")
-		// 	}
-		// 	typeinfo = typeinfo[:index]
-		// }
-		rec := newRecord(identifier, "", "", n.getLineNumber(), newTypeRecord(typeLeftOp), nil)
+	typeLeftOp := leftop.getTable().getSingleEntry().getType().String()
+	if typeLeftOp == TYPE_ERR {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
 		n.getTable().addRecord(rec)
 		return
-
-		/*
-		   	   dot
-		      /   \
-		     var  dot
-
-		*/
-	case *dotNode:
-		// left := n.getParent().getLeftMostChild()
-		// switch left.(type) {
-		// case *varNode, *functionCall:
-		// default:
-		// 	panic("must be var or fcall")
-		// }
-		// typeInfo := left.getSingleEntry().getType().String()
-		// if strings.ContainsRune(typeInfo, '[') {
-		// 	index := strings.IndexRune(typeInfo, '[')
-		// 	typeInfo = typeInfo[:index]
-		// }
-		// if typeInfo == TYPE_ERR {
-		// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-		// 	n.getTable().addRecord(rec)
-		// 	return
-
-		// }
-
-		// scope := v.getGlobalTable().getEntry(
-		// 	map[int]interface{}{
-		// 		FILTER_KIND: CLASS,
-		// 		FILTER_NAME: typeInfo,
-		// 	},
-		// )
-
-		// entry := scope.getLink().getEntry(
-		// 	map[int]interface{}{
-		// 		FILTER_NAME: n.getSingleEntry().getName(),
-		// 		FILTER_KIND: filter,
-		// 	},
-		// )
-		// if entry == nil {
-		// 	rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-		// 	n.getTable().addRecord(rec)
-		// 	return
-		// }
-		// entryType := entry.getType().String()
-		// rec := newRecord(left.getTable().getSingleEntry().getName(), "", "", n.getLineNumber(), newTypeRecord(entryType), nil)
-		// n.getTable().addRecord(rec)
-
 	}
+	scope := v.getGlobalTable().getEntry(
+		map[int]interface{}{
+			FILTER_KIND: CLASS,
+			FILTER_NAME: typeLeftOp,
+		},
+	)
+	if scope == nil {
+		saveErrorNew(n.getLineNumber(), "class \"%s\" does not exist line:%d", typeLeftOp)
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	identifier := rightop.(*idNode).identifier
+	rec := newRecord(identifier, "", "", n.getLineNumber(), newTypeRecord(typeLeftOp), nil)
+	n.getTable().addRecord(rec)
 
 }
 
@@ -487,7 +398,7 @@ func (v *typeCheckVisitor) visitParamlist(n *paramListNode) {
 }
 func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 	paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()
-	
+
 	switch n.getLeftMostChild().(type) {
 	case *idNode:
 
@@ -723,7 +634,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	if actualIndexCount-usedIndexCount < 0 {
 		saveErrorNew(n.getLineNumber(), typeMismatchError, identifier)
 		n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
@@ -736,8 +647,8 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	} else {
 		basetype = typeEntry
 	}
-	if isDot{
-		typeInfoId=""
+	if isDot {
+		typeInfoId = ""
 	}
 	if typeInfoId != "" {
 		if basetype != typeInfoId {
@@ -1287,74 +1198,6 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 
 // visitFuncDefList provides a mock function with given fields: n*
 func (v *tableVisitor) visitFuncDefList(n *funcDefListNode) {
-
-}
-
-/*
-		dot
-	   /   \
-	  var  id
-*/
-func (v *typeCheckVisitor) visitId(n *idNode) {
-	// switch n.getParent().(type) {
-	// case *dotNode:
-	// default:
-	// 	return
-	// }
-	// left := n.getParent().getLeftMostChild()
-	// switch left.(type) {
-	// case *varNode, *functionCall:
-	// default:
-	// 	return
-	// }
-	// typeInfo := left.getSingleEntry().getType().String()
-	// if strings.ContainsRune(typeInfo, '[') {
-	// 	index := strings.IndexRune(typeInfo, '[')
-	// 	typeInfo = typeInfo[:index]
-	// }
-	// if typeInfo == TYPE_ERR {
-	// 	n.getTable().getSingleEntry().SetTypeEntry(newTypeRecord(TYPE_ERR))
-	// 	return
-
-	// }
-
-	// scope := v.getGlobalTable().getEntry(
-	// 	map[int]interface{}{
-	// 		FILTER_KIND: CLASS,
-	// 		FILTER_NAME: typeInfo,
-	// 	},
-	// )
-	// isFunction := false
-	// switch n.getParent().getParent().(type) {
-	// case *functionCall:
-	// 	isFunction = true
-
-	// }
-	// filter := VARIABLE
-	// if isFunction {
-	// 	filter = FUNCDECL
-	// }
-	// entry := scope.getLink().getEntry(
-	// 	map[int]interface{}{
-	// 		FILTER_NAME: n.identifier,
-	// 		FILTER_KIND: filter,
-	// 	},
-	// )
-	// if entry == nil {
-	// 	n.getTable().getSingleEntry().SetTypeEntry(newTypeRecord(TYPE_ERR))
-	// 	saveErrorNew(n.getLineNumber(), "no such member \"%s\"line:%d", n.identifier)
-	// 	return
-	// }
-	// entryType := entry.getType().String()
-
-	// if isFunction {
-	// 	index := strings.IndexRune(entryType, ':')
-	// 	if index == -1 {
-	// 		panic("shouldnt happen")
-	// 	}
-	// 	entryType = entryType[:index]
-	// }
-	// n.getTable().getSingleEntry().SetTypeEntry(newTypeRecord(entryType))
 
 }
 

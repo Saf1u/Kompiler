@@ -5,11 +5,14 @@
 [lcurbr, {, 5]
 [blockcmt, /*localvar a:z;\n  //a.b.c();\n //a.c().d();\n // mainMan(2);\n  //.d.e().f().g();\n  a.idb[1][2][3][2].idc[2][3].idd[2][3]=3;*/, 11]
 [inlinecmt, //read(id.id.id[1][2][3].id.id().id.id[1].id[1][1].id().ida);, 12]
-[id, id, 13][equal, =, 13][id, a, 13][dot, ., 13][id, b, 13][dot, ., 13][id, c, 13][lpar, (, 13][rpar, ), 13][mult, *, 13][intlit, 2, 13][semi, ;, 13]
-[id, a, 14][dot, ., 14][id, b, 14][dot, ., 14][id, c, 14][lpar, (, 14][rpar, ), 14][semi, ;, 14]
-[rcurbr, }, 15]
+[id, id, 13][equal, =, 13][lpar, (, 13][id, a, 13][dot, ., 13][id, b, 13][lpar, (, 13][rpar, ), 13][dot, ., 13][id, e, 13][lsqbr, [, 13][intlit, 1, 13][rsqbr, ], 13][lsqbr, [, 13][intlit, 2, 13][rsqbr, ], 13][dot, ., 13][id, c, 13][lpar, (, 13][rpar, ), 13][mult, *, 13][intlit, 2, 13][rpar, ), 13][semi, ;, 13]
+[id, id, 14][equal, =, 14][id, a, 14][dot, ., 14][id, b, 14][dot, ., 14][id, c, 14][mult, *, 14][intlit, 2, 14][semi, ;, 14]
+[id, id, 15][equal, =, 15][id, ab, 15][lpar, (, 15][rpar, ), 15][semi, ;, 15]
+[id, iz, 16][equal, =, 16][id, a, 16][dot, ., 16][id, b, 16][dot, ., 16][id, c, 16][lsqbr, [, 16][intlit, 2, 16][rsqbr, ], 16][semi, ;, 16]
+[id, a, 17][dot, ., 17][id, b, 17][lpar, (, 17][rpar, ), 17][dot, ., 17][id, e, 17][dot, ., 17][id, c, 17][lpar, (, 17][rpar, ), 17][semi, ;, 17]
+[rcurbr, }, 18]
 
-[blockcmt, /*class op{\nprivate attribute b:z[][][];\n};\n\nclass z{\n public  function c: () => next;\n  private attribute idb:next[1][2][3][4];\n\n};\n\nclass next{\n public  function d: () => next;\n private attribute c:g[][];\n private attribute idc:rev[][];\n};\n\nfunction z::c()=>next{\n\n}\nfunction next::d()=>next{\n  \n}\nclass g{\n public  function p: () => next;\n};\nfunction g::p()=>next{\n\n}\nclass rev{\n private attribute idd:integer[][];\n};*/, 47]
+[blockcmt, /*class op{\nprivate attribute b:z[][][];\n};\n\nclass z{\n public  function c: () => next;\n  private attribute idb:next[1][2][3][4];\n\n};\n\nclass next{\n public  function d: () => next;\n private attribute c:g[][];\n private attribute idc:rev[][];\n};\n\nfunction z::c()=>next{\n\n}\nfunction next::d()=>next{\n  \n}\nclass g{\n public  function p: () => next;\n};\nfunction g::p()=>next{\n\n}\nclass rev{\n private attribute idd:integer[][];\n};*/, 50]
 
 
 

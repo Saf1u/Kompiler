@@ -10,8 +10,11 @@ function main() => void
   //.d.e().f().g();
   a.idb[1][2][3][2].idc[2][3].idd[2][3]=3;*/
   //read(id.id.id[1][2][3].id.id().id.id[1].id[1][1].id().ida);
-  id=a.b.c()*2;
-  a.b.c();
+  id=(a.b().e[1][2].c()*2);
+  id=a.b.c*2;
+  id=ab();
+  iz=a.b.c[2];
+  a.b().e.c();
 }
 
 /*class op{
