@@ -539,13 +539,17 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 		id := n.getLeftMostChild().(*idNode).identifier
 		//check class scope since in mrthod for function
 		if functionName[0] != "" {
-			methodLookup := fmt.Sprint(functionName[0], typeSepeator, id)
-			function, returnType := searchForFunction(methodLookup, v.getGlobalTable(), paramterList)
+			//methodLookup := fmt.Sprint(functionName[0], typeSepeator, id)
+			c := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: functionName[0]}).getLink()
+			if c == nil {
+				n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+				return
+			}
+			function, returnType := recursivelySearchForFunction(c, id, paramterList)
 			if function != nil {
 				n.getTable().addRecord(newRecord("return", "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
 				return
 			}
-
 		}
 		//check global scioe if not found for free function
 		functionLookup := fmt.Sprint(typeSepeator, id)
