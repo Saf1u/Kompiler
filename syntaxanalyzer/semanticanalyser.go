@@ -589,7 +589,7 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 		class := strings.Split(method, "|")[0]
 		//cannot access private member if not in class scope
 		if calledFunction.getVisibility() == "private" && class != varType {
-			saveErrorNew(n.getLineNumber(), "cannot access  class \"%s\" member private function \"%s\" outside of class class line:%d", varType, id)
+			saveErrorNew(n.getLineNumber(), "cannot access  class \"%s\" member private function \"%s\" outside of class line:%d", varType, id)
 			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 			return
 		}
@@ -667,6 +667,21 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	if left.getType().typeInfo == TYPE_ERR || indiceList == nil {
 		n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
+	}
+	if !isDot && identifier == "self" {
+		callScope := v.scope
+		function := strings.Split(callScope, "~")[0]
+		functionName := strings.Split(function, "|")
+		isDotParent := false
+		switch n.getParent().(type) {
+		case *dotNode:
+			isDotParent = true
+
+		}
+		if functionName[0] != "" && isDotParent {
+			n.getTable().addRecord(newRecord("self", "", "", n.getLineNumber(), newTypeRecord(functionName[0]), nil))
+			return
+		}
 	}
 
 	typeInfoId := left.getType().typeInfo
