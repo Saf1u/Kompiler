@@ -3,8 +3,13 @@ function main()=>void{
 }
 class man{
     public  constructor:(x:integer,y:integer,p:integer,po:float);
+    private attribute a: float;
 };
 
   function  man::constructor(x:integer,y:integer,o:integer,po:float){
-
+    localvar self:self;
+    self.a=33.2;
   }
+  class self{
+
+  };

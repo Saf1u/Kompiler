@@ -992,7 +992,6 @@ func cyclicChecker(gloablTable *symbolTable, starter string, classToFind *symbol
 
 func (v *declarationVisitor) visitClassDecl(n *classDecl) {
 	table := n.getTable()
-	fmt.Println(table.getRecords())
 	class := v.getGlobalTable().getEntry(
 		map[int]interface{}{
 			FILTER_LINK: table,
@@ -1419,7 +1418,7 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 	function := strings.Split(callScope, "~")[0]
 	functionName := strings.Split(function, "|")
 	if functionName[0] != "" && entryName == "self" {
-		saveErrorNew(n.getLineNumber(), "warning declaration of self keyword in class line:%d", entryType)
+		saveErrorNew(n.getLineNumber(), "warning declaration of self keyword in class line:%d")
 		return
 	}
 	if entryType == "float" || entryType == "integer" {

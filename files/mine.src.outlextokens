@@ -3,8 +3,13 @@
 [rcurbr, }, 3]
 [class, class, 4][id, man, 4][lcurbr, {, 4]
 [public, public, 5][constructor, constructor, 5][colon, :, 5][lpar, (, 5][id, x, 5][colon, :, 5][integer, integer, 5][comma, ,, 5][id, y, 5][colon, :, 5][integer, integer, 5][comma, ,, 5][id, p, 5][colon, :, 5][integer, integer, 5][comma, ,, 5][id, po, 5][colon, :, 5][float, float, 5][rpar, ), 5][semi, ;, 5]
-[rcurbr, }, 6][semi, ;, 6]
+[private, private, 6][attribute, attribute, 6][id, a, 6][colon, :, 6][float, float, 6][semi, ;, 6]
+[rcurbr, }, 7][semi, ;, 7]
 
-[function, function, 8][id, man, 8][sr, ::, 8][constructor, constructor, 8][lpar, (, 8][id, x, 8][colon, :, 8][integer, integer, 8][comma, ,, 8][id, y, 8][colon, :, 8][integer, integer, 8][comma, ,, 8][id, o, 8][colon, :, 8][integer, integer, 8][comma, ,, 8][id, po, 8][colon, :, 8][float, float, 8][rpar, ), 8][lcurbr, {, 8]
+[function, function, 9][id, man, 9][sr, ::, 9][constructor, constructor, 9][lpar, (, 9][id, x, 9][colon, :, 9][integer, integer, 9][comma, ,, 9][id, y, 9][colon, :, 9][integer, integer, 9][comma, ,, 9][id, o, 9][colon, :, 9][integer, integer, 9][comma, ,, 9][id, po, 9][colon, :, 9][float, float, 9][rpar, ), 9][lcurbr, {, 9]
+[localvar, localvar, 10][self, self, 10][colon, :, 10][self, self, 10][semi, ;, 10]
+[self, self, 11][dot, ., 11][id, a, 11][equal, =, 11][floatlit, 33.2, 11][semi, ;, 11]
+[rcurbr, }, 12]
+[class, class, 13][self, self, 13][lcurbr, {, 13]
 
-[rcurbr, }, 10]
+[rcurbr, }, 15][semi, ;, 15]
