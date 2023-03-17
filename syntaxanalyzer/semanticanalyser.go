@@ -612,7 +612,7 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 		}
 		lookupInfo := strings.Split(v.scope, "~")
 		method := lookupInfo[0]
-		class := strings.Split(method, "|")[0]
+		class := strings.Split(method, typeSepeator)[0]
 		//cannot access private member if not in class scope
 		if calledFunction.getVisibility() == "private" && class != varType {
 			saveError(n.getLineNumber(), "ERROR:cannot access  class \"%s\" member private function \"%s\" outside of class line:%d", varType, id)
@@ -697,7 +697,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	if !isDot && identifier == "self" {
 		callScope := v.scope
 		function := strings.Split(callScope, "~")[0]
-		functionName := strings.Split(function, "|")
+		functionName := strings.Split(function, typeSepeator)
 		isDotParent := false
 		switch n.getParent().(type) {
 		case *dotNode:
@@ -853,7 +853,7 @@ func (v *typeCheckVisitor) visitReturn(n *returnNode) {
 	}
 	index := strings.IndexRune(functionType, ':')
 	returnType := functionType[:index]
-	parts := strings.Split(functionName, "|")
+	parts := strings.Split(functionName, typeSepeator)
 	if strings.ToLower(parts[0]) == "constructor" {
 		if typeInfo != parts[1] {
 			saveError(n.getLineNumber(), "ERROR:wrong return type:%d")
@@ -1116,14 +1116,7 @@ func NewTableVisitor() []visitor {
 	return visitors
 }
 
-// visit provides a mock function with given fields: n*
-func (v *tableVisitor) visit(n node) {
-}
 
-// visitAdd provides a mock function with given fields: n*
-func (v *tableVisitor) visitAdd(n *addNode) {
-
-}
 
 // visitClassDecl provides a mock function with given fields: n*
 func (v *tableVisitor) visitClassDecl(n *classDecl) {
@@ -1163,10 +1156,8 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 
 }
 
-// visitClassList provides a mock function with given fields: n*
-func (v *tableVisitor) visitClassList(n *classListNode) {
 
-}
+
 
 // visitClassVarDecl provides a mock function with given fields: n*
 func (v *tableVisitor) visitClassVarDecl(n *ClassVarNode) {
@@ -1229,20 +1220,6 @@ func (v *tableVisitor) visitDimList(n *dimListNode) {
 	n.table.addRecord(record)
 }
 
-// visitDot provides a mock function with given fields: n*
-func (v *tableVisitor) visitDot(n *dotNode) {
-
-}
-
-// visitEpsilon provides a mock function with given fields: n*
-func (v *tableVisitor) visitEpsilon(n *epsilonNode) {
-
-}
-
-// visitFloatLit provides a mock function with given fields: n*
-func (v *tableVisitor) visitFloatLit(n *floatNode) {
-
-}
 
 // visitFparamlist provides a mock function with given fields: n*
 func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
@@ -1274,10 +1251,7 @@ func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
 
 }
 
-// visitFuncCall provides a mock function with given fields: n*
-func (v *tableVisitor) visitFuncCall(n *functionCall) {
 
-}
 
 // visitFuncDecl provides a mock function with given fields: n*
 func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
@@ -1311,9 +1285,6 @@ func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
 		n.table.addRecord(funcDeclEntry)
 
 	}
-
-}
-func (v *tableVisitor) visitVar(n *varNode) {
 
 }
 
@@ -1381,10 +1352,7 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 
 }
 
-// visitFuncDefList provides a mock function with given fields: n*
-func (v *tableVisitor) visitFuncDefList(n *funcDefListNode) {
 
-}
 
 // visitId provides a mock function with given fields: n*
 func (v *tableVisitor) visitId(n *idNode) {
@@ -1393,10 +1361,7 @@ func (v *tableVisitor) visitId(n *idNode) {
 
 }
 
-// visitIndiceList provides a mock function with given fields: n*
-func (v *tableVisitor) visitIndiceList(n *indiceListNode) {
 
-}
 
 // visitInheritance provides a mock function with given fields: n*
 func (v *tableVisitor) visitInheritance(n *inheritanceNode) {
@@ -1470,7 +1435,7 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 	}
 	callScope := v.scope
 	function := strings.Split(callScope, "~")[0]
-	functionName := strings.Split(function, "|")
+	functionName := strings.Split(function, typeSepeator)
 	if functionName[0] != "" && entryName == "self" {
 		saveError(n.getLineNumber(), "ERROR:warning declaration of self keyword in class line:%d")
 		return
@@ -1488,7 +1453,7 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 		saveError(n.getLineNumber(), "ERROR:class \"%s\" not declared line:%d", entryType)
 		return
 	}
-	name := fmt.Sprint(entry.getName(), "|", "constructor")
+	name := fmt.Sprint(entry.getName(), typeSepeator, "constructor")
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
 	default:
@@ -1517,40 +1482,11 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 
 }
 
-// visitMult provides a mock function with given fields: n*
-func (v *tableVisitor) visitMult(n *multNode) {
 
-}
 
-// visitNot provides a mock function with given fields: n*
-func (v *tableVisitor) visitNot(n *notNode) {
 
-}
 
-// visitParamlist provides a mock function with given fields: n*
-func (v *tableVisitor) visitParamlist(n *paramListNode) {
 
-}
-
-// visitProgramBlock provides a mock function with given fields: n*
-func (v *tableVisitor) visitProgramBlock(n *programBlockNode) {
-
-}
-
-// visitReadStatement provides a mock function with given fields: n*
-func (v *tableVisitor) visitReadStatement(n *readStatementNode) {
-
-}
-
-// visitRelOp provides a mock function with given fields: n*
-func (v *tableVisitor) visitRelOp(n *relOpNode) {
-
-}
-
-// visitReturn provides a mock function with given fields: n*
-func (v *tableVisitor) visitReturn(n *returnNode) {
-
-}
 
 // visitReturnType provides a mock function with given fields: n*
 func (v *tableVisitor) visitReturnType(n *returnTypeNode) {
@@ -1563,11 +1499,6 @@ func (v *tableVisitor) visitReturnType(n *returnTypeNode) {
 func (v *tableVisitor) visitScope(n *scopeNode) {
 	record := newRecord(n.identifier, "scope", "", n.getLineNumber(), newTypeRecord(""), nil)
 	n.table.addRecord(record)
-
-}
-
-// visitSign provides a mock function with given fields: n*
-func (v *tableVisitor) visitSign(n *signNode) {
 
 }
 
@@ -1604,21 +1535,4 @@ func (v *tableVisitor) visitVisiblity(n *visibilityNode) {
 
 }
 
-// visitWhileStatement provides a mock function with given fields: n*
-func (v *tableVisitor) visitWhileStatement(n *whileStatementNode) {
 
-}
-
-// visitWrite provides a mock function with given fields: n*
-func (v *tableVisitor) visitWrite(n *writeNode) {
-
-}
-
-// visitifStatement provides a mock function with given fields: n*
-func (v *tableVisitor) visitifStatement(n *ifStatementNode) {
-
-}
-
-func (v *tableVisitor) visitAssign(n *assignStatNode) {
-
-}
