@@ -3,6 +3,7 @@ package syntaxanalyzer
 import (
 	"fmt"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -64,10 +65,14 @@ const (
 )
 
 var errorBin = map[int][]string{}
+var indexes = []int{}
 
 func saveErrorNew(lineNum int, err string, args ...any) {
 	args = append(args, lineNum)
 	err = fmt.Sprintf(err, args...)
+	if _, ok := errorBin[lineNum]; !ok {
+		indexes = append(indexes, lineNum)
+	}
 	errorBin[lineNum] = append(errorBin[lineNum], err)
 
 }
@@ -316,9 +321,14 @@ func (v *defaultVisitor) visitAssign(n *assignStatNode) {
 }
 func (v *defaultVisitor) visitProgram(n *program) {
 	fmt.Println("------")
-	for _, line := range errorBin {
-		for _, e := range line {
-			fmt.Println(e)
+	sort.Slice(indexes, func(i, j int) bool {
+		return indexes[i] < indexes[j]
+	})
+
+	for _, line := range indexes {
+		errors := errorBin[line]
+		for _, error := range errors {
+			fmt.Println(error)
 		}
 	}
 }
@@ -715,9 +725,11 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 		return
 	}
 	index := strings.IndexRune(typeEntry, '[')
+	arrayPart := ""
 	basetype := ""
 	if index != -1 {
 		basetype = typeEntry[0:index]
+		arrayPart = typeEntry[index:]
 	} else {
 		basetype = typeEntry
 	}
@@ -743,10 +755,8 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 				n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 				return
 			}
-			for actualIndexCount != 0 {
-				typeInfoId = fmt.Sprint(typeInfoId, "[]")
-				actualIndexCount--
-			}
+			typeInfoId = fmt.Sprint(typeInfoId, arrayPart)
+
 			n.getTable().addRecord(newRecord(identifier, "type", "", n.getLineNumber(), newTypeRecord(typeInfoId), nil))
 
 		default:
@@ -782,6 +792,36 @@ func recursivelySearchForId(classTable *symbolTable, identifier string) *symbolT
 		}
 	}
 	return nil
+}
+func (v *typeCheckVisitor) visitReturn(n *returnNode) {
+
+	names := strings.Split(v.scope, "~")
+	if len(names) == 1{
+		return
+	}
+	functionType := names[1]
+	functionName := names[0]
+	typeInfo := n.getLeftMostChild().getSingleEntry().getType().typeInfo
+	if typeInfo == TYPE_ERR {
+		saveErrorNew(n.getLineNumber(), "erronous return type:%d")
+		return
+	}
+	index := strings.IndexRune(functionType, ':')
+	returnType := functionType[:index]
+	parts := strings.Split(functionName, "|")
+	if strings.ToLower(parts[0]) == "constructor" {
+		if typeInfo != parts[1] {
+			saveErrorNew(n.getLineNumber(), "wrong return type:%d")
+			return
+		}
+	}
+	if returnType == "void" {
+		return
+	}
+	if returnType != typeInfo {
+		saveErrorNew(n.getLineNumber(), "wrong return type:%d")
+	}
+
 }
 
 func (v *typeCheckVisitor) visitIndiceList(n *indiceListNode) {
@@ -824,14 +864,7 @@ func (v *declarationVisitor) visitProgram(n *program) {
 				if class == nil {
 					saveErrorNew(entry.getLine(), classNotDeclaredError, parts[0], parts[1])
 				} else {
-					function := class.getLink().getEntry(
-
-						map[int]interface{}{
-							FILTER_NAME: parts[1],
-							FILTER_KIND: FUNCDECL,
-							FILTER_TYPE: entry.getType(),
-						},
-					)
+					function := class.getLink().getEntry(map[int]interface{}{FILTER_NAME: parts[1], FILTER_KIND: FUNCDECL, FILTER_TYPE: entry.getType()})
 					if function == nil {
 						saveErrorNew(entry.getLine(), functionNotDeclaredError, parts[1], parts[0])
 					}
@@ -940,11 +973,16 @@ func cyclicChecker(gloablTable *symbolTable, starter string, classToFind *symbol
 
 func (v *declarationVisitor) visitClassDecl(n *classDecl) {
 	table := n.getTable()
-	className := v.getGlobalTable().getEntry(
+	fmt.Println(table.getRecords())
+	class := v.getGlobalTable().getEntry(
 		map[int]interface{}{
 			FILTER_LINK: table,
 		},
-	).getName()
+	)
+	if class == nil {
+		return
+	}
+	className := class.getName()
 
 	marker := make(map[*symbolTable]bool)
 	for _, record := range table.getRecords() {
@@ -1219,11 +1257,7 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 			case *statBlockNode:
 				records := left.getTable().getRecords()
 				for _, record := range records {
-					existingRecord := n.getTable().getEntry(
-						map[int]interface{}{
-							FILTER_NAME: record.getName(),
-						},
-					)
+					existingRecord := n.getTable().getEntry(map[int]interface{}{FILTER_NAME: record.getName()})
 					if existingRecord != nil {
 						saveErrorNew(record.getLine(), sameDeclarationInScopeError, record.getKind(), record.getName())
 					} else {
@@ -1264,6 +1298,9 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 			v.getGlobalTable().addRecord(funcDefEntry)
 		} else {
 			saveErrorNew(funcDefEntry.getLine(), sameDeclarationInScopeError, funcDefEntry.getKind(), funcDefEntry.getName())
+		}
+		if len(v.getGlobalTable().getEntries(map[int]interface{}{FILTER_NAME: id})) > 1 {
+			saveErrorNew(funcDefEntry.getLine(), "function \"%s\" is being overloaded line:%d", funcDefEntry.getName())
 		}
 
 	}
@@ -1344,6 +1381,51 @@ func (v *tableVisitor) visitLocalVarDecl(n *localVarNode) {
 		typeRec := newTypeRecord(typeInfo)
 		localVarEntry.SetTypeEntry(typeRec)
 		n.table.addRecord(localVarEntry)
+	}
+
+}
+func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
+	entryType := n.getTable().getSingleEntry().getType().String()
+	if strings.ContainsRune(entryType, '[') {
+		index := strings.IndexRune(entryType, '[')
+		entryType = entryType[:index]
+	}
+	if entryType == "float" || entryType == "integer" {
+		return
+	}
+	entry := v.gloablTable.getEntry(
+		map[int]interface{}{
+			FILTER_NAME: entryType,
+			FILTER_KIND: CLASS,
+		},
+	)
+	if entry == nil {
+		saveErrorNew(n.getLineNumber(), "class \"%s\" not declared line:%d", entryType)
+		return
+	}
+	name := fmt.Sprint(entry.getName(), "|", "constructor")
+	switch n.getLeftMostChild().(type) {
+	case *epsilonNode:
+	default:
+		left := n.getLeftMostChild()
+		for left != nil {
+			entry := left.getSingleEntry()
+			if entry != nil {
+				switch entry.getName() {
+				case "paramaters":
+					typeInfo := entry.getType().typeInfo
+					typeInfo = fmt.Sprint(":", typeInfo)
+					record := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: FUNCDEF, FILTER_NAME: name, FILTER_TYPE: newTypeRecord(typeInfo)})
+					if record == nil {
+						saveErrorNew(n.getLineNumber(), "constructor not declared for class \"%s\" with such signature:%d", entryType)
+						return
+					}
+
+				}
+			}
+
+			left = left.getRightSibling()
+		}
 	}
 
 }

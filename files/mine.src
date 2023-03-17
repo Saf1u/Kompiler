@@ -1,0 +1,10 @@
+function main()=>void{
+    localvar z:man(1,1,1,1.2);
+}
+class man{
+    public  constructor:(x:integer,y:integer,p:integer,po:float);
+};
+
+  function  man::constructor(x:integer,y:integer,p:integer,po:float){
+
+  }
