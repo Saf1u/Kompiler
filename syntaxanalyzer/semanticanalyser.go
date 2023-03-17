@@ -1409,10 +1409,18 @@ func (v *tableVisitor) visitLocalVarDecl(n *localVarNode) {
 
 }
 func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
+	entryName := n.getTable().getSingleEntry().getName()
 	entryType := n.getTable().getSingleEntry().getType().String()
 	if strings.ContainsRune(entryType, '[') {
 		index := strings.IndexRune(entryType, '[')
 		entryType = entryType[:index]
+	}
+	callScope := v.scope
+	function := strings.Split(callScope, "~")[0]
+	functionName := strings.Split(function, "|")
+	if functionName[0] != "" && entryName == "self" {
+		saveErrorNew(n.getLineNumber(), "warning declaration of self keyword in class line:%d", entryType)
+		return
 	}
 	if entryType == "float" || entryType == "integer" {
 		return
