@@ -5,6 +5,6 @@ class man{
     public  constructor:(x:integer,y:integer,p:integer,po:float);
 };
 
-  function  man::constructor(x:integer,y:integer,p:integer,po:float){
+  function  man::constructor(x:integer,y:integer,o:integer,po:float){
 
   }

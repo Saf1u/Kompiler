@@ -106,7 +106,7 @@ none65[shape="point"];
 67->66;
 67->63;
 67->62;
-68[label="Id|p"];
+68[label="Id|o"];
 69[label="type|integer"];
 none71[shape="point"];
 72[label="DimList"];

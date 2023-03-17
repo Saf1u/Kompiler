@@ -796,7 +796,7 @@ func recursivelySearchForId(classTable *symbolTable, identifier string) *symbolT
 func (v *typeCheckVisitor) visitReturn(n *returnNode) {
 
 	names := strings.Split(v.scope, "~")
-	if len(names) == 1{
+	if len(names) == 1 {
 		return
 	}
 	functionType := names[1]
@@ -1189,9 +1189,14 @@ func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
 		left := n.getLeftMostChild()
 		for left != nil {
 			entry := left.getSingleEntry()
-			typeEntry := entry.getType()
-			n.table.addRecord(entry)
-			typeInfo = fmt.Sprint(typeInfo, typeSepeator, typeEntry)
+			if n.table.getEntry(map[int]interface{}{FILTER_NAME: entry.getName()}) == nil {
+				typeEntry := entry.getType()
+				typeInfo = fmt.Sprint(typeInfo, typeSepeator, typeEntry)
+				n.table.addRecord(entry)
+			} else {
+				saveErrorNew(n.getLineNumber(), "redeclared argument \"%s\" line:%d", entry.getName())
+			}
+
 			left = left.getRightSibling()
 
 		}

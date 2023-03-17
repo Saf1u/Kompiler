@@ -5,6 +5,6 @@
 [public, public, 5][constructor, constructor, 5][colon, :, 5][lpar, (, 5][id, x, 5][colon, :, 5][integer, integer, 5][comma, ,, 5][id, y, 5][colon, :, 5][integer, integer, 5][comma, ,, 5][id, p, 5][colon, :, 5][integer, integer, 5][comma, ,, 5][id, po, 5][colon, :, 5][float, float, 5][rpar, ), 5][semi, ;, 5]
 [rcurbr, }, 6][semi, ;, 6]
 
-[function, function, 8][id, man, 8][sr, ::, 8][constructor, constructor, 8][lpar, (, 8][id, x, 8][colon, :, 8][integer, integer, 8][comma, ,, 8][id, y, 8][colon, :, 8][integer, integer, 8][comma, ,, 8][id, p, 8][colon, :, 8][integer, integer, 8][comma, ,, 8][id, po, 8][colon, :, 8][float, float, 8][rpar, ), 8][lcurbr, {, 8]
+[function, function, 8][id, man, 8][sr, ::, 8][constructor, constructor, 8][lpar, (, 8][id, x, 8][colon, :, 8][integer, integer, 8][comma, ,, 8][id, y, 8][colon, :, 8][integer, integer, 8][comma, ,, 8][id, o, 8][colon, :, 8][integer, integer, 8][comma, ,, 8][id, po, 8][colon, :, 8][float, float, 8][rpar, ), 8][lcurbr, {, 8]
 
 [rcurbr, }, 10]
