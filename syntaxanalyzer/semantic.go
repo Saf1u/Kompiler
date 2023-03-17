@@ -1021,22 +1021,6 @@ func filter(records map[string]*symbolTableRecord, filter interface{}, filterFun
 	return temp
 }
 
-func (s *symbolTable) getEntryByKind(kind string) *symbolTableRecord {
-	for _, record := range s.records {
-		if record.kind == kind {
-			return record
-		}
-	}
-	return nil
-}
-func (s *symbolTable) getEntryByName(name string) *symbolTableRecord {
-	for _, record := range s.records {
-		if record.name == name {
-			return record
-		}
-	}
-	return nil
-}
 
 func (s *symbolTable) getRecords() []*symbolTableRecord {
 	records := make([]*symbolTableRecord, 0)

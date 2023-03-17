@@ -370,7 +370,7 @@ func (v *typeCheckVisitor) visitParamlist(n *paramListNode) {
 		switch left.(type) {
 		case *epsilonNode:
 		default:
-			typeInfo = fmt.Sprint(typeInfo, "|", left.getSingleEntry().getType().String())
+			typeInfo = fmt.Sprint(typeInfo, typeSepeator, left.getSingleEntry().getType().String())
 		}
 		left = left.getRightSibling()
 	}
@@ -935,7 +935,7 @@ func (v *declarationVisitor) visitProgram(n *program) {
 			if parts[0] == "" {
 				continue
 			}
-			class := v.getGlobalTable().getEntryByName(parts[0])
+			class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_NAME: parts[0]})
 			if class == nil {
 				saveError(entry.getLine(), classNotDeclaredError, parts[0], parts[1])
 			} else {
@@ -1292,7 +1292,9 @@ func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
 				entry := left.getSingleEntry()
 				funcDeclEntry.SetVisibilityEntry(entry.getName())
 			case *fparamListNode:
-				typeInfo = fmt.Sprint(typeInfo, left.getTable().getEntryByKind(FPARAMLIST).getName())
+				name := left.getTable().getEntry(map[int]interface{}{FILTER_KIND: FPARAMLIST}).getName()
+				typeInfo = fmt.Sprint(typeInfo, name)
+
 			case *returnTypeNode:
 				entry := left.getSingleEntry()
 				typeInfo = fmt.Sprint(entry.getName(), typeInfo)
