@@ -378,6 +378,7 @@ func (v *typeCheckVisitor) visitParamlist(n *paramListNode) {
 }
 
 func matchVariableArraysCompare(parameterType string, parameterList string) bool {
+	parameterType = fmt.Sprint("^", parameterType, "$")
 	for i, pattern := range patterns {
 		regex := regexp.MustCompile(pattern)
 		parameterType = regex.ReplaceAllString(parameterType, replacements[i])
