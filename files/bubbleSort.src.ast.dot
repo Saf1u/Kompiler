@@ -25,7 +25,7 @@ none12[shape="point"];
 15->8;
 16[label="returnType|void"];
 18[label="Id|n"];
-19[label="type|inteLger"];
+19[label="type|integer"];
 none21[shape="point"];
 22[label="DimList"];
 22->none21;

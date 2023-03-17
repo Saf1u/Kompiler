@@ -1,14 +1,21 @@
 package syntaxanalyzer
 
 import (
+	"compiler/configmap"
 	"fmt"
+	"os"
 	"reflect"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
 )
 
 const typeSepeator = "|"
+
+var patterns = []string{`(\[),*`, `(\]),*`, `(\\\[)\\]`, `(\|)`}
+var replacements = []string{`\[`, `\]`, `\[[0-9]*\]`, `\|`}
+
 const (
 	ID               = "id"
 	INHERITANCE      = "inheritance"
@@ -43,25 +50,25 @@ x return type
 ni any num of params whre i>=1
 */
 const (
-	sameDeclarationInScopeError               = "%s %s aready declared:line %d"
-	classNotDeclaredError                     = "class \"%s\" not declared so function \"%s\" has no class:line %d"
-	functionNotDeclaredError                  = "function \"%s\" not declared in class \"%s\" :line %d"
-	functionOverrloadWarn                     = "function \"%s\" is being overloaded:line %d"
-	inheritedClassNotDeclaredError            = "class \"%s\" not declared so cannot be inherited:line %d"
-	inheritedClassAlreadyInheritedError       = "class \"%s\" already inherited:line %d"
-	shadowWarn                                = "member \"%s\" is being shadowed:line %d"
-	cyclicDependencyError                     = "class \"%s\" is being cyclicly inherited:line %d"
-	functionNotDefinedError                   = "function \"%s\" declared in class \"%s\" not defined:line %d"
-	funcParameterShadowed                     = "function parameter \"%s\" is being shadowed:line %d"
-	varNotDeclaredError                       = "variable  \"%s\" not declared in current scope:line %d"
-	invalidIndexType                          = "only integers are valid indexes:line %d"
-	typeMismatchError                         = "varaible \"%s\" not used with declared type line:%d"
-	cannotAssignError                         = "cannot assign mismatched types line:%d"
-	arithmeticError                           = "cannot operate on mismatched types line:%d"
-	undeclaredClassError                      = "accessing member of undeclared class \"%s\" line:%d"
-	noOperationsAllowedOnArrays               = "operations not allowed on array types line:%d"
-	functionNotDeclaredWithSignatureError     = "function \"%s\" not declared in class \"%s\" with such signature :line %d"
-	functionNotDeclaredWithSignatureErrorFree = "function \"%s\" not declared  :line %d"
+	sameDeclarationInScopeError               = "ERROR:%s %s aready declared:line %d"
+	classNotDeclaredError                     = "ERROR:class \"%s\" not declared so function \"%s\" has no class:line %d"
+	functionNotDeclaredError                  = "ERROR:function \"%s\" not declared in class \"%s\" :line %d"
+	functionOverrloadWarn                     = "WARNING:function \"%s\" is being overloaded:line %d"
+	inheritedClassNotDeclaredError            = "ERROR:class \"%s\" not declared so cannot be inherited:line %d"
+	inheritedClassAlreadyInheritedError       = "ERROR:class \"%s\" already inherited:line %d"
+	shadowWarn                                = "WARNING:member \"%s\" is being shadowed:line %d"
+	cyclicDependencyError                     = "ERROR:class \"%s\" is being cyclicly inherited:line %d"
+	functionNotDefinedError                   = "ERROR:function \"%s\" declared in class \"%s\" not defined:line %d"
+	funcParameterShadowed                     = "WARNING:function parameter \"%s\" is being shadowed:line %d"
+	varNotDeclaredError                       = "ERROR:variable  \"%s\" not declared in current scope:line %d"
+	invalidIndexType                          = "ERROR:only integers are valid indexes:line %d"
+	typeMismatchError                         = "ERROR:varaible \"%s\" not used with declared type line:%d"
+	cannotAssignError                         = "ERROR:cannot assign mismatched types line:%d"
+	arithmeticError                           = "ERROR:cannot operate on mismatched types line:%d"
+	undeclaredClassError                      = "ERROR:accessing member of undeclared class \"%s\" line:%d"
+	noOperationsAllowedOnArrays               = "ERROR:operations not allowed on array types line:%d"
+	functionNotDeclaredWithSignatureError     = "ERROR:function \"%s\" not declared in class \"%s\" with such signature :line %d"
+	functionNotDeclaredWithSignatureErrorFree = "ERROR:function \"%s\" not declared  :line %d"
 )
 
 var errorBin = map[int][]string{}
@@ -320,17 +327,7 @@ func (v *defaultVisitor) visitAssign(n *assignStatNode) {
 
 }
 func (v *defaultVisitor) visitProgram(n *program) {
-	fmt.Println("------")
-	sort.Slice(indexes, func(i, j int) bool {
-		return indexes[i] < indexes[j]
-	})
 
-	for _, line := range indexes {
-		errors := errorBin[line]
-		for _, error := range errors {
-			fmt.Println(error)
-		}
-	}
 }
 
 type typeCheckVisitor struct {
@@ -380,29 +377,42 @@ func (v *typeCheckVisitor) visitParamlist(n *paramListNode) {
 	n.getTable().addRecord(newRecord("paramaters", "parameters", "", n.getLineNumber(), newTypeRecord(typeInfo), nil))
 }
 
-func searchForFunction(name string, globaltable *symbolTable, paramterList string) (*symbolTableRecord, string) {
+func matchVariableArraysCompare(parameterType string, parameterList string) bool {
+	for i, pattern := range patterns {
+		regex := regexp.MustCompile(pattern)
+		parameterType = regex.ReplaceAllString(parameterType, replacements[i])
+	}
+	ok, err := regexp.MatchString(parameterType, parameterList)
+	if err != nil {
+		panic(err)
+	}
+	return ok
+}
+func basicCompare(parameterType string, parameterList string) bool {
+	return parameterList == parameterType
+}
+
+func searchForFunction(name string, globaltable *symbolTable, paramterList string, compare func(string, string) bool) (*symbolTableRecord, string) {
 	entries := globaltable.getEntries(map[int]interface{}{FILTER_NAME: name, FILTER_KIND: FUNCDEF})
 	var calledFunction *symbolTableRecord
 	var returnType string
-	if len(entries) != 0 {
-
-		for _, function := range entries {
-			funcType := function.getType().String()
-			index := strings.IndexRune(funcType, ':')
-			returnType = funcType[0:index]
-			parameterType := funcType[index+1:]
-			if parameterType == paramterList {
-				calledFunction = function
-				break
-			}
-		}
-		return calledFunction, returnType
-
+	if len(entries) == 0 {
+		return nil, returnType
 	}
-	return nil, returnType
+	for _, function := range entries {
+		funcType := function.getType().String()
+		index := strings.IndexRune(funcType, ':')
+		returnType = funcType[0:index]
+		parameterType := funcType[index+1:]
+		if compare(parameterType, paramterList) {
+			calledFunction = function
+			break
+		}
+	}
+	return calledFunction, returnType
 
 }
-func recursivelySearchForFunction(classTable *symbolTable, identifier string, paramterList string) (*symbolTableRecord, string) {
+func recursivelySearchForFunction(classTable *symbolTable, identifier string, paramterList string, compare func(string, string) bool) (*symbolTableRecord, string) {
 	entries := classTable.getEntries(
 		map[int]interface{}{
 			FILTER_NAME: identifier,
@@ -418,7 +428,7 @@ func recursivelySearchForFunction(classTable *symbolTable, identifier string, pa
 			index := strings.IndexRune(funcType, ':')
 			returnType = funcType[0:index]
 			parameterType := funcType[index+1:]
-			if parameterType == paramterList {
+			if compare(parameterType, paramterList) {
 				calledFunction = function
 				break
 			}
@@ -432,7 +442,7 @@ func recursivelySearchForFunction(classTable *symbolTable, identifier string, pa
 		},
 	)
 	for _, class := range inheritedClasses {
-		record, returnType := recursivelySearchForFunction(class.getLink(), identifier, paramterList)
+		record, returnType := recursivelySearchForFunction(class.getLink(), identifier, paramterList, compare)
 		if record != nil {
 			return record, returnType
 		}
@@ -517,7 +527,8 @@ func (v *typeCheckVisitor) visitRelOp(n *relOpNode) {
 	leftOp := n.getLeftMostChild().getSingleEntry()
 	rightOp := n.getLeftMostChild().getRightSibling().getSingleEntry()
 	if !(leftOp.getType().typeInfo != TYPE_ERR && rightOp.getType().typeInfo != TYPE_ERR && leftOp.getType().typeInfo == rightOp.getType().typeInfo) {
-		saveErrorNew(n.getLineNumber(), "error cannot compare types line:%d")
+		cannotCompareError := "ERROR:cannot compare types line:%d"
+		saveErrorNew(n.getLineNumber(), cannotCompareError)
 	}
 	if strings.ContainsRune(leftOp.getType().typeInfo, '[') || strings.ContainsRune(rightOp.getType().typeInfo, '[') {
 		saveErrorNew(n.getLineNumber(), noOperationsAllowedOnArrays)
@@ -545,7 +556,12 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 				n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 				return
 			}
-			function, returnType := recursivelySearchForFunction(c, id, paramterList)
+			function, returnType := recursivelySearchForFunction(c, id, paramterList, basicCompare)
+			if function != nil {
+				n.getTable().addRecord(newRecord("return", "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
+				return
+			}
+			function, returnType = recursivelySearchForFunction(c, id, paramterList, matchVariableArraysCompare)
 			if function != nil {
 				n.getTable().addRecord(newRecord("return", "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
 				return
@@ -553,17 +569,23 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 		}
 		//check global scioe if not found for free function
 		functionLookup := fmt.Sprint(typeSepeator, id)
-		possibleFunction, returnType := searchForFunction(functionLookup, v.getGlobalTable(), paramterList)
+		possibleFunction, returnType := searchForFunction(functionLookup, v.getGlobalTable(), paramterList, basicCompare)
 		if possibleFunction != nil {
 			n.getTable().addRecord(newRecord(id, "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
 			return
 
-		} else {
-			saveErrorNew(n.getLineNumber(), functionNotDeclaredWithSignatureErrorFree, id)
-			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		}
+		possibleFunction, returnType = searchForFunction(functionLookup, v.getGlobalTable(), paramterList, matchVariableArraysCompare)
+		if possibleFunction != nil {
+			n.getTable().addRecord(newRecord(id, "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
 			return
 
 		}
+
+		saveErrorNew(n.getLineNumber(), functionNotDeclaredWithSignatureErrorFree, id)
+		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		return
+
 	case *dotNode:
 		varType := n.getLeftMostChild().getSingleEntry().getType().typeInfo
 		if varType == TYPE_ERR {
@@ -578,7 +600,10 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 			return
 		}
-		calledFunction, returnType := recursivelySearchForFunction(c, id, paramterList)
+		calledFunction, returnType := recursivelySearchForFunction(c, id, paramterList, basicCompare)
+		if calledFunction == nil {
+			calledFunction, returnType = recursivelySearchForFunction(c, id, paramterList, matchVariableArraysCompare)
+		}
 		if calledFunction == nil {
 			saveErrorNew(n.getLineNumber(), functionNotDeclaredWithSignatureError, id, varType)
 			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
@@ -589,7 +614,7 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 		class := strings.Split(method, "|")[0]
 		//cannot access private member if not in class scope
 		if calledFunction.getVisibility() == "private" && class != varType {
-			saveErrorNew(n.getLineNumber(), "cannot access  class \"%s\" member private function \"%s\" outside of class line:%d", varType, id)
+			saveErrorNew(n.getLineNumber(), "ERROR:cannot access  class \"%s\" member private function \"%s\" outside of class line:%d", varType, id)
 			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 			return
 		}
@@ -619,7 +644,7 @@ func (v *typeCheckVisitor) visitDot(n *dotNode) {
 		},
 	)
 	if scope == nil {
-		saveErrorNew(n.getLineNumber(), "class \"%s\" does not exist line:%d", typeLeftOp)
+		saveErrorNew(n.getLineNumber(), "ERROR:class \"%s\" does not exist line:%d", typeLeftOp)
 		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
 		n.getTable().addRecord(rec)
 		return
@@ -650,7 +675,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 		)
 		isDot = true
 		if scope == nil {
-			saveErrorNew(n.getLineNumber(), "could not find class \"%s\" line:%d", n.getLeftMostChild().getSingleEntry().getType().String())
+			saveErrorNew(n.getLineNumber(), "ERROR:could not find class \"%s\" line:%d", n.getLeftMostChild().getSingleEntry().getType().String())
 			n.getTable().addRecord(newRecord(n.getLeftMostChild().getSingleEntry().getType().String(), TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 			return
 
@@ -722,7 +747,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	}
 	//only allow private access in scope
 	if isDot && entry.getVisibility() == "private" && class != left.getType().typeInfo {
-		saveErrorNew(n.getLineNumber(), "cannot access private class \"%s\" member variable \"%s\" outside of class line:%d", left.getType().typeInfo, identifier)
+		saveErrorNew(n.getLineNumber(), "ERROR:cannot access private class \"%s\" member variable \"%s\" outside of class line:%d", left.getType().typeInfo, identifier)
 		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
@@ -739,7 +764,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	}
 
 	if actualIndexCount-usedIndexCount < 0 {
-		saveErrorNew(n.getLineNumber(), "varaible \"%s\" not used with proper array indexes line:%d", identifier)
+		saveErrorNew(n.getLineNumber(), "ERROR:varaible \"%s\" not used with proper array indexes line:%d", identifier)
 		n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
@@ -770,7 +795,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 		switch n.getParent().(type) {
 		case *paramListNode:
 			if usedIndexCount != 0 {
-				saveErrorNew(n.getLineNumber(), "array for \"%s\" must be fully indexed or not as a parameter:%d", identifier)
+				saveErrorNew(n.getLineNumber(), "ERROR:array for \"%s\" must be fully indexed or not as a parameter:%d", identifier)
 				n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 				return
 			}
@@ -779,7 +804,7 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 			n.getTable().addRecord(newRecord(identifier, "type", "", n.getLineNumber(), newTypeRecord(typeInfoId), nil))
 
 		default:
-			saveErrorNew(n.getLineNumber(), "array for \"%s\" must be fully indexed if not a parameter line:%d", identifier)
+			saveErrorNew(n.getLineNumber(), "ERROR:array for \"%s\" must be fully indexed if not a parameter line:%d", identifier)
 			n.getTable().addRecord(newRecord(identifier, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 			return
 		}
@@ -822,7 +847,7 @@ func (v *typeCheckVisitor) visitReturn(n *returnNode) {
 	functionName := names[0]
 	typeInfo := n.getLeftMostChild().getSingleEntry().getType().typeInfo
 	if typeInfo == TYPE_ERR {
-		saveErrorNew(n.getLineNumber(), "erronous return type:%d")
+		saveErrorNew(n.getLineNumber(), "ERROR:erronous return type:%d")
 		return
 	}
 	index := strings.IndexRune(functionType, ':')
@@ -830,7 +855,7 @@ func (v *typeCheckVisitor) visitReturn(n *returnNode) {
 	parts := strings.Split(functionName, "|")
 	if strings.ToLower(parts[0]) == "constructor" {
 		if typeInfo != parts[1] {
-			saveErrorNew(n.getLineNumber(), "wrong return type:%d")
+			saveErrorNew(n.getLineNumber(), "ERROR:wrong return type:%d")
 			return
 		}
 	}
@@ -838,9 +863,37 @@ func (v *typeCheckVisitor) visitReturn(n *returnNode) {
 		return
 	}
 	if returnType != typeInfo {
-		saveErrorNew(n.getLineNumber(), "wrong return type:%d")
+		saveErrorNew(n.getLineNumber(), "ERROR:wrong return type:%d")
 	}
 
+}
+func (v *typeCheckVisitor) visitProgram(n *program) {
+	file := configmap.Get("file").(string)
+	errorFile := fmt.Sprint(file, ".outsemanticerrors")
+	symbolTableFile := fmt.Sprint(file, ".symbolTable")
+	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	symbolTable, err := os.OpenFile(symbolTableFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	sort.Slice(indexes, func(i, j int) bool {
+		return indexes[i] < indexes[j]
+	})
+
+	for _, line := range indexes {
+		errors := errorBin[line]
+		for _, error := range errors {
+			errFile.WriteString(error)
+			errFile.WriteString("\n")
+		}
+	}
+	old := os.Stdout
+	os.Stdout = symbolTable
+	v.getGlobalTable().print(10)
+	os.Stdout = old
 }
 
 func (v *typeCheckVisitor) visitIndiceList(n *indiceListNode) {
@@ -891,12 +944,6 @@ func (v *declarationVisitor) visitProgram(n *program) {
 
 			}
 
-		}
-	}
-	v.getGlobalTable().print(10)
-	for _, line := range errorBin {
-		for _, e := range line {
-			fmt.Println(e)
 		}
 	}
 
@@ -1212,7 +1259,7 @@ func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
 				typeInfo = fmt.Sprint(typeInfo, typeSepeator, typeEntry)
 				n.table.addRecord(entry)
 			} else {
-				saveErrorNew(n.getLineNumber(), "redeclared argument \"%s\" line:%d", entry.getName())
+				saveErrorNew(n.getLineNumber(), "ERROR:redeclared argument \"%s\" line:%d", entry.getName())
 			}
 
 			left = left.getRightSibling()
@@ -1323,7 +1370,7 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 			saveErrorNew(funcDefEntry.getLine(), sameDeclarationInScopeError, funcDefEntry.getKind(), funcDefEntry.getName())
 		}
 		if len(v.getGlobalTable().getEntries(map[int]interface{}{FILTER_NAME: id})) > 1 {
-			saveErrorNew(funcDefEntry.getLine(), "function \"%s\" is being overloaded line:%d", funcDefEntry.getName())
+			saveErrorNew(funcDefEntry.getLine(), "ERROR:function \"%s\" is being overloaded line:%d", funcDefEntry.getName())
 		}
 
 	}
@@ -1418,7 +1465,7 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 	function := strings.Split(callScope, "~")[0]
 	functionName := strings.Split(function, "|")
 	if functionName[0] != "" && entryName == "self" {
-		saveErrorNew(n.getLineNumber(), "warning declaration of self keyword in class line:%d")
+		saveErrorNew(n.getLineNumber(), "ERROR:warning declaration of self keyword in class line:%d")
 		return
 	}
 	if entryType == "float" || entryType == "integer" {
@@ -1431,7 +1478,7 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 		},
 	)
 	if entry == nil {
-		saveErrorNew(n.getLineNumber(), "class \"%s\" not declared line:%d", entryType)
+		saveErrorNew(n.getLineNumber(), "ERROR:class \"%s\" not declared line:%d", entryType)
 		return
 	}
 	name := fmt.Sprint(entry.getName(), "|", "constructor")
@@ -1448,7 +1495,7 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 					typeInfo = fmt.Sprint(":", typeInfo)
 					record := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: FUNCDEF, FILTER_NAME: name, FILTER_TYPE: newTypeRecord(typeInfo)})
 					if record == nil {
-						saveErrorNew(n.getLineNumber(), "constructor not declared for class \"%s\" with such signature:%d", entryType)
+						saveErrorNew(n.getLineNumber(), "ERROR:constructor not declared for class \"%s\" with such signature:%d", entryType)
 						return
 					}
 
