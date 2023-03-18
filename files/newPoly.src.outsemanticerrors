@@ -11,7 +11,6 @@ ERROR:class "E" is being cyclicly inherited:line 35
 ERROR:class "C" is being cyclicly inherited:line 39
 ERROR:class "D" is being cyclicly inherited:line 43
 ERROR:wrong return type:49
-ERROR:wrong return type:58
 ERROR:class "float" does not exist line:77
 ERROR:could not find class "ERR" line:77
 ERROR:cannot assign mismatched types line:77

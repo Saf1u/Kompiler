@@ -854,11 +854,12 @@ func (v *typeCheckVisitor) visitReturn(n *returnNode) {
 	index := strings.IndexRune(functionType, ':')
 	returnType := functionType[:index]
 	parts := strings.Split(functionName, typeSepeator)
-	if strings.ToLower(parts[0]) == "constructor" {
-		if typeInfo != parts[1] {
+	if strings.ToLower(parts[1]) == "constructor" {
+		if typeInfo != parts[0] {
 			saveError(n.getLineNumber(), "ERROR:wrong return type:%d")
 			return
 		}
+		return
 	}
 	if returnType == "void" {
 		return
