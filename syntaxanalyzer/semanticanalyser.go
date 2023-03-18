@@ -432,10 +432,9 @@ func recursivelySearchForFunction(classTable *symbolTable, identifier string, pa
 			parameterType := funcType[index+1:]
 			if compare(parameterType, paramterList) {
 				calledFunction = function
-				break
+				return calledFunction, returnType
 			}
 		}
-		return calledFunction, returnType
 
 	}
 	inheritedClasses := classTable.getEntries(
