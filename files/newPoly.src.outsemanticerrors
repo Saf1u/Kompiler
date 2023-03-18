@@ -1,0 +1,52 @@
+ERROR:function "evaluate2" declared in class "POLYNOMIAL" not defined:line 4
+WARNING:function "evaluate" is being overloaded:line 8
+ERROR:class POLYNOMIAL aready declared:line 9
+ERROR:variable b aready declared:line 13
+WARNING:member "evaluate" is being shadowed:line 16
+ERROR:function "constructor" declared in class "QUADRATIC" not defined:line 24
+WARNING:member "evaluate" is being shadowed:line 25
+WARNING:member "a" is being shadowed:line 29
+WARNING:member "b" is being shadowed:line 30
+ERROR:class "E" is being cyclicly inherited:line 35
+ERROR:class "C" is being cyclicly inherited:line 39
+ERROR:class "D" is being cyclicly inherited:line 43
+ERROR:wrong return type:49
+ERROR:wrong return type:58
+ERROR:class "float" does not exist line:77
+ERROR:could not find class "ERR" line:77
+ERROR:cannot assign mismatched types line:77
+ERROR:variable  "A" not declared in current scope:line 84
+ERROR:cannot operate on mismatched types line:84
+ERROR:cannot assign mismatched types line:84
+ERROR:cannot assign mismatched types line:86
+ERROR:wrong return type:87
+ERROR:function "constructor" not declared in class "QUADRATIC" :line 88
+ERROR:function "build2" not declared in class "QUADRATIC" :line 97
+ERROR:funcdef |f aready declared:line 100
+ERROR:function "|f" is being overloaded line:101
+ERROR:class "a" not declared line:109
+ERROR:variable counter aready declared:line 114
+ERROR:function "build" not declared in class "LINEAR" with such signature :line 117
+ERROR:cannot assign mismatched types line:117
+ERROR:function "build" not declared in class "QUADRATIC" with such signature :line 118
+ERROR:cannot assign mismatched types line:118
+ERROR:variable  "b" not declared in current scope:line 119
+ERROR:cannot assign mismatched types line:119
+ERROR:function "f" not declared in class "C" with such signature :line 120
+ERROR:cannot assign mismatched types line:120
+ERROR:function "undefined" not declared  :line 121
+ERROR:cannot assign mismatched types line:122
+ERROR:function "f" not declared  :line 123
+ERROR:function "f" not declared  :line 124
+ERROR:array for "i" must be fully indexed if not a parameter line:125
+ERROR:cannot assign mismatched types line:125
+ERROR:only integers are valid indexes:line 126
+ERROR:cannot assign mismatched types line:126
+ERROR:function "f3" not declared  :line 127
+ERROR:class "integer" does not exist line:128
+ERROR:could not find class "ERR" line:128
+ERROR:cannot assign mismatched types line:128
+ERROR:variable  "self" not declared in current scope:line 129
+ERROR:cannot assign mismatched types line:129
+ERROR:function "evaluate" not declared in class "LINEAR" with such signature :line 133
+ERROR:function "evaluate" not declared in class "QUADRATIC" with such signature :line 134
