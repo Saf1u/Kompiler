@@ -50,13 +50,14 @@ x return type
 ni any num of params whre i>=1
 */
 const (
-	sameDeclarationInScopeError               = "ERROR:%s %s aready declared:line %d"
+	sameDeclarationInScopeError               = "ERROR:%s \"%s\" aready declared:line %d"
 	classNotDeclaredError                     = "ERROR:class \"%s\" not declared so function \"%s\" has no class:line %d"
 	functionNotDeclaredError                  = "ERROR:function \"%s\" not declared in class \"%s\" :line %d"
 	functionOverrloadWarn                     = "WARNING:function \"%s\" is being overloaded:line %d"
 	inheritedClassNotDeclaredError            = "ERROR:class \"%s\" not declared so cannot be inherited:line %d"
 	inheritedClassAlreadyInheritedError       = "ERROR:class \"%s\" already inherited:line %d"
 	shadowWarn                                = "WARNING:member \"%s\" is being shadowed:line %d"
+	overrideWarn                              = "WARNING:member \"%s\" is being overriden:line %d"
 	cyclicDependencyError                     = "ERROR:class \"%s\" is being cyclicly inherited:line %d"
 	functionNotDefinedError                   = "ERROR:function \"%s\" declared in class \"%s\" not defined:line %d"
 	funcParameterShadowed                     = "WARNING:function parameter \"%s\" is being shadowed:line %d"
@@ -68,7 +69,7 @@ const (
 	undeclaredClassError                      = "ERROR:accessing member of undeclared class \"%s\" line:%d"
 	noOperationsAllowedOnArrays               = "ERROR:operations not allowed on array types line:%d"
 	functionNotDeclaredWithSignatureError     = "ERROR:function \"%s\" not declared in class \"%s\" with such signature :line %d"
-	functionNotDeclaredWithSignatureErrorFree = "ERROR:function \"%s\" not declared  :line %d"
+	functionNotDeclaredWithSignatureErrorFree = "ERROR:function \"%s\" not declared with such signature  :line %d"
 )
 
 var errorBin = map[int][]string{}
@@ -1094,9 +1095,12 @@ func recursiveInheritanceShadowCheck(currentClassRecords *symbolTable, inherited
 				continue
 			}
 			switch record.getKind() {
-			case VARIABLE, FUNCDECL:
+			case VARIABLE:
 				entry := currentClassRecords.getEntry(map[int]interface{}{FILTER_NAME: record.getName(), FILTER_KIND: record.getKind()})
 				saveError(entry.getLine(), shadowWarn, entry.getName())
+			case FUNCDECL:
+				entry := currentClassRecords.getEntry(map[int]interface{}{FILTER_NAME: record.getName(), FILTER_KIND: record.getKind()})
+				saveError(entry.getLine(), overrideWarn, entry.getName())
 			}
 
 		}
@@ -1116,8 +1120,6 @@ func NewTableVisitor() []visitor {
 	visitors = append(visitors, &typeCheckVisitor{&defaultVisitor{gloablTable: gloablTable}, ""})
 	return visitors
 }
-
-
 
 // visitClassDecl provides a mock function with given fields: n*
 func (v *tableVisitor) visitClassDecl(n *classDecl) {
@@ -1156,9 +1158,6 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 	}
 
 }
-
-
-
 
 // visitClassVarDecl provides a mock function with given fields: n*
 func (v *tableVisitor) visitClassVarDecl(n *ClassVarNode) {
@@ -1221,7 +1220,6 @@ func (v *tableVisitor) visitDimList(n *dimListNode) {
 	n.table.addRecord(record)
 }
 
-
 // visitFparamlist provides a mock function with given fields: n*
 func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
 	fParamEntry := newRecord("", FPARAMLIST, "", n.getLineNumber(), nil, nil)
@@ -1251,8 +1249,6 @@ func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
 	n.table.addRecord(fParamEntry)
 
 }
-
-
 
 // visitFuncDecl provides a mock function with given fields: n*
 func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
@@ -1343,17 +1339,15 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 		if !v.getGlobalTable().exist(id, funcDefEntry.getKind(), funcDefEntry.getType()) {
 			v.getGlobalTable().addRecord(funcDefEntry)
 		} else {
-			saveError(funcDefEntry.getLine(), sameDeclarationInScopeError, funcDefEntry.getKind(), funcDefEntry.getName())
+			saveError(funcDefEntry.getLine(), sameDeclarationInScopeError, "function", funcDefEntry.getName()[1:])
 		}
 		if len(v.getGlobalTable().getEntries(map[int]interface{}{FILTER_NAME: id})) > 1 {
-			saveError(funcDefEntry.getLine(), "ERROR:function \"%s\" is being overloaded line:%d", funcDefEntry.getName())
+			saveError(funcDefEntry.getLine(), "WARN:function \"%s\" is being overloaded line:%d", funcDefEntry.getName()[1:])
 		}
 
 	}
 
 }
-
-
 
 // visitId provides a mock function with given fields: n*
 func (v *tableVisitor) visitId(n *idNode) {
@@ -1361,8 +1355,6 @@ func (v *tableVisitor) visitId(n *idNode) {
 	n.table.addRecord(record)
 
 }
-
-
 
 // visitInheritance provides a mock function with given fields: n*
 func (v *tableVisitor) visitInheritance(n *inheritanceNode) {
@@ -1483,12 +1475,6 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 
 }
 
-
-
-
-
-
-
 // visitReturnType provides a mock function with given fields: n*
 func (v *tableVisitor) visitReturnType(n *returnTypeNode) {
 	record := newRecord(n.typeName+":", RETURNTYPE, "", n.getLineNumber(), newTypeRecord(""), nil)
@@ -1535,5 +1521,3 @@ func (v *tableVisitor) visitVisiblity(n *visibilityNode) {
 	n.table.addRecord(record)
 
 }
-
-

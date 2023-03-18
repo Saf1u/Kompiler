@@ -48,7 +48,7 @@
 [lcurbr, {, 48]
 [return, return, 49][lpar, (, 49][intlit, 0, 49][rpar, ), 49][semi, ;, 49]
 [rcurbr, }, 50]
-[rcurbr, }, 51]
+
 
 [function, function, 53][id, LINEAR, 53][sr, ::, 53][constructor, constructor, 53][lpar, (, 53][id, A, 53][colon, :, 53][float, float, 53][comma, ,, 53][id, B, 53][colon, :, 53][float, float, 53][rpar, ), 53]
 [lcurbr, {, 54]
