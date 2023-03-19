@@ -1,19 +1,25 @@
 function main()=>void{
     init(5*1.1+5-2+7);
     localvar x:integer;
+    localvar z:obj;
     x=1.1;
     y=22;
+    ride4();
 }
 function init(x:integer)=>int{
     return (1.2);
 }
 class C{
     private attribute op:integer;
+    public attribute nop:integer;
+    public function ride3:() => void;
 };
 
 class A isa C{
 private attribute x:integer;
+public attribute accessible:integer;
 public function ride:() => void;
+public function ride2:() => void;
 };
 function A::ride() => void  
   {
@@ -22,7 +28,50 @@ function A::ride() => void
     z=op;
     z=r;
   }
-  function main()=>void{
-    localvar x:A;
-    x.r=3;
+  function side()=>void{
+    localvar obj:A;
+    obj.z=3;
+    obj.x=2;
+    obj.accessible=33;
+    obj.op=22;
+    obj.nop=44;
 }
+function C::ride3() => void  
+  {
+    
+  }
+function A::ride2() => void  
+  {
+    ride();
+    ride3();
+    ride4();
+    ride6(1);
+    ride6(1,2);
+    ride6(1.1);
+    localvar arr:integer[][];
+    arr[0]=33;
+    arr[0][12]=3;
+    arr1(arr);
+    arr2(arr);
+    arr[1.2][2]=3;
+    arr[1*2+1+3*rand()][2]=4;
+  }
+  function ride6(x:integer)=>void{
+
+  }
+  function arr1(x:integer[])=>void{
+
+  }
+  function arr2(x:integer[][])=>void{
+
+  }
+  function rand()=>integer{
+return(1);
+  }
+function local()=>void{
+    localvar x:integer;
+    localvar y:float;
+    x.a=33;
+    y.b=11;
+  }
+  //7.24 -end

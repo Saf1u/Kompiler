@@ -40,4 +40,4 @@
 [function, function, 40][id, free, 40][lpar, (, 40][id, x, 40][colon, :, 40][float, float, 40][rpar, ), 40][arrow, =>, 40][integer, integer, 40][lcurbr, {, 40]
 [return, return, 41][lpar, (, 41][intlit, 0, 41][rpar, ), 41][semi, ;, 41]
 [rcurbr, }, 42]
-[inlinecmt, //7.19-, 43]
+[inlinecmt, //7.19-7.23, 43]

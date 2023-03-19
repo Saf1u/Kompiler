@@ -3,11 +3,31 @@ ERROR:cannot operate on mismatched types line:2
 ERROR:cannot operate on mismatched types line:2
 ERROR:cannot operate on mismatched types line:2
 ERROR:function "init" not declared with such signature  :line 2
-ERROR:cannot assign mismatched types line:4
+ERROR:class "obj" not declared line:4
 ERROR:cannot assign mismatched types line:5
-ERROR:function "main" aready declared:line 6
-ERROR:wrong return type:8
-ERROR:variable  "r" not declared in current scope:line 23
-ERROR:cannot assign mismatched types line:23
-ERROR:variable  "r" not declared in current scope:line 27
-ERROR:cannot assign mismatched types line:27
+ERROR:variable  "y" not declared in current scope:line 6
+ERROR:cannot assign mismatched types line:6
+ERROR:function "ride4" not declared with such signature  :line 7
+ERROR:wrong return type:10
+ERROR:variable  "r" not declared in current scope:line 29
+ERROR:cannot assign mismatched types line:29
+ERROR:variable  "z" not declared in current scope:line 33
+ERROR:cannot assign mismatched types line:33
+ERROR:cannot access private class "A" member variable "x" outside of class line:34
+ERROR:cannot assign mismatched types line:34
+ERROR:cannot access private class "A" member variable "op" outside of class line:36
+ERROR:cannot assign mismatched types line:36
+ERROR:function "ride4" not declared with such signature  :line 47
+ERROR:function "ride6" not declared with such signature  :line 49
+ERROR:function "ride6" not declared with such signature  :line 50
+ERROR:array for "arr" must be fully indexed if not a parameter line:52
+ERROR:cannot assign mismatched types line:52
+ERROR:function "arr1" not declared with such signature  :line 54
+ERROR:only integers are valid indexes:line 56
+ERROR:cannot assign mismatched types line:56
+ERROR:class "integer" does not exist line:74
+ERROR:could not find class "ERR" line:74
+ERROR:cannot assign mismatched types line:74
+ERROR:class "float" does not exist line:75
+ERROR:could not find class "ERR" line:75
+ERROR:cannot assign mismatched types line:75
