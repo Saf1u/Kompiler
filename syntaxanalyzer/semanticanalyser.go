@@ -657,6 +657,10 @@ func (v *typeCheckVisitor) visitDot(n *dotNode) {
 }
 func (v *typeCheckVisitor) visitVar(n *varNode) {
 	lookupInfo := strings.Split(v.scope, "~")
+	if len(lookupInfo)==1{
+		n.getTable().addRecord(newRecord(n.getLeftMostChild().getSingleEntry().getName(), TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		return
+	}
 	var scope *symbolTableRecord
 	//look in function scope
 	scope = v.getGlobalTable().getEntry(
@@ -1431,6 +1435,25 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 	if functionName[0] != "" && entryName == "self" {
 		saveError(n.getLineNumber(), "ERROR:warning declaration of self keyword in class line:%d")
 		return
+	}
+	if functionName[0] != "" && len(functionName) == 2 {
+		entry := v.gloablTable.getEntry(
+			map[int]interface{}{
+				FILTER_NAME: functionName[0],
+				FILTER_KIND: CLASS,
+			},
+		)
+		if entry != nil {
+			if entry.getLink().getEntry(
+				map[int]interface{}{
+					FILTER_NAME: entryName,
+					FILTER_KIND: VARIABLE,
+				},
+			) != nil {
+				saveError(n.getLineNumber(), "Warning:shadowing class member with similar name:%d")
+			}
+		}
+
 	}
 	if entryType == "float" || entryType == "integer" {
 		return

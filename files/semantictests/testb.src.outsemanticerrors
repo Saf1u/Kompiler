@@ -1,1 +1,10 @@
-WARNING:member "x" is being shadowed:line 6
+WARNING:member "x" is being shadowed:line 11
+WARNING:function "evaluate" is being overloaded:line 13
+WARNING:member "ride" is being overriden:line 15
+Warning:shadowing class member with similar name:18
+Warning:shadowing class member with similar name:20
+Warning:shadowing class member with similar name:23
+Warning:shadowing class member with similar name:25
+WARN:function "|evaluate" is being overloaded line:27
+WARN:function "free" is being overloaded line:39
+WARN:function "free" is being overloaded line:42

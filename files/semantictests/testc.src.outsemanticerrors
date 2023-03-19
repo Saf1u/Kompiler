@@ -1,0 +1,13 @@
+ERROR:cannot operate on mismatched types line:2
+ERROR:cannot operate on mismatched types line:2
+ERROR:cannot operate on mismatched types line:2
+ERROR:cannot operate on mismatched types line:2
+ERROR:function "init" not declared with such signature  :line 2
+ERROR:cannot assign mismatched types line:4
+ERROR:cannot assign mismatched types line:5
+ERROR:function "main" aready declared:line 6
+ERROR:wrong return type:8
+ERROR:variable  "r" not declared in current scope:line 23
+ERROR:cannot assign mismatched types line:23
+ERROR:variable  "r" not declared in current scope:line 27
+ERROR:cannot assign mismatched types line:27

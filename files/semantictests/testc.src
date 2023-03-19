@@ -1,0 +1,28 @@
+function main()=>void{
+    init(5*1.1+5-2+7);
+    localvar x:integer;
+    x=1.1;
+    y=22;
+}
+function init(x:integer)=>int{
+    return (1.2);
+}
+class C{
+    private attribute op:integer;
+};
+
+class A isa C{
+private attribute x:integer;
+public function ride:() => void;
+};
+function A::ride() => void  
+  {
+    localvar z:integer;
+    z=x;
+    z=op;
+    z=r;
+  }
+  function main()=>void{
+    localvar x:A;
+    x.r=3;
+}
