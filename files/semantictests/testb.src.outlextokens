@@ -1,0 +1,15 @@
+[class, class, 1][id, A, 1][lcurbr, {, 1]
+[private, private, 2][attribute, attribute, 2][id, x, 2][colon, :, 2][integer, integer, 2][semi, ;, 2]
+[rcurbr, }, 3][semi, ;, 3]
+
+[class, class, 5][id, B, 5][isa, isa, 5][id, A, 5][lcurbr, {, 5]
+[private, private, 6][attribute, attribute, 6][id, x, 6][colon, :, 6][float, float, 6][semi, ;, 6]
+[public, public, 7][function, function, 7][id, evaluate, 7][colon, :, 7][lpar, (, 7][id, x, 7][colon, :, 7][float, float, 7][rpar, ), 7][arrow, =>, 7][float, float, 7][semi, ;, 7]
+[private, private, 8][attribute, attribute, 8][id, y, 8][colon, :, 8][integer, integer, 8][semi, ;, 8]
+[rcurbr, }, 9][semi, ;, 9]
+
+[function, function, 11][id, B, 11][sr, ::, 11][id, evaluate, 11][lpar, (, 11][id, x, 11][colon, :, 11][float, float, 11][rpar, ), 11][arrow, =>, 11][float, float, 11][inlinecmt, // 6.1, 11]
+[lcurbr, {, 12]
+[localvar, localvar, 13][id, y, 13][colon, :, 13][integer, integer, 13][semi, ;, 13]
+[return, return, 14][lpar, (, 14][floatlit, 1.1, 14][rpar, ), 14][semi, ;, 14]
+[rcurbr, }, 15]

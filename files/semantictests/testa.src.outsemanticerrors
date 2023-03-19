@@ -1,0 +1,6 @@
+ERROR:function "evaluate" declared in class "POLYNOMIAL" not defined:line 2
+ERROR:variable "a" aready declared:line 4
+ERROR:class "POLYNOMIAL" aready declared:line 8
+ERROR:function "build2" not declared in class "POLYNOMIAL" :line 13
+ERROR:variable "a" aready declared:line 17
+ERROR:function "dec" aready declared:line 23

@@ -1,0 +1,15 @@
+class A{
+private attribute x:integer;
+};
+
+class B isa A{
+private attribute x:float;
+public function evaluate:(x: float) => float;
+private attribute y:integer;
+};
+
+function B::evaluate(x: float) => float  // 6.1
+  {
+    localvar y:integer;
+    return (1.1);
+  }

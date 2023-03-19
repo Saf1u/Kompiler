@@ -1,0 +1,23 @@
+[class, class, 1][id, POLYNOMIAL, 1][lcurbr, {, 1]
+[public, public, 2][function, function, 2][id, evaluate, 2][colon, :, 2][lpar, (, 2][id, x, 2][colon, :, 2][float, float, 2][rpar, ), 2][arrow, =>, 2][float, float, 2][semi, ;, 2]
+[private, private, 3][attribute, attribute, 3][id, a, 3][colon, :, 3][integer, integer, 3][semi, ;, 3]
+[private, private, 4][attribute, attribute, 4][id, a, 4][colon, :, 4][integer, integer, 4][semi, ;, 4]
+[rcurbr, }, 5][semi, ;, 5]
+[class, class, 6][id, POLYNOMIAL, 6][lcurbr, {, 6]
+[public, public, 7][function, function, 7][id, evaluate, 7][colon, :, 7][lpar, (, 7][id, x, 7][colon, :, 7][float, float, 7][rpar, ), 7][arrow, =>, 7][float, float, 7][semi, ;, 7]
+[rcurbr, }, 8][semi, ;, 8]
+
+[function, function, 10][id, POLYNOMIAL, 10][sr, ::, 10][id, build2, 10][lpar, (, 10][rpar, ), 10][arrow, =>, 10][integer, integer, 10][inlinecmt, // 6.1, 10]
+[lcurbr, {, 11]
+[return, return, 12][lpar, (, 12][intlit, 1, 12][rpar, ), 12][semi, ;, 12]
+[rcurbr, }, 13]
+
+[function, function, 15][id, dec, 15][lpar, (, 15][rpar, ), 15][arrow, =>, 15][void, void, 15][lcurbr, {, 15]
+[localvar, localvar, 16][id, a, 16][colon, :, 16][integer, integer, 16][semi, ;, 16]
+[localvar, localvar, 17][id, a, 17][colon, :, 17][integer, integer, 17][semi, ;, 17]
+
+[rcurbr, }, 19]
+[function, function, 20][id, dec, 20][lpar, (, 20][rpar, ), 20][arrow, =>, 20][void, void, 20][lcurbr, {, 20]
+
+
+[rcurbr, }, 23]

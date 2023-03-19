@@ -157,6 +157,10 @@ func (s *SyntaxanalyzerParser) Parse() node {
 					realtype = replaceSelf(token.TokenType)
 
 				} else {
+					if token == nil {
+						os.Exit(0)
+
+					}
 					realtype = s.skipError(*token)
 				}
 			}
@@ -168,7 +172,10 @@ func (s *SyntaxanalyzerParser) Parse() node {
 					s.Push(parseTable[x][realtype])
 				}
 			} else {
-				//fmt.Println(x," ",realtype)
+				if token == nil {
+					os.Exit(0)
+
+				}
 				realtype = s.skipError(*token)
 			}
 		}
