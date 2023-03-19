@@ -24,8 +24,8 @@ public function ride2:() => void;
 function A::ride() => void  
   {
     localvar z:integer;
-    z=x;
-    z=op;
+    z=self.x;
+    z=self.op;
     z=r;
   }
   function side()=>void{
@@ -43,7 +43,7 @@ function C::ride3() => void
 function A::ride2() => void  
   {
     ride();
-    ride3();
+    self.ride3();
     ride4();
     ride6(1);
     ride6(1,2);
