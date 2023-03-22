@@ -74,6 +74,69 @@ const (
 
 var errorBin = map[int][]string{}
 var indexes = []int{}
+var sizes = map[string]int{
+	"integer": 4,
+}
+
+func setSize(typeName string, size int) {
+	sizes[typeName] = size
+}
+func sizeOf(typeName string) (int, error) {
+	if size, ok := sizes[typeName]; ok {
+		return size, nil
+	}
+	return 0, fmt.Errorf("value size not yet calculated")
+}
+func getBaseType(typeInfo string) string {
+	index := strings.IndexRune(typeInfo, '[')
+	if index == -1 {
+		return typeInfo
+	}
+	return typeInfo[:index]
+}
+func CalculateClassSize(className string, symbTable *symbolTable) int {
+	inheritedClassesSizes := 0
+	dataMemberSizes := 0
+	classEntry := symbTable.getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: className})
+	if classEntry == nil {
+		return 0
+	}
+	classTable := classEntry.getLink()
+	names := classTable.getEntry(map[int]interface{}{FILTER_KIND: "inheritance"}).getName()
+	listOfInheritedClasses := strings.Split(names, typeSepeator)
+	for _, class := range listOfInheritedClasses {
+		if class != "" {
+			size, err := sizeOf(class)
+			if err != nil {
+				size = CalculateClassSize(class, symbTable)
+			}
+			inheritedClassesSizes = inheritedClassesSizes + size
+		}
+	}
+	records := classTable.getRecords()
+	for i, record := range records {
+		if record.getKind() == VARIABLE {
+			baseType := getBaseType(record.getType().String())
+			size := 0
+			if _, err := sizeOf(baseType); err != nil {
+				size = CalculateClassSize(baseType, symbTable)
+			} else {
+				size, _ = sizeOf(baseType)
+			}
+			record.setSize(size)
+			if i == 0 {
+				record.setOffset(-size)
+			} else {
+				record.setSize(records[i-1].getOffset() - size)
+			}
+			dataMemberSizes = dataMemberSizes + size
+		}
+	}
+	classTotalSize := dataMemberSizes + inheritedClassesSizes
+	setSize(className, classTotalSize)
+	return classTotalSize
+
+}
 
 func saveError(lineNum int, err string, args ...any) {
 	args = append(args, lineNum)
@@ -657,7 +720,7 @@ func (v *typeCheckVisitor) visitDot(n *dotNode) {
 }
 func (v *typeCheckVisitor) visitVar(n *varNode) {
 	lookupInfo := strings.Split(v.scope, "~")
-	if len(lookupInfo)==1{
+	if len(lookupInfo) == 1 {
 		n.getTable().addRecord(newRecord(n.getLeftMostChild().getSingleEntry().getName(), TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}

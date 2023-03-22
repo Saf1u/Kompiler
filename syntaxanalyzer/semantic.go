@@ -393,7 +393,7 @@ func init() {
 		ss.writeEdge(assignNode.getDiagramID(), expr.getDiagramID())
 		ss.writeEdge(assignNode.getDiagramID(), identifier.getDiagramID())
 	}
-	
+
 	semanticActions["S28"] = func(ss *semanticStack) {
 		indiceList := ss.Pop()
 		switch v := indiceList.(type) {
@@ -425,7 +425,7 @@ func init() {
 		idTok := ss.Pop()
 		id := getNextID()
 		funcCall := &functionCall{nodeImplementation: &nodeImplementation{lineNumber: ss.mostRecentTokenValue.LineNumber, table: makeTable(), diagramID: id}}
-		idTok.MakeSibling(indiceList,idTok)
+		idTok.MakeSibling(indiceList, idTok)
 		funcCall.AdoptChildren(idTok, funcCall)
 		ss.writeNode(id, ("funcCall"))
 		ss.writeEdge(funcCall.getDiagramID(), indiceList.getDiagramID())
@@ -1021,7 +1021,6 @@ func filter(records map[string]*symbolTableRecord, filter interface{}, filterFun
 	return temp
 }
 
-
 func (s *symbolTable) getRecords() []*symbolTableRecord {
 	records := make([]*symbolTableRecord, 0)
 	for _, key := range s.keys {
@@ -1072,12 +1071,15 @@ type symbolTableRecord struct {
 	kind       string
 	visibility string
 	line       int
+	tag        string
+	size       int
+	offset     int
 	typeEntry  *typeRecord
 	link       *symbolTable
 }
 
 func newRecord(name string, kind string, visibility string, line int, typeEntry *typeRecord, ref *symbolTable) *symbolTableRecord {
-	return &symbolTableRecord{name, kind, visibility, line, typeEntry, ref}
+	return &symbolTableRecord{name, kind, visibility, line, "", 0, 0, typeEntry, ref}
 }
 func (s *symbolTableRecord) getLine() int {
 	return s.line
@@ -1092,6 +1094,26 @@ func (s *symbolTableRecord) getKind() string {
 func (s *symbolTableRecord) getType() *typeRecord {
 	return s.typeEntry
 }
+
+func (s *symbolTableRecord) getSize() int {
+	return s.size
+}
+func (s *symbolTableRecord) getTag() string {
+	return s.tag
+}
+func (s *symbolTableRecord) getOffset() int {
+	return s.offset
+}
+func (s *symbolTableRecord) setSize(size int) {
+	s.size = size
+}
+func (s *symbolTableRecord) setTag(tag string) {
+	s.tag = tag
+}
+func (s *symbolTableRecord) setOffset(offset int) {
+	s.offset = offset
+}
+
 func (s *symbolTableRecord) getLink() *symbolTable {
 	return s.link
 }
