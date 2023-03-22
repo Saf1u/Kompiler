@@ -1,21 +1,32 @@
 package syntaxanalyzer
 
 import (
-	"compiler/configmap"
 	"fmt"
-	"os"
 	"reflect"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 )
 
 const typeSepeator = "|"
-
-var patterns = []string{`(\[),*`, `(\]),*`, `(\\\[)\\]`, `(\|)`}
-var replacements = []string{`\[`, `\]`, `\[[0-9]*\]`, `\|`}
-
+const (
+	REG0  = register("r0")
+	REG1  = register("r1")
+	REG2  = register("r2")
+	REG3  = register("r3")
+	REG4  = register("r4")
+	REG5  = register("r5")
+	REG6  = register("r6")
+	REG7  = register("r7")
+	REG8  = register("r8")
+	REG9  = register("r9")
+	REG10 = register("r10")
+	REG11 = register("r11")
+	REG12 = register("r12")
+	REG13 = register("r13")
+	REG14 = register("r14")
+	REG15 = register("r15")
+)
 const (
 	ID               = "id"
 	INHERITANCE      = "inheritance"
@@ -37,6 +48,8 @@ const (
 	INDEXING_ERR     = "ERRIN"
 	ACTIVE_VAR       = "VAR_ENTRY_FOR_A_SCOPE"
 	ACTIVE_PARAMETER = "PARAM_ENTRY_FOR_A_SCOPE"
+	TEMP_VAR         = "tempvar"
+	TEMP_LIT         = "templit"
 )
 
 /*
@@ -72,10 +85,65 @@ const (
 	functionNotDeclaredWithSignatureErrorFree = "ERROR:function \"%s\" not declared with such signature  :line %d"
 )
 
-var errorBin = map[int][]string{}
-var indexes = []int{}
-var sizes = map[string]int{
-	"integer": 4,
+var (
+	patterns         = []string{`(\[),*`, `(\]),*`, `(\\\[)\\]`, `(\|)`}
+	replacements     = []string{`\[`, `\]`, `\[[0-9]*\]`, `\|`}
+	tempId       int = 0
+	litId        int = 0
+	errorBin         = map[int][]string{}
+	indexes          = []int{}
+	sizes            = map[string]int{
+		"integer": 4,
+		TYPE_ERR:  0,
+	}
+)
+
+type register string
+
+func (p register) String() string {
+	return string(p)
+}
+
+type registerPool []register
+
+func newPool() *registerPool {
+	x := make([]register, 0)
+	regPool := registerPool(x)
+	return &regPool
+
+}
+func (p *registerPool) Get() (register, error) {
+	if len(*p) == 0 {
+		return "", fmt.Errorf("no registers")
+	}
+	reg := (*p)[len(*p)-1]
+	*p = (*p)[0 : len(*p)-1]
+	return reg, nil
+}
+func (p *registerPool) Put(r register) {
+	*p = append(*p, r)
+}
+
+func isLiteral(s string) bool {
+	return s[0:7] == "literal"
+}
+
+func getUniqueTempTag() string {
+	tag := fmt.Sprint("tempVar", tempId)
+	tempId++
+	return tag
+}
+func getUniqueLitTag() string {
+	tag := fmt.Sprint("literal", litId)
+	litId++
+	return tag
+}
+func getUniqueNameTag(name string, typeInfo string) string {
+	if index := strings.IndexRune(typeInfo, ':'); index != -1 {
+		typeInfo = typeInfo[index:]
+	}
+	tag := fmt.Sprint(name, typeInfo)
+	return tag
 }
 
 func setSize(typeName string, size int) {
@@ -115,8 +183,13 @@ func CalculateClassSize(className string, symbTable *symbolTable) int {
 	}
 	records := classTable.getRecords()
 	for i, record := range records {
+		typeInfo := record.getName()
 		if record.getKind() == VARIABLE {
-			baseType := getBaseType(record.getType().String())
+			typeInfo = record.getType().String()
+		}
+
+		if record.getKind() == VARIABLE || record.getKind() == CLASS {
+			baseType := getBaseType(typeInfo)
 			size := 0
 			if _, err := sizeOf(baseType); err != nil {
 				size = CalculateClassSize(baseType, symbTable)
@@ -127,10 +200,13 @@ func CalculateClassSize(className string, symbTable *symbolTable) int {
 			if i == 0 {
 				record.setOffset(-size)
 			} else {
-				record.setSize(records[i-1].getOffset() - size)
+				record.setOffset(records[i-1].getOffset() - size)
 			}
-			dataMemberSizes = dataMemberSizes + size
+			if record.getKind() == VARIABLE {
+				dataMemberSizes = dataMemberSizes + size
+			}
 		}
+
 	}
 	classTotalSize := dataMemberSizes + inheritedClassesSizes
 	setSize(className, classTotalSize)
@@ -189,6 +265,7 @@ type visitor interface {
 	visitProgram(*program)
 	visitAssign(*assignStatNode)
 	propagateScope(string)
+	propgateScopeLink(*symbolTable)
 	getGlobalTable() *symbolTable
 }
 type defaultVisitor struct {
@@ -196,6 +273,9 @@ type defaultVisitor struct {
 }
 
 func (v *defaultVisitor) propagateScope(s string) {
+
+}
+func (v *defaultVisitor) propgateScopeLink(s *symbolTable) {
 
 }
 
@@ -936,33 +1016,18 @@ func (v *typeCheckVisitor) visitReturn(n *returnNode) {
 	}
 
 }
-func (v *typeCheckVisitor) visitProgram(n *program) {
-	file := configmap.Get("file").(string)
-	errorFile := fmt.Sprint(file, ".outsemanticerrors")
-	symbolTableFile := fmt.Sprint(file, ".symbolTable")
-	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
-	if err != nil {
-		panic(err)
-	}
-	symbolTable, err := os.OpenFile(symbolTableFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
-	if err != nil {
-		panic(err)
-	}
-	sort.Slice(indexes, func(i, j int) bool {
-		return indexes[i] < indexes[j]
-	})
+func (v *classSizeCalculator) visitProgram(n *program) {
 
-	for _, line := range indexes {
-		errors := errorBin[line]
-		for _, error := range errors {
-			errFile.WriteString(error)
-			errFile.WriteString("\n")
-		}
+	gloablTale := v.getGlobalTable()
+	classRecords := gloablTale.getEntries(map[int]interface{}{
+		FILTER_KIND: CLASS,
+	})
+	for _, classRecord := range classRecords {
+		size := CalculateClassSize(classRecord.getName(), gloablTale)
+		classRecord.setSize(size)
+		classRecord.setOffset(-size)
 	}
-	old := os.Stdout
-	os.Stdout = symbolTable
-	v.getGlobalTable().print(10)
-	os.Stdout = old
+
 }
 
 func (v *typeCheckVisitor) visitIndiceList(n *indiceListNode) {
@@ -1173,6 +1238,10 @@ func recursiveInheritanceShadowCheck(currentClassRecords *symbolTable, inherited
 	}
 }
 
+type classSizeCalculator struct {
+	*defaultVisitor
+}
+
 type tableVisitor struct {
 	*defaultVisitor
 }
@@ -1184,6 +1253,8 @@ func NewTableVisitor() []visitor {
 	visitors = append(visitors, &inheritVisitor{&defaultVisitor{gloablTable: gloablTable}})
 	visitors = append(visitors, &declarationVisitor{&defaultVisitor{gloablTable: gloablTable}})
 	visitors = append(visitors, &typeCheckVisitor{&defaultVisitor{gloablTable: gloablTable}, ""})
+	visitors = append(visitors, &classSizeCalculator{&defaultVisitor{gloablTable: gloablTable}})
+	visitors = append(visitors, &memAllocVisitor{&defaultVisitor{gloablTable: gloablTable}, "", nil})
 	return visitors
 }
 

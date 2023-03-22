@@ -34,7 +34,7 @@ class C isa E {
 	private attribute a: integer; 
 };
 
-class D isa C {
+class D  {
 	private attribute b: integer; 
 };
 

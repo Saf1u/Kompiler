@@ -34,7 +34,7 @@
 [private, private, 34][attribute, attribute, 34][id, a, 34][colon, :, 34][integer, integer, 34][semi, ;, 34]
 [rcurbr, }, 35][semi, ;, 35]
 
-[class, class, 37][id, D, 37][isa, isa, 37][id, C, 37][lcurbr, {, 37]
+[class, class, 37][id, D, 37][lcurbr, {, 37]
 [private, private, 38][attribute, attribute, 38][id, b, 38][colon, :, 38][integer, integer, 38][semi, ;, 38]
 [rcurbr, }, 39][semi, ;, 39]
 
