@@ -1,0 +1,6 @@
+WARNING:function "evaluate" is being overloaded:line 36
+WARN:function "side" is being overloaded line:58
+WARN:function "side" is being overloaded line:63
+ERROR:wrong return type:68
+ERROR:wrong return type:74
+WARN:function "|evaluate" is being overloaded line:75

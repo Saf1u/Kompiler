@@ -32,9 +32,11 @@ class E {
     private attribute mema:D;
     private attribute memb:A;
     private attribute memc:A[11][11];
+    public function evaluate: (x: float) => float;   
+     public function evaluate: (x: integer) => float;   
 };
 
-function side(io:int)=>void{
+function side(io:integer)=>void{
   localvar n: integer;
   localvar p:E[10];
   localvar z: integer[10];
@@ -44,3 +46,30 @@ function side(io:int)=>void{
 
  
 }
+function side(io:float)=>void{
+  localvar n: integer;
+  localvar p:E[10];
+  localvar z: integer[10];
+  localvar x: integer[2][3][3];
+  localvar y: integer;
+  n=(x[2][3][34]*y)+z[7]+1*3*300+2;
+
+ 
+}
+function side(io:float,z:integer)=>void{
+  localvar n: integer;
+  localvar p:E[10];
+
+}
+function E::evaluate(x: float) => float
+  {
+     localvar n: integer;
+  localvar p:E[10];
+    return (0);
+  }
+  function E::evaluate(x: integer) => float
+  {
+     localvar n: integer;
+  localvar p:E[10];
+    return (0);
+  }

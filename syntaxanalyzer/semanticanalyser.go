@@ -1,7 +1,10 @@
 package syntaxanalyzer
 
 import (
+	"compiler/configmap"
 	"fmt"
+	"io"
+	"os"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -96,7 +99,33 @@ var (
 		"integer": 4,
 		TYPE_ERR:  0,
 	}
+	globalregisterPool *registerPool
+	outDataFile        io.Writer
+	outCodeFile        io.Writer
 )
+
+func init() {
+	globalregisterPool = newPool()
+	file := configmap.Get("file").(string)
+	dataFileName := fmt.Sprint(fmt.Sprint(file, "-", "data"), ".m")
+	codeFileName := fmt.Sprint(fmt.Sprint(file, "-", "code"), ".m")
+	var err error
+	outDataFile, err = os.OpenFile(dataFileName, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	outCodeFile, err = os.OpenFile(codeFileName, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func writeToCode(s string) {
+	outCodeFile.Write([]byte(fmt.Sprint(s, "\n")))
+}
+func writeToData(s string) {
+	outCodeFile.Write([]byte(fmt.Sprint(s, "\n")))
+}
 
 type register string
 
@@ -140,7 +169,7 @@ func getUniqueLitTag() string {
 }
 func getUniqueNameTag(name string, typeInfo string) string {
 	if index := strings.IndexRune(typeInfo, ':'); index != -1 {
-		typeInfo = typeInfo[index:]
+		typeInfo = typeInfo[index+1:]
 	}
 	tag := fmt.Sprint(name, typeInfo)
 	return tag
@@ -218,7 +247,7 @@ func CalculateClassSize(className string, symbTable *symbolTable) int {
 			} else {
 				size, _ = sizeOf(baseType)
 			}
-			size=size*getDimensions(typeInfo)
+			size = size * getDimensions(typeInfo)
 			record.setSize(size)
 			if i == 0 {
 				record.setOffset(0)

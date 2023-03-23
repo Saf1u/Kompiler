@@ -109,7 +109,7 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 	names := strings.Split(v.scope, "~")
 	typeInfo := n.getTable().getSingleEntry().getType().String()
 	name := n.getTable().getSingleEntry().getName()
-	tag := getUniqueNameTag(fmt.Sprint(name, names[0]), names[0])
+	tag := getUniqueNameTag(fmt.Sprint(name, names[0]), names[1])
 	entry := v.functionScopelink.getEntry(
 		map[int]interface{}{
 			FILTER_KIND: VARIABLE,
