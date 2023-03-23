@@ -121,10 +121,10 @@ func init() {
 }
 
 func writeToCode(s string) {
-	outCodeFile.Write([]byte(fmt.Sprint(s, "\n")))
+	outCodeFile.Write([]byte(s))
 }
 func writeToData(s string) {
-	outCodeFile.Write([]byte(fmt.Sprint(s, "\n")))
+	outDataFile.Write([]byte(s))
 }
 
 type register string
@@ -172,6 +172,7 @@ func getUniqueNameTag(name string, typeInfo string) string {
 		typeInfo = typeInfo[index+1:]
 	}
 	tag := fmt.Sprint(name, typeInfo)
+	tag = strings.ReplaceAll(tag, "|", "")
 	return tag
 }
 
