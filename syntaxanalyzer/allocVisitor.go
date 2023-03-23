@@ -104,6 +104,63 @@ func (v *memAllocVisitor) visitSign(n *signNode) {
 	v.functionScopelink.addRecord(recordB)
 
 }
+func (v *memAllocVisitor) visitVar(n *varNode) {
+	typeInfo := n.getTable().getSingleEntry().getType().String()
+	tag := getUniqueOffsetTag()
+	recordA := newRecord(tag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
+	recordB := newRecord(tag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
+	size, err := sizeOf("integer")
+	if err != nil {
+		panic("shouldnt happen")
+	}
+	recordA.setSize(size)
+	recordB.setSize(size)
+	recordA.setTag(tag)
+	recordB.setTag(tag)
+	n.getTable().addRecord(recordA)
+	v.functionScopelink.addRecord(recordB)
+
+}
+func (v *memAllocVisitor) visitDot(n *dotNode) {
+	switch n.getParent().(type) {
+	case *varNode:
+		typeInfo := n.getTable().getSingleEntry().getType().String()
+		if typeInfo != TYPE_ERR {
+			class := v.getGlobalTable().getEntry(
+				map[int]interface{}{
+					FILTER_KIND: CLASS,
+					FILTER_NAME: typeInfo,
+				},
+			)
+			if class == nil {
+				panic("never happens")
+			}
+			variable := class.getLink().getEntry(map[int]interface{}{
+				FILTER_KIND: VARIABLE,
+				FILTER_NAME: n.getLeftMostChild().getRightSibling().(*idNode).identifier,
+			})
+			if variable == nil {
+				typeInfo = TYPE_ERR
+			} else {
+				typeInfo = getBaseType(variable.getType().String())
+			}
+		}
+		tag := getUniqueOffsetTag()
+		recordA := newRecord(tag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
+		recordB := newRecord(tag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
+		size, err := sizeOf("integer")
+		if err != nil {
+			panic("shouldnt happen")
+		}
+		recordA.setSize(size)
+		recordB.setSize(size)
+		recordA.setTag(tag)
+		recordB.setTag(tag)
+		n.getTable().addRecord(recordA)
+		v.functionScopelink.addRecord(recordB)
+	}
+
+}
 
 func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 	names := strings.Split(v.scope, "~")
@@ -146,7 +203,7 @@ func (v *memAllocVisitor) visitProgram(n *program) {
 		for _, record := range records {
 			if record.getKind() != "parameter" {
 				tag := strings.TrimSpace(record.getTag())
-				writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res",record.getSize()))
+				writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res", record.getSize()))
 			}
 		}
 	}

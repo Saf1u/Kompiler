@@ -1073,12 +1073,13 @@ type symbolTableRecord struct {
 	tag        string
 	size       int
 	offset     int
+	moonCode   string
 	typeEntry  *typeRecord
 	link       *symbolTable
 }
 
 func newRecord(name string, kind string, visibility string, line int, typeEntry *typeRecord, ref *symbolTable) *symbolTableRecord {
-	return &symbolTableRecord{name, kind, visibility, line, "", 0, 0, typeEntry, ref}
+	return &symbolTableRecord{name, kind, visibility, line, "", 0, 0, "", typeEntry, ref}
 }
 func (s *symbolTableRecord) getLine() int {
 	return s.line
@@ -1102,6 +1103,12 @@ func (s *symbolTableRecord) getTag() string {
 }
 func (s *symbolTableRecord) getOffset() int {
 	return s.offset
+}
+func (s *symbolTableRecord) getCode() string {
+	return s.moonCode
+}
+func (s *symbolTableRecord) setCode(moonCode string) {
+	s.moonCode = moonCode
 }
 func (s *symbolTableRecord) setSize(size int) {
 	s.size = size
@@ -1517,7 +1524,12 @@ type dotNode struct {
 }
 
 func (i *dotNode) Accept(v visitor) {
+
 	n := i.getLeftMostChild()
+	// switch n.(type) {
+	// case *varNode:
+	// 	v.propagateId()
+	// }
 	for n != nil {
 		n.Accept(v)
 		n = n.getRightSibling()
@@ -1680,7 +1692,14 @@ type varNode struct {
 }
 
 func (i *varNode) Accept(v visitor) {
+
 	n := i.getLeftMostChild()
+	switch n.(type) {
+	case *idNode:
+		id := n.(*idNode).identifier
+		v.propagateId(id)
+	}
+
 	for n != nil {
 		n.Accept(v)
 		n = n.getRightSibling()

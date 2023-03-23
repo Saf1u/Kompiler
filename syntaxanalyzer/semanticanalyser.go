@@ -53,6 +53,8 @@ const (
 	ACTIVE_PARAMETER = "PARAM_ENTRY_FOR_A_SCOPE"
 	TEMP_VAR         = "tempvar"
 	TEMP_LIT         = "templit"
+	MOON_CODE        = "code"
+	TEMP_OFFSET      = "offset"
 )
 
 /*
@@ -92,6 +94,7 @@ var (
 	patterns         = []string{`(\[),*`, `(\]),*`, `(\\\[)\\]`, `(\|)`}
 	replacements     = []string{`\[`, `\]`, `\[[0-9]*\]`, `\|`}
 	tempId       int = 0
+	offsetId     int = 0
 	litId        int = 0
 	errorBin         = map[int][]string{}
 	indexes          = []int{}
@@ -99,6 +102,7 @@ var (
 		"integer": 4,
 		TYPE_ERR:  0,
 	}
+	registers          = []register{REG1, REG2, REG3, REG4, REG5, REG6, REG7, REG8, REG9, REG10, REG11, REG12, REG13, REG14}
 	globalregisterPool *registerPool
 	outDataFile        io.Writer
 	outCodeFile        io.Writer
@@ -106,6 +110,9 @@ var (
 
 func init() {
 	globalregisterPool = newPool()
+	for _, reg := range registers {
+		globalregisterPool.Put(reg)
+	}
 	file := configmap.Get("file").(string)
 	dataFileName := fmt.Sprint(fmt.Sprint(file, "-", "data"), ".m")
 	codeFileName := fmt.Sprint(fmt.Sprint(file, "-", "code"), ".m")
@@ -160,6 +167,11 @@ func isLiteral(s string) bool {
 func getUniqueTempTag() string {
 	tag := fmt.Sprint("tempVar", tempId)
 	tempId++
+	return tag
+}
+func getUniqueOffsetTag() string {
+	tag := fmt.Sprint("offset", offsetId)
+	offsetId++
 	return tag
 }
 func getUniqueLitTag() string {
@@ -319,6 +331,7 @@ type visitor interface {
 	visitAssign(*assignStatNode)
 	propagateScope(string)
 	propgateScopeLink(*symbolTable)
+	propagateId(string)
 	getGlobalTable() *symbolTable
 }
 type defaultVisitor struct {
@@ -326,6 +339,9 @@ type defaultVisitor struct {
 }
 
 func (v *defaultVisitor) propagateScope(s string) {
+
+}
+func (v *defaultVisitor) propagateId(s string) {
 
 }
 func (v *defaultVisitor) propgateScopeLink(s *symbolTable) {
