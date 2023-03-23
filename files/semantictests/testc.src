@@ -1,17 +1,20 @@
 function main()=>void{
   localvar n: integer;
-  localvar z: integer;
-  localvar x: integer;
+  localvar z: integer[10];
+  localvar x: integer[2][3][3];
   localvar y: integer;
-  n=(x*y)+z+1*3*300+2;
+  n=(x[2][3][34]*y)+z[7]+1*3*300+2;
+
  
 }
+
 class F{
  private attribute wordvar:integer;
 };
 
 class D {
     private attribute var:integer;
+      private attribute varnew:integer[2][3][4];
 };
 class C isa D,F{
     private attribute op:integer;
@@ -24,8 +27,20 @@ public attribute accessible:integer;
 };
 
 class E {
-    private attribute op:integer[];
-    public attribute nop:integer[][];
+    private attribute op:integer[9];
+    public attribute nop:integer[10][4][3][3];
     private attribute mema:D;
     private attribute memb:A;
+    private attribute memc:A[11][11];
 };
+
+function side(io:int)=>void{
+  localvar n: integer;
+  localvar p:E[10];
+  localvar z: integer[10];
+  localvar x: integer[2][3][3];
+  localvar y: integer;
+  n=(x[2][3][34]*y)+z[7]+1*3*300+2;
+
+ 
+}

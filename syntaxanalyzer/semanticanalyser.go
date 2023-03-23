@@ -162,6 +162,28 @@ func getBaseType(typeInfo string) string {
 	}
 	return typeInfo[:index]
 }
+func getDimensions(typeInfo string) int {
+	accumulator := 1
+	index := strings.IndexRune(typeInfo, '[')
+	if index == -1 {
+		return accumulator
+	}
+	typeInfo = typeInfo[index:]
+	typeInfo = strings.ReplaceAll(typeInfo, "][", "|")
+	typeInfo = strings.ReplaceAll(typeInfo, "]", "|")
+	typeInfo = strings.ReplaceAll(typeInfo, "[", "|")
+	nums := (strings.Split(typeInfo, "|"))
+	for _, num := range nums {
+		if num != "" {
+			intRep, err := strconv.Atoi(num)
+			if err != nil {
+				panic("should not happen")
+			}
+			accumulator = accumulator * intRep
+		}
+	}
+	return accumulator
+}
 func CalculateClassSize(className string, symbTable *symbolTable) int {
 	inheritedClassesSizes := 0
 	dataMemberSizes := 0
@@ -196,11 +218,12 @@ func CalculateClassSize(className string, symbTable *symbolTable) int {
 			} else {
 				size, _ = sizeOf(baseType)
 			}
+			size=size*getDimensions(typeInfo)
 			record.setSize(size)
 			if i == 0 {
-				record.setOffset(-size)
+				record.setOffset(0)
 			} else {
-				record.setOffset(records[i-1].getOffset() - size)
+				record.setOffset((-records[i-1].getSize()) + (records[i-1].getOffset()))
 			}
 			if record.getKind() == VARIABLE {
 				dataMemberSizes = dataMemberSizes + size

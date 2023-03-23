@@ -109,7 +109,7 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 	names := strings.Split(v.scope, "~")
 	typeInfo := n.getTable().getSingleEntry().getType().String()
 	name := n.getTable().getSingleEntry().getName()
-	tag := getUniqueNameTag(fmt.Sprint(name,names[0]),names[0])
+	tag := getUniqueNameTag(fmt.Sprint(name, names[0]), names[0])
 	entry := v.functionScopelink.getEntry(
 		map[int]interface{}{
 			FILTER_KIND: VARIABLE,
@@ -117,13 +117,20 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 		},
 	)
 	if entry == nil {
-		panic("it cannot happen")
+		fmt.Println("is it a parameter.....?")
+		if v.functionScopelink.getEntry(map[int]interface{}{FILTER_KIND: "parameter", FILTER_NAME: name}) == nil {
+			panic("can not happen")
+		} else {
+			return
+		}
 	}
 	entry.setTag(tag)
-	size, err := sizeOf(typeInfo)
+	baseType := getBaseType(typeInfo)
+	size, err := sizeOf(baseType)
 	if err != nil {
 		panic("shouldnt happen")
 	}
+	size = size * getDimensions(typeInfo)
 	entry.setSize(size)
 
 }
@@ -156,4 +163,34 @@ func (v *memAllocVisitor) visitProgram(n *program) {
 	os.Stdout = symbolTable
 	v.getGlobalTable().print(10)
 	os.Stdout = old
+}
+
+func (v *memAllocVisitor) visitFuncDef(n *funcDefNode) {
+	globalTableLink := v.getGlobalTable().getEntry(
+		map[int]interface{}{
+			FILTER_LINK: n.getTable(),
+		},
+	)
+	if globalTableLink == nil {
+		panic("something went wrong")
+	}
+	records := n.getTable().getRecords()
+
+	for i, record := range records {
+		if record.getKind() == "parameter" {
+			continue
+			//for now....
+		}
+		if i == 0 {
+			record.setOffset(0)
+		} else {
+			record.setOffset((-records[i-1].getSize()) + (records[i-1].getOffset()))
+		}
+		if i == len(records)-1 {
+			offset := record.getOffset() + (-record.getSize())
+			globalTableLink.setOffset(offset)
+			globalTableLink.setSize(-offset)
+
+		}
+	}
 }
