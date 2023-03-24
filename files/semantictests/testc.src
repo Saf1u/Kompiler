@@ -9,7 +9,8 @@ function main()=>void{
  write(z);
  write(0);
   write(p[1][0][1][0]);*/
-  z=232 or 332;
+  z=1 and 1;
+  z=not 0;
   write(z);
  
 }

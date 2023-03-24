@@ -84,7 +84,39 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 	globalregisterPool.Put(registera)
 	globalregisterPool.Put(registerb)
 	globalregisterPool.Put(destReg)
+	writeToCode("% end add op \n")
 	//writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res",record.getSize()))
+
+}
+func (v *codeGenVisitor) visitNot(n *notNode) {
+	writeToCode("% begin not op \n")
+	tag, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	if err != nil {
+		panic(err)
+	}
+	selfTag, _, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+	registera, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	branchTagZero := generateNamedTag("zero")
+	endTag := generateNamedTag("endnot")
+	code :=
+		`lw %s,%s(r0)
+ bz %s,%s
+ addi %s,r0,1
+ sw %s(r0),%s
+ j %s
+ %s sw %s(r0),r0
+ %s
+ `
+	code = fmt.Sprintf(code, registera.String(), tag, registera.String(), branchTagZero, registera.String(), selfTag, registera.String(), endTag, branchTagZero, selfTag, endTag)
+	writeToCode(code)
+	writeToCode("% end not op \n")
+	globalregisterPool.Put(registera)
 
 }
 func (v *codeGenVisitor) visitMult(n *multNode) {
@@ -143,6 +175,7 @@ func (v *codeGenVisitor) visitMult(n *multNode) {
 	globalregisterPool.Put(registera)
 	globalregisterPool.Put(registerb)
 	globalregisterPool.Put(destReg)
+	writeToCode("% end mult op \n")
 	//writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res",record.getSize()))
 
 }

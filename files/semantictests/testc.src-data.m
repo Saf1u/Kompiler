@@ -38,5 +38,8 @@ literal17            res     4
 literal18            res     4
 tempVar16            res     4
 offset2              res     4
+literal19            res     4
+tempVar17            res     4
+offset3              res     4
 buffer               res     200
 stackbase            res     2048

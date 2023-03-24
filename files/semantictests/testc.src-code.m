@@ -25,6 +25,7 @@ lw r12,literal1(r0)
 lw r11,literal0(r0)
 add r10,r11,r12
 sw tempVar0(r0),r10
+% end add op 
 % begin intlit storeage
 addi r10,r0,1
 sw literal2(r0), r10
@@ -34,6 +35,7 @@ lw r12,literal2(r0)
 lw r10,tempVar0(r0)
 add r11,r10,r12
 sw tempVar1(r0),r11
+% end add op 
 % begin intlit storeage
 addi r11,r0,10
 sw literal3(r0), r11
@@ -43,6 +45,7 @@ lw r12,literal3(r0)
 lw r11,tempVar1(r0)
 add r10,r11,r12
 sw tempVar2(r0),r10
+% end add op 
 % begin intlit storeage
 addi r10,r0,9
 sw literal4(r0), r10
@@ -52,6 +55,7 @@ lw r12,literal4(r0)
 lw r10,tempVar2(r0)
 add r11,r10,r12
 sw tempVar3(r0),r11
+% end add op 
 % begin intlit storeage
 addi r11,r0,33
 sw literal5(r0), r11
@@ -69,11 +73,13 @@ lw r12,literal7(r0)
 lw r11,literal6(r0)
 mul r10,r11,r12
 sw tempVar4(r0),r10
+% end mult op 
 % begin add op 
 lw r12,tempVar4(r0)
 lw r10,literal5(r0)
 add r11,r10,r12
 sw tempVar5(r0),r11
+% end add op 
 % begin intlit storeage
 addi r11,r0,60
 sw literal8(r0), r11
@@ -87,16 +93,19 @@ lw r12,literal9(r0)
 lw r11,literal8(r0)
 div r10,r11,r12
 sw tempVar6(r0),r10
+% end mult op 
 % begin mult op 
 lw r12,tempVar6(r0)
 lw r10,tempVar5(r0)
 mul r11,r10,r12
 sw tempVar7(r0),r11
+% end mult op 
 % begin add op 
 lw r12,tempVar7(r0)
 lw r11,tempVar3(r0)
 add r10,r11,r12
 sw tempVar8(r0),r10
+% end add op 
 % begin intlit storeage
 addi r10,r0,2
 sw literal10(r0), r10
@@ -106,6 +115,7 @@ lw r12,literal10(r0)
 lw r10,tempVar8(r0)
 div r11,r10,r12
 sw tempVar9(r0),r11
+% end mult op 
 % begin intlit storeage
 addi r11,r0,1
 sw literal11(r0), r11
@@ -119,6 +129,7 @@ lw r12,literal12(r0)
 lw r11,literal11(r0)
 mul r10,r11,r12
 sw tempVar10(r0),r10
+% end mult op 
 % begin intlit storeage
 addi r10,r0,2
 sw literal13(r0), r10
@@ -128,6 +139,7 @@ lw r12,literal13(r0)
 lw r10,tempVar10(r0)
 div r11,r10,r12
 sw tempVar11(r0),r11
+% end mult op 
 % begin intlit storeage
 addi r11,r0,9
 sw literal14(r0), r11
@@ -137,11 +149,13 @@ lw r12,literal14(r0)
 lw r11,tempVar11(r0)
 add r10,r11,r12
 sw tempVar12(r0),r10
+% end add op 
 % begin add op 
 lw r12,tempVar12(r0)
 lw r10,tempVar9(r0)
 add r11,r10,r12
 sw tempVar13(r0),r11
+% end add op 
 % begin intlit storeage
 addi r11,r0,100
 sw literal15(r0), r11
@@ -155,11 +169,13 @@ lw r12,literal16(r0)
 lw r11,literal15(r0)
 mul r10,r11,r12
 sw tempVar14(r0),r10
+% end mult op 
 % begin add op 
 lw r12,tempVar14(r0)
 lw r10,tempVar13(r0)
 add r11,r10,r12
 sw tempVar15(r0),r11
+% end add op 
 % begin assignment 
 lw r11,tempVar15(r0)
 lw r12,offset0(r0) 
@@ -173,22 +189,23 @@ addi r12,r10,zmain
 sw offset1(r0),r12
 % end var offset calculation
 % begin intlit storeage
-addi r12,r0,232
+addi r12,r0,1
 sw literal17(r0), r12
 % done intlit storeage
 % begin intlit storeage
-addi r12,r0,332
+addi r12,r0,1
 sw literal18(r0), r12
 % done intlit storeage
-% begin add op 
+% begin mult op 
 lw r10,literal18(r0)
 lw r12,literal17(r0)
-bnz r12,one1
-bnz r10,one1
-addi r11,r0,0
-j endor1
-one1		addi r11,r0,1
-endor1 	sw tempVar16(r0),r11
+bz r12,zero1
+bz r10,zero1
+addi r11,r0,1
+j endand1
+zero1		addi r11,r0,0
+endand1 	sw tempVar16(r0),r11
+% end mult op 
 % begin assignment 
 lw r11,tempVar16(r0)
 lw r10,offset1(r0) 
@@ -201,12 +218,37 @@ addi r12,r0,0
 addi r10,r12,zmain
 sw offset2(r0),r10
 % end var offset calculation
+% begin intlit storeage
+addi r10,r0,0
+sw literal19(r0), r10
+% done intlit storeage
+% begin not op 
+lw r10,literal19(r0)
+ bnz r10,zero2
+ addi r10,r0,1
+ sw tempVar17(r0),r10
+ j endnot1
+ zero2 sw tempVar17(r0),r0
+ endnot1
+ % end not op 
+% begin assignment 
+lw r10,tempVar17(r0)
+lw r12,offset2(r0) 
+sw 0(r12),r10
+% end assignment 
+% begin generating indice offseting
+addi r11,r0,0
+% done generating indice offseting
+% begin var offset calculation
+addi r12,r11,zmain
+sw offset3(r0),r12
+% end var offset calculation
 % begin write 
-lw r10,offset2(r0)
-lw r10,0(r10)
-sw -8(r14),r10
-addi r10,r0,buffer
-sw -12(r14),r10
+lw r12,offset3(r0)
+lw r12,0(r12)
+sw -8(r14),r12
+addi r12,r0,buffer
+sw -12(r14),r12
 jl r15,intstr
 sw -8(r14),r13
 jl r15,putstr
