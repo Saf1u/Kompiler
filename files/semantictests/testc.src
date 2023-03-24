@@ -1,8 +1,6 @@
 function main()=>void{
-
-
-
- 
+localvar anObject:A;
+read(anObject.wordvar);
 }
 
 /*class human{
@@ -18,26 +16,31 @@ class plane{
 
 
 class F{
- private attribute wordvar:integer;
+ public attribute wordvar:integer;
 };
 
 class D {
-      private attribute var:integer;
-      private attribute varnew:integer[2][3];
+      public attribute var:integer;
+       public attribute ane:E;
+      public attribute varnew:integer[2][3];
 };
 class C isa D,F{
-    private attribute op:integer;
+    public attribute op:integer;
     public attribute nop:integer;
 };
 
 class A isa C{
-private attribute x:integer;
+public attribute x:integer;
 public attribute accessible:integer;
 };
 
-class E {
-    private attribute memb:A;
-    private attribute memc:A[11][11];
+class E isa r{
+    private attribute memb:integer;
+    private attribute memc:integer[11][11];
+};
+
+class r{
+
 };
 /*
 function side(io:integer)=>void{

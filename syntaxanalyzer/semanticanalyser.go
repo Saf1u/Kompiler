@@ -993,7 +993,14 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
-	typeEntry := entry.getType().String()
+	typeEntry := ""
+	if typePtr := entry.getType(); typePtr != nil {
+		typeEntry = typePtr.String()
+	} else {
+		saveError(n.getLineNumber(), "ERROR:cannot access undefined class \"%s\" member variable \"%s\" line:%d", left.getType().String(), identifier)
+		n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+		return
+	}
 	actualIndexCount := 0
 	for _, char := range typeEntry {
 		if char == '[' {

@@ -146,27 +146,7 @@ func (v *memAllocVisitor) visitVar(n *varNode) {
 func (v *memAllocVisitor) visitDot(n *dotNode) {
 	switch n.getParent().(type) {
 	case *varNode:
-		typeInfo := n.getTable().getSingleEntry().getType().String()
-		if typeInfo != TYPE_ERR {
-			class := v.getGlobalTable().getEntry(
-				map[int]interface{}{
-					FILTER_KIND: CLASS,
-					FILTER_NAME: typeInfo,
-				},
-			)
-			if class == nil {
-				panic("never happens")
-			}
-			variable := class.getLink().getEntry(map[int]interface{}{
-				FILTER_KIND: VARIABLE,
-				FILTER_NAME: n.getLeftMostChild().getRightSibling().(*idNode).identifier,
-			})
-			if variable == nil {
-				typeInfo = TYPE_ERR
-			} else {
-				typeInfo = getBaseType(variable.getType().String())
-			}
-		}
+		typeInfo := n.getParent().getTable().getSingleEntry().getType().String()
 		tag := getUniqueOffsetTag()
 		recordA := newRecord(tag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 		recordB := newRecord(tag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
@@ -180,6 +160,8 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 		recordB.setTag(tag)
 		n.getTable().addRecord(recordA)
 		v.functionScopelink.addRecord(recordB)
+	default:
+		panic("not yet implemented functions")
 	}
 
 }

@@ -2,6 +2,7 @@ package syntaxanalyzer
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -604,4 +605,49 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 	globalregisterPool.Put(locReg)
 	writeToCode("% end write\n")
 
+}
+
+func (v *codeGenVisitor) visitDot(n *dotNode) {
+	switch n.getParent().(type) {
+	case *varNode:
+		writeToCode("%begin dot offsetting\n")
+		typeInfo := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+		id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
+		class := v.getGlobalTable().getEntry(map[int]interface{}{
+			FILTER_KIND: CLASS,
+			FILTER_NAME: typeInfo,
+		})
+		if class == nil {
+			fmt.Println("how?")
+			os.Exit(1);
+		}
+		_, offset, found := recursivelySearchForIdWithOffset(class.getLink(), id)
+		fmt.Println(-offset)
+		fmt.Println(found)
+	}
+
+}
+
+func recursivelySearchForIdWithOffset(classTable *symbolTable, identifier string) (*symbolTableRecord, int, bool) {
+	record := classTable.getEntry(
+		map[int]interface{}{
+			FILTER_NAME: identifier,
+			FILTER_KIND: VARIABLE,
+		},
+	)
+	if record != nil {
+		return record, record.getOffset(), true
+	}
+	inheritedClasses := classTable.getEntries(
+		map[int]interface{}{
+			FILTER_KIND: CLASS,
+		},
+	)
+	for _, class := range inheritedClasses {
+		record, off, found := recursivelySearchForIdWithOffset(class.getLink(), identifier)
+		if record != nil {
+			return record, class.getOffset() + off, found
+		}
+	}
+	return nil, 0, false
 }
