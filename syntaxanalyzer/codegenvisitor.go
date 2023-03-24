@@ -163,7 +163,7 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	if err != nil {
 		panic(err)
 	}
-	tagRight, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	tagRight, tagType, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -175,12 +175,26 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	if err != nil {
 		panic(err)
 	}
+	ptrReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+
 	// 	% begin assignment
 	// lw r11,literal0(r0)
 	// sw offset0(r0),r11
-	code := fmt.Sprintf("lw %s,%s(r0)\n lw %s,%s(r0) \nsw 0(%s),%s\n", register.String(), tagRight, registerb.String(), tagLeft, registerb.String(), register.String())
+	//lw r12,offset2(r0)
+	code := ""
+	if tagType == TEMP_OFFSET {
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", ptrReg.String(), tagRight))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", register.String(), ptrReg.String()))
+	} else {
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", register.String(), tagRight))
+	}
+	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0) \nsw 0(%s),%s\n", registerb.String(), tagLeft, registerb.String(), register.String()))
 	globalregisterPool.Put(register)
 	globalregisterPool.Put(registerb)
+	globalregisterPool.Put(ptrReg)
 	writeToCode(code)
 	writeToCode("% end assignment \n")
 
