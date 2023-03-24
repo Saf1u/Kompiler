@@ -40,11 +40,11 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 	default:
 	}
 	writeToCode("% begin add op \n")
-	tagLeft, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	tagLeft, typeLeftTag, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
-	tagRight, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	tagRight, typeRightTag, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -64,9 +64,28 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 	if err != nil {
 		panic(err)
 	}
+	ptrReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
 	code := ""
-	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registerb.String(), tagRight))
-	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registera.String(), tagLeft))
+	switch typeLeftTag {
+	case TEMP_OFFSET:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", ptrReg.String(), tagLeft))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
+
+	default:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registera.String(), tagLeft))
+	}
+	switch typeRightTag {
+	case TEMP_OFFSET:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", ptrReg.String(), tagRight))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registerb.String(), ptrReg.String()))
+
+	default:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registerb.String(), tagRight))
+	}
+
 	if op != "or" {
 		code = fmt.Sprint(code, fmt.Sprintf("%s %s,%s,%s\n", op, destReg.String(), registera.String(), registerb.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("sw %s(r0),%s\n", selfTag, destReg.String()))
@@ -84,13 +103,14 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 	globalregisterPool.Put(registera)
 	globalregisterPool.Put(registerb)
 	globalregisterPool.Put(destReg)
+	globalregisterPool.Put(ptrReg)
 	writeToCode("% end add op \n")
 	//writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res",record.getSize()))
 
 }
 func (v *codeGenVisitor) visitNot(n *notNode) {
 	writeToCode("% begin not op \n")
-	tag, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	tag, tagType, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -104,21 +124,79 @@ func (v *codeGenVisitor) visitNot(n *notNode) {
 	}
 	branchTagZero := generateNamedTag("zero")
 	endTag := generateNamedTag("endnot")
-	code :=
-		`lw %s,%s(r0)
- bz %s,%s
- addi %s,r0,1
- sw %s(r0),%s
- j %s
- %s sw %s(r0),r0
- %s
- `
-	code = fmt.Sprintf(code, registera.String(), tag, registera.String(), branchTagZero, registera.String(), selfTag, registera.String(), endTag, branchTagZero, selfTag, endTag)
+	ptrReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	code := ""
+	switch tagType {
+	case TEMP_OFFSET:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", ptrReg.String(), tag))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
+
+	default:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registera.String(), tag))
+	}
+
+	temp := "bz %s,%s\naddi %s,r0,1\nsw %s(r0),%s\nj %s\n%s sw %s(r0),r0\n%s"
+	code = fmt.Sprint(code, fmt.Sprintf(temp, registera.String(), branchTagZero, registera.String(), selfTag, registera.String(), endTag, branchTagZero, selfTag, endTag))
 	writeToCode(code)
 	writeToCode("% end not op \n")
 	globalregisterPool.Put(registera)
+	globalregisterPool.Put(ptrReg)
 
 }
+func (v *codeGenVisitor) visitSign(n *signNode) {
+	op := ""
+	switch n.value {
+	case "+":
+		op = "add"
+	case "-":
+		op = "sub"
+	default:
+	}
+	writeToCode("% begin sign op \n")
+	tag, typeTag, err := getSomeTag(n.getLeftMostChild().getTable())
+	if err != nil {
+		panic(err)
+	}
+
+	selfTag, _, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+	registera, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+
+	destReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	ptrReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	code := ""
+	switch typeTag {
+	case TEMP_OFFSET:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", ptrReg.String(), tag))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
+
+	default:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registera.String(), tag))
+	}
+	code = fmt.Sprint(code, fmt.Sprintf("%s %s,r0,%s\n", op, destReg.String(), registera.String()))
+	code = fmt.Sprint(code, fmt.Sprintf("sw %s(r0),%s\n", selfTag, destReg.String()))
+
+	writeToCode(code)
+	globalregisterPool.Put(registera)
+	globalregisterPool.Put(destReg)
+	globalregisterPool.Put(ptrReg)
+	writeToCode("% end sign op \n")
+}
+
 func (v *codeGenVisitor) visitMult(n *multNode) {
 	op := ""
 	switch n.value {
@@ -131,11 +209,11 @@ func (v *codeGenVisitor) visitMult(n *multNode) {
 	default:
 	}
 	writeToCode("% begin mult op \n")
-	tagLeft, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	tagLeft, typeLeftTag, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
-	tagRight, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	tagRight, typeRightTag, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -155,9 +233,27 @@ func (v *codeGenVisitor) visitMult(n *multNode) {
 	if err != nil {
 		panic(err)
 	}
+	ptrReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
 	code := ""
-	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registerb.String(), tagRight))
-	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registera.String(), tagLeft))
+	switch typeLeftTag {
+	case TEMP_OFFSET:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", ptrReg.String(), tagLeft))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
+
+	default:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registera.String(), tagLeft))
+	}
+	switch typeRightTag {
+	case TEMP_OFFSET:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", ptrReg.String(), tagRight))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registerb.String(), ptrReg.String()))
+
+	default:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registerb.String(), tagRight))
+	}
 	if op != "and" {
 		code = fmt.Sprint(code, fmt.Sprintf("%s %s,%s,%s\n", op, destReg.String(), registera.String(), registerb.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("sw %s(r0),%s\n", selfTag, destReg.String()))
@@ -175,7 +271,85 @@ func (v *codeGenVisitor) visitMult(n *multNode) {
 	globalregisterPool.Put(registera)
 	globalregisterPool.Put(registerb)
 	globalregisterPool.Put(destReg)
+	globalregisterPool.Put(ptrReg)
 	writeToCode("% end mult op \n")
+	//writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res",record.getSize()))
+
+}
+
+func (v *codeGenVisitor) visitRelOp(n *relOpNode) {
+	op := ""
+	switch n.value {
+	case "==":
+		op = "ceq"
+	case "<=":
+		op = "cle"
+	case ">=":
+		op = "cge"
+	case "<>":
+		op = "cne"
+	case "<":
+		op = "clt"
+	case ">":
+		op = "cgt"
+	default:
+	}
+	writeToCode("% begin RELOP op \n")
+	tagLeft, typeLeftTag, err := getSomeTag(n.getLeftMostChild().getTable())
+	if err != nil {
+		panic(err)
+	}
+	tagRight, typeRightTag, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	if err != nil {
+		panic(err)
+	}
+	selfTag, _, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+	registera, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	registerb, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	destReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	ptrReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	code := ""
+	switch typeLeftTag {
+	case TEMP_OFFSET:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", ptrReg.String(), tagLeft))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
+
+	default:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registera.String(), tagLeft))
+	}
+	switch typeRightTag {
+	case TEMP_OFFSET:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", ptrReg.String(), tagRight))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registerb.String(), ptrReg.String()))
+
+	default:
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registerb.String(), tagRight))
+	}
+
+	code = fmt.Sprint(code, fmt.Sprintf("%s %s,%s,%s\n", op, destReg.String(), registera.String(), registerb.String()))
+	code = fmt.Sprint(code, fmt.Sprintf("sw %s(r0),%s\n", selfTag, destReg.String()))
+
+	writeToCode(code)
+	globalregisterPool.Put(registera)
+	globalregisterPool.Put(registerb)
+	globalregisterPool.Put(destReg)
+	globalregisterPool.Put(ptrReg)
+	writeToCode("% end relop op \n")
 	//writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res",record.getSize()))
 
 }
@@ -421,6 +595,10 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 	code = fmt.Sprint(code, fmt.Sprintf("sw -12(r14),%s\n", locReg.String()))
 	code = fmt.Sprint(code, ("jl r15,intstr\n"))
 	code = fmt.Sprint(code, ("sw -8(r14),r13\n"))
+	code = fmt.Sprint(code, ("jl r15,putstr\n"))
+	//hack nl
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,%s\n", locReg.String(), "newline"))
+	code = fmt.Sprint(code, fmt.Sprintf("sw -8(r14),%s\n", locReg.String()))
 	code = fmt.Sprint(code, ("jl r15,putstr\n"))
 	writeToCode(code)
 	globalregisterPool.Put(locReg)

@@ -10,7 +10,7 @@ import (
 
 const (
 	PRINT_BUFFER = "buffer"
-	STACK_BASE = "stackbase"
+	STACK_BASE   = "stackbase"
 )
 
 type memAllocVisitor struct {
@@ -44,6 +44,23 @@ func (v *memAllocVisitor) visitAdd(n *addNode) {
 }
 func (v *memAllocVisitor) visitMult(n *multNode) {
 	typeInfo := n.getTable().getSingleEntry().getType().String()
+	tag := getUniqueTempTag()
+	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
+	recordB := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
+	size, err := sizeOf(typeInfo)
+	if err != nil {
+		panic("shouldnt happen")
+	}
+	recordA.setSize(size)
+	recordB.setSize(size)
+	recordA.setTag(tag)
+	recordB.setTag(tag)
+	n.getTable().addRecord(recordA)
+	v.functionScopelink.addRecord(recordB)
+
+}
+func (v *memAllocVisitor) visitRelOp(n *relOpNode) {
+	typeInfo := INTEGER
 	tag := getUniqueTempTag()
 	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 	recordB := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
@@ -215,7 +232,8 @@ func (v *memAllocVisitor) visitProgram(n *program) {
 	writeToData(fmt.Sprintf("%-20s %-7s %d\n", PRINT_BUFFER, "res", 200))
 	//200 CHAR BUFFER
 	writeToData(fmt.Sprintf("%-20s %-7s %d\n", STACK_BASE, "res", 2048))
-	
+	writeToData(fmt.Sprintf("%-20s %-7s %s,%d,%d,%d\n", "newline", "db", "", 13, 10, 0))
+
 	//2KB STACK
 
 	file := configmap.Get("file").(string)

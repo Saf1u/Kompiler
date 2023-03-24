@@ -1311,9 +1311,48 @@ type ifStatementNode struct {
 
 func (i *ifStatementNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
+	tag := ""
+	var elseTag string
+	var endIfTag string
+	var reg register
+	var err error
+	switch v.(type) {
+	case *codeGenVisitor:
+		elseTag = generateNamedTag("else")
+		endIfTag = generateNamedTag("endif")
+		reg, err = globalregisterPool.Get()
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	for n != nil {
+		switch v.(type) {
+		case *codeGenVisitor:
+			switch n.(type) {
+			case *relOpNode:
+				tag, _, err = getSomeTag(n.getTable())
+				if err != nil {
+					panic(err)
+				}
+			case *statBlockNode:
+				if n.getRightSibling() != nil {
+					code := fmt.Sprintf("lw %s,%s(r0)\nbz %s,%s\n", reg.String(), tag, reg.String(), elseTag)
+					writeToCode(code)
+				} else {
+					code := fmt.Sprintf("j %s\n%s\n", endIfTag, elseTag)
+					writeToCode(code)
+				}
+			}
+		}
 		n.Accept(v)
 		n = n.getRightSibling()
+	}
+	switch v.(type) {
+	case *codeGenVisitor:
+		writeToCode(endIfTag)
+		writeToCode("\n")
+		globalregisterPool.Put(reg)
 	}
 	v.visitifStatement(i)
 }
@@ -1324,10 +1363,50 @@ type whileStatementNode struct {
 
 func (i *whileStatementNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
+	tag := ""
+	var goWhileTag string
+	var endWhileTag string
+	var reg register
+	var err error
+	switch v.(type) {
+	case *codeGenVisitor:
+		goWhileTag = generateNamedTag("gowhile")
+		endWhileTag = generateNamedTag("endwhile")
+		reg, err = globalregisterPool.Get()
+		defer globalregisterPool.Put(reg)
+		if err != nil {
+			panic(err)
+		}
+	}
 	for n != nil {
-		n.Accept(v)
+		switch v.(type) {
+		case *codeGenVisitor:
+			switch n.(type) {
+			case *relOpNode:
+				writeToCode(goWhileTag)
+				writeToCode("\n")
+				tag, _, err = getSomeTag(n.getTable())
+				if err != nil {
+					panic(err)
+				}
+				n.Accept(v)
+			case *statBlockNode:
+				code := fmt.Sprintf("lw %s,%s(r0)\nbz %s,%s\n", reg.String(), tag, reg.String(), endWhileTag)
+				writeToCode(code)
+				n.Accept(v)
+				code = fmt.Sprintf("j %s\n%s\n", goWhileTag, endWhileTag)
+				writeToCode(code)
+			default:
+				n.Accept(v)
+
+			}
+		default:
+			n.Accept(v)
+		}
+
 		n = n.getRightSibling()
 	}
+
 	v.visitWhileStatement(i)
 }
 

@@ -1,17 +1,7 @@
 function main()=>void{
-  //localvar p:integer[5][5][3][1];
-  localvar z:integer;
-  z=((1+93+1+10+9+(33+2*2)*(60/3))/2)+(1*4/2+9)+(100*5);
- /*p[1][0][1][0]=z;
- write(p[1][0][1][0]);
- write(0);
- z=33;
- write(z);
- write(0);
-  write(p[1][0][1][0]);*/
-  z=1 and 1;
-  z=not 0;
-  write(z);
+
+
+
  
 }
 
