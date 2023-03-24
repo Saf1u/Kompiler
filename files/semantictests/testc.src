@@ -17,13 +17,13 @@ class plane{
 };*/
 
 
-/*class F{
+class F{
  private attribute wordvar:integer;
 };
 
 class D {
-    private attribute var:integer;
-      private attribute varnew:integer[2][3][4];
+      private attribute var:integer;
+      private attribute varnew:integer[2][3];
 };
 class C isa D,F{
     private attribute op:integer;
@@ -36,15 +36,10 @@ public attribute accessible:integer;
 };
 
 class E {
-    private attribute op:integer[9];
-    public attribute nop:integer[10][4][3][3];
-    private attribute mema:D;
     private attribute memb:A;
     private attribute memc:A[11][11];
-    public function evaluate: (x: float) => float;   
-     public function evaluate: (x: integer) => float;   
 };
-
+/*
 function side(io:integer)=>void{
   localvar n: integer;
   localvar p:E[10];
