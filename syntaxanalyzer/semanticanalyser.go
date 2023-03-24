@@ -102,7 +102,7 @@ var (
 		"integer": 4,
 		TYPE_ERR:  0,
 	}
-	registers          = []register{REG1, REG2, REG3, REG4, REG5, REG6, REG7, REG8, REG9, REG10, REG11, REG12, REG13, REG14}
+	registers          = []register{REG1, REG2, REG3, REG4, REG5, REG6, REG7, REG8, REG9, REG10, REG11, REG12}
 	globalregisterPool *registerPool
 	outDataFile        io.Writer
 	outCodeFile        io.Writer
@@ -203,6 +203,20 @@ func getBaseType(typeInfo string) string {
 		return typeInfo
 	}
 	return typeInfo[:index]
+}
+func delemitSizes(x string) []string {
+	index := strings.IndexRune(x, '[')
+	if index == -1 {
+		return []string{}
+	}
+	x = x[index:]
+	x = strings.ReplaceAll(x, "][", "|")
+	x = strings.ReplaceAll(x, "]", "|")
+	x = strings.ReplaceAll(x, "[", "|")
+	z := (strings.Split(x, "|"))
+	z = z[1:]
+	z = z[:len(z)-1]
+	return z
 }
 func getDimensions(typeInfo string) int {
 	accumulator := 1
@@ -332,10 +346,15 @@ type visitor interface {
 	propagateScope(string)
 	propgateScopeLink(*symbolTable)
 	propagateId(string)
+	propagateDestRegister(register)
 	getGlobalTable() *symbolTable
 }
 type defaultVisitor struct {
 	gloablTable *symbolTable
+}
+
+func (v *defaultVisitor) propagateDestRegister(r register) {
+
 }
 
 func (v *defaultVisitor) propagateScope(s string) {
@@ -1324,6 +1343,7 @@ func NewTableVisitor() []visitor {
 	visitors = append(visitors, &typeCheckVisitor{&defaultVisitor{gloablTable: gloablTable}, ""})
 	visitors = append(visitors, &classSizeCalculator{&defaultVisitor{gloablTable: gloablTable}})
 	visitors = append(visitors, &memAllocVisitor{&defaultVisitor{gloablTable: gloablTable}, "", nil})
+	visitors = append(visitors, &codeGenVisitor{defaultVisitor: &defaultVisitor{gloablTable: gloablTable}})
 	return visitors
 }
 

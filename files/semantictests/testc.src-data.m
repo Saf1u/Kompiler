@@ -1,13 +1,6 @@
-amain                res     528
-xmain                res     88
+pmain                res     4
+offset0              res     4
 literal0             res     4
 literal1             res     4
-offset0              res     4
-offset1              res     4
-offset2              res     4
-offset3              res     4
-literal2             res     4
-offset4              res     4
-offset5              res     4
-offset6              res     4
-literal3             res     4
+buffer               res     200
+stackbase            res     2048

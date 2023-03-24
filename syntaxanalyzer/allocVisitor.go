@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+const (
+	PRINT_BUFFER = "buffer"
+	STACK_BASE = "stackbase"
+)
+
 type memAllocVisitor struct {
 	*defaultVisitor
 	scope             string
@@ -207,6 +212,11 @@ func (v *memAllocVisitor) visitProgram(n *program) {
 			}
 		}
 	}
+	writeToData(fmt.Sprintf("%-20s %-7s %d\n", PRINT_BUFFER, "res", 200))
+	//200 CHAR BUFFER
+	writeToData(fmt.Sprintf("%-20s %-7s %d\n", STACK_BASE, "res", 2048))
+	
+	//2KB STACK
 
 	file := configmap.Get("file").(string)
 	errorFile := fmt.Sprint(file, ".outsemanticerrors")

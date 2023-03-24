@@ -1,23 +1,12 @@
 [function, function, 1][id, main, 1][lpar, (, 1][rpar, ), 1][arrow, =>, 1][void, void, 1][lcurbr, {, 1]
-[localvar, localvar, 2][id, a, 2][colon, :, 2][id, human, 2][lsqbr, [, 2][intlit, 2, 2][rsqbr, ], 2][lsqbr, [, 2][intlit, 3, 2][rsqbr, ], 2][semi, ;, 2]
-[localvar, localvar, 3][id, x, 3][colon, :, 3][id, car, 3][semi, ;, 3]
-[inlinecmt, //n=(x[2][3][34]*y)+z[7]+1*3*300+2;, 4]
-[id, a, 5][lsqbr, [, 5][intlit, 1, 5][rsqbr, ], 5][lsqbr, [, 5][intlit, 2, 5][rsqbr, ], 5][dot, ., 5][id, b, 5][dot, ., 5][id, c, 5][lsqbr, [, 5][intlit, 1, 5][rsqbr, ], 5][dot, ., 5][id, e, 5][equal, =, 5][intlit, 4, 5][semi, ;, 5]
-[inlinecmt, //x=a[1][2].b;, 6]
+[localvar, localvar, 2][id, p, 2][colon, :, 2][integer, integer, 2][semi, ;, 2]
+[id, p, 3][equal, =, 3][intlit, 133, 3][semi, ;, 3]
+[write, write, 4][lpar, (, 4][intlit, 293, 4][rpar, ), 4][semi, ;, 4]
 
-[rcurbr, }, 8]
+[rcurbr, }, 6]
 
-[class, class, 10][id, human, 10][lcurbr, {, 10]
-[attribute, attribute, 11][id, b, 11][colon, :, 11][id, car, 11][semi, ;, 11]
-[rcurbr, }, 12][semi, ;, 12]
-[class, class, 13][id, car, 13][lcurbr, {, 13]
-[attribute, attribute, 14][id, c, 14][colon, :, 14][id, plane, 14][lsqbr, [, 14][intlit, 22, 14][rsqbr, ], 14][semi, ;, 14]
-[rcurbr, }, 15][semi, ;, 15]
-
-[class, class, 17][id, plane, 17][lcurbr, {, 17]
-[attribute, attribute, 18][id, e, 18][colon, :, 18][integer, integer, 18][semi, ;, 18]
-[rcurbr, }, 19][semi, ;, 19]
+[blockcmt, /*class human{\n  attribute b:car;\n};\nclass car{\n  attribute c:plane[22];\n};\n\nclass plane{\n    attribute e:integer;\n};*/, 17]
 
 
-[blockcmt, /*class F{\n private attribute wordvar:integer;\n};\n\nclass D {\n    private attribute var:integer;\n      private attribute varnew:integer[2][3][4];\n};\nclass C isa D,F{\n    private attribute op:integer;\n    public attribute nop:integer;\n};\n\nclass A isa C{\nprivate attribute x:integer;\npublic attribute accessible:integer;\n};\n\nclass E {\n    private attribute op:integer[9];\n    public attribute nop:integer[10][4][3][3];\n    private attribute mema:D;\n    private attribute memb:A;\n    private attribute memc:A[11][11];\n    public function evaluate: (x: float) => float;   \n     public function evaluate: (x: integer) => float;   \n};\n\nfunction side(io:integer)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n  localvar z: integer[10];\n  localvar x: integer[2][3][3];\n  localvar y: integer;\n  n=(x[2][3][34]*y)+z[7]+1*3*300+2;\n\n \n}\nfunction side(io:float)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n  localvar z: integer[10];\n  localvar x: integer[2][3][3];\n  localvar y: integer;\n  n=(x[2][3][34]*y)+z[7]+1*3*300+2;\n\n \n}\nfunction side(io:float,z:integer)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n\n}\nfunction E::evaluate(x: float) => float\n  {\n     localvar n: integer;\n  localvar p:E[10];\n    return (0);\n  }\n  function E::evaluate(x: integer) => float\n  {\n     localvar n: integer;\n  localvar p:E[10];\n    return (0);\n  }*/, 86]
+[blockcmt, /*class F{\n private attribute wordvar:integer;\n};\n\nclass D {\n    private attribute var:integer;\n      private attribute varnew:integer[2][3][4];\n};\nclass C isa D,F{\n    private attribute op:integer;\n    public attribute nop:integer;\n};\n\nclass A isa C{\nprivate attribute x:integer;\npublic attribute accessible:integer;\n};\n\nclass E {\n    private attribute op:integer[9];\n    public attribute nop:integer[10][4][3][3];\n    private attribute mema:D;\n    private attribute memb:A;\n    private attribute memc:A[11][11];\n    public function evaluate: (x: float) => float;   \n     public function evaluate: (x: integer) => float;   \n};\n\nfunction side(io:integer)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n  localvar z: integer[10];\n  localvar x: integer[2][3][3];\n  localvar y: integer;\n  n=(x[2][3][34]*y)+z[7]+1*3*300+2;\n\n \n}\nfunction side(io:float)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n  localvar z: integer[10];\n  localvar x: integer[2][3][3];\n  localvar y: integer;\n  n=(x[2][3][34]*y)+z[7]+1*3*300+2;\n\n \n}\nfunction side(io:float,z:integer)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n\n}\nfunction E::evaluate(x: float) => float\n  {\n     localvar n: integer;\n  localvar p:E[10];\n    return (0);\n  }\n  function E::evaluate(x: integer) => float\n  {\n     localvar n: integer;\n  localvar p:E[10];\n    return (0);\n  }*/, 84]
 
