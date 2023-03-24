@@ -379,6 +379,7 @@ func (v *codeGenVisitor) visitIntlit(n *intLitNode) {
 
 func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	writeToCode("% begin generating indice offseting\n")
+
 	entry := v.functionScopelink.getEntry(
 		map[int]interface{}{
 			FILTER_KIND: VARIABLE,
@@ -386,8 +387,34 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 		},
 	)
 	if entry == nil {
-		fmt.Println("not defined var")
-		return
+		switch n.getParent().getLeftMostChild().(type) {
+		case *idNode:
+			fmt.Println("not defined var")
+			return
+		case *dotNode:
+			records := n.getParent().getLeftMostChild().getTable().getRecords()
+			id := n.getParent().getLeftMostChild().getLeftMostChild().getRightSibling().getSingleEntry().name
+			for _, record := range records {
+				if record.getKind() != TEMP_OFFSET {
+					className := record.getType().String()
+					classTable := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: className})
+					if classTable == nil {
+						fmt.Println("class not defined var")
+						return
+					}
+					entry = classTable.getLink().getEntry(map[int]interface{}{FILTER_KIND: VARIABLE, FILTER_NAME: id})
+					if entry == nil {
+						fmt.Println(" not defined var")
+						return
+					}
+
+				}
+			}
+		default:
+			panic("odd")
+
+		}
+
 	}
 	typeInfo := entry.getType().String()
 	index := strings.IndexRune(typeInfo, '[')
@@ -608,9 +635,33 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 }
 
 func (v *codeGenVisitor) visitDot(n *dotNode) {
+	tagleft := ""
+	switch n.getLeftMostChild().(type) {
+	case *varNode:
+		id := n.getLeftMostChild().getTable().getSingleEntry().getName()
+		entry := v.functionScopelink.getEntry(
+			map[int]interface{}{
+				FILTER_KIND: VARIABLE,
+				FILTER_NAME: id,
+			},
+		)
+		if entry == nil {
+			tagleft = "nonesenseTag"
+		} else {
+			tagleft = entry.getTag()
+		}
+
+	default:
+		panic("never happen")
+
+	}
+	mytag, _, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+	writeToCode("%begin dot offsetting\n")
 	switch n.getParent().(type) {
 	case *varNode:
-		writeToCode("%begin dot offsetting\n")
 		typeInfo := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
 		id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
 		class := v.getGlobalTable().getEntry(map[int]interface{}{
@@ -619,12 +670,13 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 		})
 		if class == nil {
 			fmt.Println("how?")
-			os.Exit(1);
+			os.Exit(1)
 		}
 		_, offset, found := recursivelySearchForIdWithOffset(class.getLink(), id)
 		fmt.Println(-offset)
 		fmt.Println(found)
 	}
+	writeToCode("%end dot offsetting\n")
 
 }
 
