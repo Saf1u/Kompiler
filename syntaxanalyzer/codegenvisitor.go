@@ -29,20 +29,120 @@ func (v *codeGenVisitor) visitProgram(n *program) {
 	writeToCode("hlt\n")
 }
 func (v *codeGenVisitor) visitAdd(n *addNode) {
-	typeInfo := n.getTable().getSingleEntry().getType().String()
-	tag := getUniqueTempTag()
-	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
-	recordB := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
-	size, err := sizeOf(typeInfo)
-	if err != nil {
-		panic("shouldnt happen")
+	op := ""
+	switch n.value {
+	case "+":
+		op = "add"
+	case "-":
+		op = "sub"
+	case "or":
+		op = "or"
+	default:
 	}
-	recordA.setSize(size)
-	recordB.setSize(size)
-	recordA.setTag(tag)
-	recordB.setTag(tag)
-	n.getTable().addRecord(recordA)
-	v.functionScopelink.addRecord(recordB)
+	writeToCode("% begin add op \n")
+	tagLeft, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	if err != nil {
+		panic(err)
+	}
+	tagRight, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	if err != nil {
+		panic(err)
+	}
+	selfTag, _, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+	registera, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	registerb, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	destReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	code := ""
+	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registerb.String(), tagRight))
+	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registera.String(), tagLeft))
+	if op != "or" {
+		code = fmt.Sprint(code, fmt.Sprintf("%s %s,%s,%s\n", op, destReg.String(), registera.String(), registerb.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("sw %s(r0),%s\n", selfTag, destReg.String()))
+	} else {
+		branchTagOne := generateNamedTag("one")
+		endTag := generateNamedTag("endor")
+		code = fmt.Sprint(code, fmt.Sprintf("bnz %s,%s\n", registera.String(), branchTagOne))
+		code = fmt.Sprint(code, fmt.Sprintf("bnz %s,%s\n", registerb.String(), branchTagOne))
+		code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,0\n", destReg.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("j %s\n", endTag))
+		code = fmt.Sprint(code, fmt.Sprintf("%s		addi %s,r0,1\n", branchTagOne, destReg.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("%s 	sw %s(r0),%s\n", endTag, selfTag, destReg.String()))
+	}
+	writeToCode(code)
+	globalregisterPool.Put(registera)
+	globalregisterPool.Put(registerb)
+	globalregisterPool.Put(destReg)
+	//writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res",record.getSize()))
+
+}
+func (v *codeGenVisitor) visitMult(n *multNode) {
+	op := ""
+	switch n.value {
+	case "*":
+		op = "mul"
+	case "/":
+		op = "div"
+	case "and":
+		op = "and"
+	default:
+	}
+	writeToCode("% begin mult op \n")
+	tagLeft, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	if err != nil {
+		panic(err)
+	}
+	tagRight, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	if err != nil {
+		panic(err)
+	}
+	selfTag, _, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+	registera, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	registerb, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	destReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	code := ""
+	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registerb.String(), tagRight))
+	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%s(r0)\n", registera.String(), tagLeft))
+	if op != "and" {
+		code = fmt.Sprint(code, fmt.Sprintf("%s %s,%s,%s\n", op, destReg.String(), registera.String(), registerb.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("sw %s(r0),%s\n", selfTag, destReg.String()))
+	} else {
+		branchTagZero := generateNamedTag("zero")
+		endTag := generateNamedTag("endand")
+		code = fmt.Sprint(code, fmt.Sprintf("bz %s,%s\n", registera.String(), branchTagZero))
+		code = fmt.Sprint(code, fmt.Sprintf("bz %s,%s\n", registerb.String(), branchTagZero))
+		code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,1\n", destReg.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("j %s\n", endTag))
+		code = fmt.Sprint(code, fmt.Sprintf("%s		addi %s,r0,0\n", branchTagZero, destReg.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("%s 	sw %s(r0),%s\n", endTag, selfTag, destReg.String()))
+	}
+	writeToCode(code)
+	globalregisterPool.Put(registera)
+	globalregisterPool.Put(registerb)
+	globalregisterPool.Put(destReg)
 	//writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res",record.getSize()))
 
 }

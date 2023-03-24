@@ -102,11 +102,17 @@ var (
 		"integer": 4,
 		TYPE_ERR:  0,
 	}
+	tags               = map[string]int{}
 	registers          = []register{REG1, REG2, REG3, REG4, REG5, REG6, REG7, REG8, REG9, REG10, REG11, REG12}
 	globalregisterPool *registerPool
 	outDataFile        io.Writer
 	outCodeFile        io.Writer
 )
+
+func generateNamedTag(s string) string {
+	tags[s]++
+	return fmt.Sprint(s, tags[s])
+}
 
 func init() {
 	globalregisterPool = newPool()
