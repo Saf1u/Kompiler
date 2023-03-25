@@ -101,6 +101,8 @@ var (
 	sizes            = map[string]int{
 		"integer": 4,
 		TYPE_ERR:  0,
+		"void":    0,
+		"ptr":     4,
 	}
 	tags               = map[string]int{}
 	registers          = []register{REG1, REG2, REG3, REG4, REG5, REG6, REG7, REG8, REG9, REG10, REG11, REG12}
@@ -285,7 +287,7 @@ func CalculateClassSize(className string, symbTable *symbolTable) int {
 			if i == 0 {
 				record.setOffset(0)
 			} else {
-				record.setOffset((-records[i-1].getSize()) + (records[i-1].getOffset()))
+				record.setOffset((records[i-1].getSize()) + (records[i-1].getOffset()))
 			}
 			if record.getKind() == VARIABLE {
 				dataMemberSizes = dataMemberSizes + size
@@ -1107,6 +1109,7 @@ func (v *typeCheckVisitor) visitReturn(n *returnNode) {
 			saveError(n.getLineNumber(), "ERROR:wrong return type:%d")
 			return
 		}
+
 		return
 	}
 	if returnType == "void" {

@@ -1,7 +1,46 @@
-function main()=>void{
-localvar anObject:A;
-read(anObject.wordvar);
+function main(y:integer[10])=>integer{
+  localvar z:integer;
+  localvar abc:integer[5][2];
+  localvar pbc:integer[1];
+  return(0);
 }
+
+/*class human isa person{
+ public attribute house:integer[2][3];
+  public attribute housea:integer[2][3];
+   public attribute houseb:integer[2][3];
+ 	public constructor: (A: integer, B: integer);
+  public function evaluate: (x: integer) => integer;  
+};
+class person{
+   public attribute abode:integer;
+   public function reason: (x: integer) => animal;  
+};
+function human::constructor(A: integer, B: integer)
+  {
+    localvar new_function : human;
+    return (new_function);
+  }
+  function human::evaluate(x:integer) =>integer
+  {
+    localvar p: integer;
+    localvar y: integer;
+    localvar z: integer;
+    z=x+y+1;
+    return (z);
+  }
+   function person::reason(x:integer) =>animal
+  {
+    localvar p: integer;
+    localvar y: integer;
+    localvar z: integer;
+    z=x+y+1;
+    localvar an:animal;
+    return (an);
+  }
+  class animal{
+     public attribute abode:integer[1][3];
+  };*/
 
 /*class human{
   attribute b:car;
@@ -15,7 +54,7 @@ class plane{
 };*/
 
 
-class F{
+/*class F{
  public attribute wordvar:integer;
 };
 
@@ -41,7 +80,7 @@ class E isa r{
 
 class r{
 
-};
+};*/
 /*
 function side(io:integer)=>void{
   localvar n: integer;

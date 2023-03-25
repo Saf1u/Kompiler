@@ -1,37 +1,15 @@
-[function, function, 1][id, main, 1][lpar, (, 1][rpar, ), 1][arrow, =>, 1][void, void, 1][lcurbr, {, 1]
-[localvar, localvar, 2][id, anObject, 2][colon, :, 2][id, A, 2][semi, ;, 2]
-[read, read, 3][lpar, (, 3][id, anObject, 3][dot, ., 3][id, wordvar, 3][rpar, ), 3][semi, ;, 3]
-[rcurbr, }, 4]
+[function, function, 1][id, main, 1][lpar, (, 1][id, y, 1][colon, :, 1][integer, integer, 1][lsqbr, [, 1][intlit, 10, 1][rsqbr, ], 1][rpar, ), 1][arrow, =>, 1][integer, integer, 1][lcurbr, {, 1]
+[localvar, localvar, 2][id, z, 2][colon, :, 2][integer, integer, 2][semi, ;, 2]
+[localvar, localvar, 3][id, abc, 3][colon, :, 3][integer, integer, 3][lsqbr, [, 3][intlit, 5, 3][rsqbr, ], 3][lsqbr, [, 3][intlit, 2, 3][rsqbr, ], 3][semi, ;, 3]
+[localvar, localvar, 4][id, pbc, 4][colon, :, 4][integer, integer, 4][lsqbr, [, 4][intlit, 1, 4][rsqbr, ], 4][semi, ;, 4]
+[return, return, 5][lpar, (, 5][intlit, 0, 5][rpar, ), 5][semi, ;, 5]
+[rcurbr, }, 6]
 
-[blockcmt, /*class human{\n  attribute b:car;\n};\nclass car{\n  attribute c:plane[22];\n};\n\nclass plane{\n    attribute e:integer;\n};*/, 15]
+[blockcmt, /*class human isa person{\n public attribute house:integer[2][3];\n  public attribute housea:integer[2][3];\n   public attribute houseb:integer[2][3];\n 	public constructor: (A: integer, B: integer);\n  public function evaluate: (x: integer) => integer;  \n};\nclass person{\n   public attribute abode:integer;\n   public function reason: (x: integer) => animal;  \n};\nfunction human::constructor(A: integer, B: integer)\n  {\n    localvar new_function : human;\n    return (new_function);\n  }\n  function human::evaluate(x:integer) =>integer\n  {\n    localvar p: integer;\n    localvar y: integer;\n    localvar z: integer;\n    z=x+y+1;\n    return (z);\n  }\n   function person::reason(x:integer) =>animal\n  {\n    localvar p: integer;\n    localvar y: integer;\n    localvar z: integer;\n    z=x+y+1;\n    localvar an:animal;\n    return (an);\n  }\n  class animal{\n     public attribute abode:integer[1][3];\n  };*/, 43]
+
+[blockcmt, /*class human{\n  attribute b:car;\n};\nclass car{\n  attribute c:plane[22];\n};\n\nclass plane{\n    attribute e:integer;\n};*/, 54]
 
 
-[class, class, 18][id, F, 18][lcurbr, {, 18]
-[public, public, 19][attribute, attribute, 19][id, wordvar, 19][colon, :, 19][integer, integer, 19][semi, ;, 19]
-[rcurbr, }, 20][semi, ;, 20]
-
-[class, class, 22][id, D, 22][lcurbr, {, 22]
-[public, public, 23][attribute, attribute, 23][id, var, 23][colon, :, 23][integer, integer, 23][semi, ;, 23]
-[public, public, 24][attribute, attribute, 24][id, ane, 24][colon, :, 24][id, E, 24][semi, ;, 24]
-[public, public, 25][attribute, attribute, 25][id, varnew, 25][colon, :, 25][integer, integer, 25][lsqbr, [, 25][intlit, 2, 25][rsqbr, ], 25][lsqbr, [, 25][intlit, 3, 25][rsqbr, ], 25][semi, ;, 25]
-[rcurbr, }, 26][semi, ;, 26]
-[class, class, 27][id, C, 27][isa, isa, 27][id, D, 27][comma, ,, 27][id, F, 27][lcurbr, {, 27]
-[public, public, 28][attribute, attribute, 28][id, op, 28][colon, :, 28][integer, integer, 28][semi, ;, 28]
-[public, public, 29][attribute, attribute, 29][id, nop, 29][colon, :, 29][integer, integer, 29][semi, ;, 29]
-[rcurbr, }, 30][semi, ;, 30]
-
-[class, class, 32][id, A, 32][isa, isa, 32][id, C, 32][lcurbr, {, 32]
-[public, public, 33][attribute, attribute, 33][id, x, 33][colon, :, 33][integer, integer, 33][semi, ;, 33]
-[public, public, 34][attribute, attribute, 34][id, accessible, 34][colon, :, 34][integer, integer, 34][semi, ;, 34]
-[rcurbr, }, 35][semi, ;, 35]
-
-[class, class, 37][id, E, 37][isa, isa, 37][id, r, 37][lcurbr, {, 37]
-[private, private, 38][attribute, attribute, 38][id, memb, 38][colon, :, 38][integer, integer, 38][semi, ;, 38]
-[private, private, 39][attribute, attribute, 39][id, memc, 39][colon, :, 39][integer, integer, 39][lsqbr, [, 39][intlit, 11, 39][rsqbr, ], 39][lsqbr, [, 39][intlit, 11, 39][rsqbr, ], 39][semi, ;, 39]
-[rcurbr, }, 40][semi, ;, 40]
-
-[class, class, 42][id, r, 42][lcurbr, {, 42]
-
-[rcurbr, }, 44][semi, ;, 44]
-[blockcmt, /*\nfunction side(io:integer)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n  localvar z: integer[10];\n  localvar x: integer[2][3][3];\n  localvar y: integer;\n  n=(x[2][3][34]*y)+z[7]+1*3*300+2;\n\n \n}\nfunction side(io:float)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n  localvar z: integer[10];\n  localvar x: integer[2][3][3];\n  localvar y: integer;\n  n=(x[2][3][34]*y)+z[7]+1*3*300+2;\n\n \n}\nfunction side(io:float,z:integer)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n\n}\nfunction E::evaluate(x: float) => float\n  {\n     localvar n: integer;\n  localvar p:E[10];\n    return (0);\n  }\n  function E::evaluate(x: integer) => float\n  {\n     localvar n: integer;\n  localvar p:E[10];\n    return (0);\n  }*/, 82]
+[blockcmt, /*class F{\n public attribute wordvar:integer;\n};\n\nclass D {\n      public attribute var:integer;\n       public attribute ane:E;\n      public attribute varnew:integer[2][3];\n};\nclass C isa D,F{\n    public attribute op:integer;\n    public attribute nop:integer;\n};\n\nclass A isa C{\npublic attribute x:integer;\npublic attribute accessible:integer;\n};\n\nclass E isa r{\n    private attribute memb:integer;\n    private attribute memc:integer[11][11];\n};\n\nclass r{\n\n};*/, 83]
+[blockcmt, /*\nfunction side(io:integer)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n  localvar z: integer[10];\n  localvar x: integer[2][3][3];\n  localvar y: integer;\n  n=(x[2][3][34]*y)+z[7]+1*3*300+2;\n\n \n}\nfunction side(io:float)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n  localvar z: integer[10];\n  localvar x: integer[2][3][3];\n  localvar y: integer;\n  n=(x[2][3][34]*y)+z[7]+1*3*300+2;\n\n \n}\nfunction side(io:float,z:integer)=>void{\n  localvar n: integer;\n  localvar p:E[10];\n\n}\nfunction E::evaluate(x: float) => float\n  {\n     localvar n: integer;\n  localvar p:E[10];\n    return (0);\n  }\n  function E::evaluate(x: integer) => float\n  {\n     localvar n: integer;\n  localvar p:E[10];\n    return (0);\n  }*/, 121]
 

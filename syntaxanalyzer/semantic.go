@@ -944,6 +944,21 @@ func (s *symbolTable) addRecord(record *symbolTableRecord) {
 	s.keys = append(s.keys, key)
 
 }
+func (s *symbolTable) addtoStart(record *symbolTableRecord) {
+	concType := ""
+	typeInfo := record.getType()
+	if typeInfo != nil {
+		concType = typeInfo.typeInfo
+	}
+	if record.kind != FUNCDECL && record.kind != FUNCDEF {
+		concType = ""
+	}
+	params := strings.Split(concType, ":")
+	key := fmt.Sprint(record.name, "|", record.kind, "|", params[1:])
+	s.records[key] = record
+	s.keys = append([]string{key}, s.keys...)
+
+}
 func (s *symbolTable) exist(name string, kind string, typeInfo *typeRecord) bool {
 	concType := ""
 	if typeInfo != nil {

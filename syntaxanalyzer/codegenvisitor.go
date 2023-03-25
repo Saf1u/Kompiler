@@ -2,7 +2,6 @@ package syntaxanalyzer
 
 import (
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -634,51 +633,51 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 
 }
 
-func (v *codeGenVisitor) visitDot(n *dotNode) {
-	tagleft := ""
-	switch n.getLeftMostChild().(type) {
-	case *varNode:
-		id := n.getLeftMostChild().getTable().getSingleEntry().getName()
-		entry := v.functionScopelink.getEntry(
-			map[int]interface{}{
-				FILTER_KIND: VARIABLE,
-				FILTER_NAME: id,
-			},
-		)
-		if entry == nil {
-			tagleft = "nonesenseTag"
-		} else {
-			tagleft = entry.getTag()
-		}
+// func (v *codeGenVisitor) visitDot(n *dotNode) {
+// 	tagleft := ""
+// 	switch n.getLeftMostChild().(type) {
+// 	case *varNode:
+// 		id := n.getLeftMostChild().getTable().getSingleEntry().getName()
+// 		entry := v.functionScopelink.getEntry(
+// 			map[int]interface{}{
+// 				FILTER_KIND: VARIABLE,
+// 				FILTER_NAME: id,
+// 			},
+// 		)
+// 		if entry == nil {
+// 			tagleft = "nonesenseTag"
+// 		} else {
+// 			tagleft = entry.getTag()
+// 		}
 
-	default:
-		panic("never happen")
+// 	default:
+// 		panic("never happen")
 
-	}
-	mytag, _, err := getSomeTag(n.getTable())
-	if err != nil {
-		panic(err)
-	}
-	writeToCode("%begin dot offsetting\n")
-	switch n.getParent().(type) {
-	case *varNode:
-		typeInfo := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
-		id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
-		class := v.getGlobalTable().getEntry(map[int]interface{}{
-			FILTER_KIND: CLASS,
-			FILTER_NAME: typeInfo,
-		})
-		if class == nil {
-			fmt.Println("how?")
-			os.Exit(1)
-		}
-		_, offset, found := recursivelySearchForIdWithOffset(class.getLink(), id)
-		fmt.Println(-offset)
-		fmt.Println(found)
-	}
-	writeToCode("%end dot offsetting\n")
+// 	}
+// 	mytag, _, err := getSomeTag(n.getTable())
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	writeToCode("%begin dot offsetting\n")
+// 	switch n.getParent().(type) {
+// 	case *varNode:
+// 		typeInfo := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+// 		id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
+// 		class := v.getGlobalTable().getEntry(map[int]interface{}{
+// 			FILTER_KIND: CLASS,
+// 			FILTER_NAME: typeInfo,
+// 		})
+// 		if class == nil {
+// 			fmt.Println("how?")
+// 			os.Exit(1)
+// 		}
+// 		_, offset, found := recursivelySearchForIdWithOffset(class.getLink(), id)
+// 		fmt.Println(-offset)
+// 		fmt.Println(found)
+// 	}
+// 	writeToCode("%end dot offsetting\n")
 
-}
+// }
 
 func recursivelySearchForIdWithOffset(classTable *symbolTable, identifier string) (*symbolTableRecord, int, bool) {
 	record := classTable.getEntry(
