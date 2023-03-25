@@ -177,20 +177,6 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 }
 
 func (v *memAllocVisitor) visitProgram(n *program) {
-	// definitions := v.getGlobalTable().getEntries(
-	// 	map[int]interface{}{
-	// 		FILTER_KIND: FUNCDEF,
-	// 	},
-	// )
-	//for _, definition := range definitions {
-	// records := definition.getLink().getRecords()
-	// for _, record := range records {
-	// 	if record.getKind() != "parameter" {
-	// 		tag := strings.TrimSpace(record.getTag())
-	// 		writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res", record.getSize()))
-	// 	}
-	// }
-	//}
 	writeToData(fmt.Sprintf("%-20s %-7s %d\n", PRINT_BUFFER, "res", 200))
 	//200 CHAR BUFFER
 	writeToData(fmt.Sprintf("%-20s %-7s %d\n", STACK_BASE, "res", 2048))

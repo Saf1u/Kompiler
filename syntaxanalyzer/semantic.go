@@ -1207,16 +1207,7 @@ type program struct {
 }
 
 func (i *program) Accept(v visitor) {
-	switch v.(type) {
-	case *codeGenVisitor:
-		writeToCode("entry\n")
-		writeToCode("muli r0,r0,0\n")
-		writeToCode("muli r14,r0,0\n")
-		writeToCode(fmt.Sprintf("addi r14,r0,%s\n", STACK_BASE))
-		writeToCode("%r14 is stack ptr, stack grows downwards or upwards\n")
-		//writeToCode(fmt.Sprintf("addi r14,r14,%s\n", "2048"))
-		writeToCode("%24kb stack\n")
-	}
+
 	n := i.getLeftMostChild()
 	for n != nil {
 		n.Accept(v)
@@ -1480,6 +1471,16 @@ type programBlockNode struct {
 }
 
 func (i *programBlockNode) Accept(v visitor) {
+	switch v.(type) {
+	case *codeGenVisitor:
+		writeToCode("entry\n")
+		writeToCode("muli r0,r0,0\n")
+		writeToCode("muli r14,r0,0\n")
+		writeToCode(fmt.Sprintf("addi r14,r0,%s\n", STACK_BASE))
+		writeToCode("%r14 is stack ptr, stack grows downwards or upwards\n")
+		//writeToCode(fmt.Sprintf("addi r14,r14,%s\n", "2048"))
+		writeToCode("%24kb stack\n")
+	}
 	n := i.getLeftMostChild()
 	for n != nil {
 		n.Accept(v)

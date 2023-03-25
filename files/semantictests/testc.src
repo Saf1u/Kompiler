@@ -1,7 +1,7 @@
 function main(y:integer[10])=>integer{
   localvar p:integer[5][5][3][1];
   localvar z:integer;
-  z=1;
+  /*z=1;
   write(z);
   z=((1+93+1+10+9+(33+2*2)*(60/3))/2)+(1*4/2+9)+(100*5);
   write(z);
@@ -16,14 +16,26 @@ function main(y:integer[10])=>integer{
   write(0);
   write(p[1][0][1][0]);
   z=1 or 1;
-  z=1;
+  z=1;*/
   localvar x:integer;
+  localvar j:integer;
   x=0;
-  while(z<12){
-    x=x+z;
+  z=1;
+  while(z<50){
     z=z+1;
+    if(z<=20)then{
+      write(200);
+    }else{
+   if (z==50)then
+   write(5000);else{
+    j=10;
+    while(j<>100){
+      write(j);
+      j=j+10;
+    };
+   };
+    };
   };
-  write(x);
 }
 
 /*class human isa person{
