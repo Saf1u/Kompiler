@@ -16,7 +16,7 @@ function main(y:integer[10])=>integer{
   write(0);
   write(p[1][0][1][0]);
   z=1 or 1;
-  z=not 0;
+  z=5>2;
   write(z);
 }
 

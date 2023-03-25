@@ -663,40 +663,42 @@ addi r12,r9,348
 sw 660(r14),r12
 % end var offset calculation
 % begin intlit storeage
-addi r12,r0,0
+addi r12,r0,5
 sw 664(r14), r12
 % done intlit storeage
-% begin not op 
+% begin intlit storeage
+addi r12,r0,2
+sw 668(r14), r12
+% done intlit storeage
+% begin RELOP op 
 lw r12,664(r14)
-bnz r12,zero1
-addi r12,r0,1
-sw 668(r14),r12
-j endnot1
-zero1 sw 668(r14),r0
-endnot1% end not op 
-% begin assignment 
 lw r9,668(r14)
-lw r12,660(r14) 
-sw 0(r12),r9
+cgt r11,r12,r9
+sw 672(r14),r11
+% end relop op 
+% begin assignment 
+lw r10,672(r14)
+lw r11,660(r14) 
+sw 0(r11),r10
 % end assignment 
 % begin generating indice offseting
-addi r11,r0,0
+addi r9,r0,0
 % done generating indice offseting
 % begin var offset calculation
-addi r12,r11,348
-sw 672(r14),r12
+addi r11,r9,348
+sw 676(r14),r11
 % end var offset calculation
 % begin write 
-lw r12,672(r14)
-lw r12,0(r12)
-sw -8(r14),r12
-addi r12,r0,buffer
-sw -12(r14),r12
+lw r11,676(r14)
+lw r11,0(r11)
+sw -8(r14),r11
+addi r11,r0,buffer
+sw -12(r14),r11
 jl r15,intstr
 sw -8(r14),r13
 jl r15,putstr
-addi r12,r0,newline
-sw -8(r14),r12
+addi r11,r0,newline
+sw -8(r14),r11
 jl r15,putstr
 % end write
 hlt

@@ -777,7 +777,7 @@ func (v *typeCheckVisitor) visitRelOp(n *relOpNode) {
 		return
 
 	}
-
+	n.getTable().addRecord(newRecord("", "", "", n.getLineNumber(), newTypeRecord(leftOp.getType().String()), nil))
 }
 func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 	paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()

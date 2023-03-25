@@ -16,7 +16,7 @@
 [write, write, 16][lpar, (, 16][intlit, 0, 16][rpar, ), 16][semi, ;, 16]
 [write, write, 17][lpar, (, 17][id, p, 17][lsqbr, [, 17][intlit, 1, 17][rsqbr, ], 17][lsqbr, [, 17][intlit, 0, 17][rsqbr, ], 17][lsqbr, [, 17][intlit, 1, 17][rsqbr, ], 17][lsqbr, [, 17][intlit, 0, 17][rsqbr, ], 17][rpar, ), 17][semi, ;, 17]
 [id, z, 18][equal, =, 18][intlit, 1, 18][or, or, 18][intlit, 1, 18][semi, ;, 18]
-[id, z, 19][equal, =, 19][not, not, 19][intlit, 0, 19][semi, ;, 19]
+[id, z, 19][equal, =, 19][intlit, 5, 19][gt, >, 19][intlit, 2, 19][semi, ;, 19]
 [write, write, 20][lpar, (, 20][id, z, 20][rpar, ), 20][semi, ;, 20]
 [rcurbr, }, 21]
 
