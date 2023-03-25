@@ -1337,7 +1337,7 @@ func (i *ifStatementNode) Accept(v visitor) {
 		case *codeGenVisitor:
 			switch n.(type) {
 			case *relOpNode:
-				_, _, tagOffsetSize, _, err = getSomeTag(n.getTable())
+				_, _, tagOffsetSize, _, _, err = getSomeTag(n.getTable())
 				if err != nil {
 					panic(err)
 				}
@@ -1391,7 +1391,7 @@ func (i *whileStatementNode) Accept(v visitor) {
 			case *relOpNode:
 				writeToCode(goWhileTag)
 				writeToCode("\n")
-				_, _, tagOffsetSize, _, err = getSomeTag(n.getTable())
+				_, _, tagOffsetSize, _, _, err = getSomeTag(n.getTable())
 				if err != nil {
 					panic(err)
 				}

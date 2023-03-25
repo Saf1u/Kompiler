@@ -37,6 +37,9 @@ function main(y:integer[10])=>integer{
     };
   };
 }
+class man{
+private attribute age:integer;
+};
 
 /*class human isa person{
  public attribute house:integer[2][3];

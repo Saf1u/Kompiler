@@ -40,15 +40,15 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 	default:
 	}
 	writeToCode("% begin add op \n")
-	_, typeLeftTag, offsetTagLeftStack, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	_, typeLeftTag, offsetTagLeftStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
-	_, typeRightTag, offsetTagRightStack, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	_, typeRightTag, offsetTagRightStack, _, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
 		panic(err)
 	}
-	_, _, offsetSelfStack, _, err := getSomeTag(n.getTable())
+	_, _, offsetSelfStack, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -112,11 +112,11 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 
 func (v *codeGenVisitor) visitNot(n *notNode) {
 	writeToCode("% begin not op \n")
-	_, tagType, tagOffset, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	_, tagType, tagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
-	_, _, selfTagOffset, _, err := getSomeTag(n.getTable())
+	_, _, selfTagOffset, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -160,12 +160,12 @@ func (v *codeGenVisitor) visitSign(n *signNode) {
 	default:
 	}
 	writeToCode("% begin sign op \n")
-	_, typeTag, tagOffset, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	_, typeTag, tagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
 
-	_, _, selfTagOffset, _, err := getSomeTag(n.getTable())
+	_, _, selfTagOffset, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -213,15 +213,15 @@ func (v *codeGenVisitor) visitMult(n *multNode) {
 	default:
 	}
 	writeToCode("% begin mult op \n")
-	_, typeLeftTag, offsetTagLeftStack, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	_, typeLeftTag, offsetTagLeftStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
-	_, typeRightTag, offsetTagRightStack, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	_, typeRightTag, offsetTagRightStack, _, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
 		panic(err)
 	}
-	_, _, offsetSelfStack, _, err := getSomeTag(n.getTable())
+	_, _, offsetSelfStack, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -299,15 +299,15 @@ func (v *codeGenVisitor) visitRelOp(n *relOpNode) {
 	default:
 	}
 	writeToCode("% begin RELOP op \n")
-	_, typeLeftTag, tagLeftOffset, _, err  := getSomeTag(n.getLeftMostChild().getTable())
+	_, typeLeftTag, tagLeftOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
-	_, typeRightTag, tagRightOffset, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	_, typeRightTag, tagRightOffset, _, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
 		panic(err)
 	}
-	_, _, selfTagOffset, _, err := getSomeTag(n.getTable())
+	_, _, selfTagOffset, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -358,7 +358,7 @@ func (v *codeGenVisitor) visitRelOp(n *relOpNode) {
 
 }
 func (v *codeGenVisitor) visitIntlit(n *intLitNode) {
-	_, _, offsetTagStack, _, err := getSomeTag(n.getTable())
+	_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
 		panic("shouldnt happen")
 	}
@@ -432,7 +432,7 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 		switch indiceIterator.(type) {
 		case *epsilonNode:
 		default:
-			_, _, tagOffsetSize, _, err := getSomeTag(indiceIterator.getTable())
+			_, _, tagOffsetSize, _, _, err := getSomeTag(indiceIterator.getTable())
 			if err != nil {
 				panic(err)
 			}
@@ -492,11 +492,11 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 }
 func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	writeToCode("% begin assignment \n")
-	_, _, offsetTagLeftStack, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	_, _, offsetTagLeftStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
-	_, tagType, offsetTagRightStack, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	_, tagType, offsetTagRightStack, _, conType, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -512,22 +512,61 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	if err != nil {
 		panic(err)
 	}
-
-	// 	% begin assignment
-	// lw r11,literal0(r0)
-	// sw offset0(r0),r11
-	//lw r12,offset2(r0)
-	code := ""
-	if tagType == TEMP_OFFSET {
-		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), offsetTagRightStack))
-		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", register.String(), ptrReg.String()))
-	} else {
-		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", register.String(), offsetTagRightStack))
+	copyReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
 	}
-	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14) \nsw 0(%s),%s\n", registerb.String(), offsetTagLeftStack, registerb.String(), register.String()))
+	indexReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	branchReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	conType = getBaseType(conType)
+	size, err := sizeOf(conType)
+	if err != nil {
+		panic(err)
+	}
+	beginCopyTag := generateNamedTag("beginCopy") + "\n"
+	endCopyTag := generateNamedTag("endCopy") + "\n"
+
+	code := ""
+
+	code = fmt.Sprint(code, "%check if size is zero if yes, leave\n")
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,%d\n", branchReg.String(), size))
+	code = fmt.Sprint(code, fmt.Sprintf("bz %s,%s\n", branchReg.String(), endCopyTag))
+	code = fmt.Sprint(code, "%set left and right ptrs\n")
+	if tagType == TEMP_OFFSET {
+		code = fmt.Sprint(code, "%set ptr\n")
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), offsetTagRightStack))
+	} else {
+		code = fmt.Sprint(code, "%read direct value address\n")
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r0,r14\n", ptrReg.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,%d\n", ptrReg.String(), ptrReg.String(), offsetTagRightStack))
+	}
+	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", registerb.String(), offsetTagLeftStack))
+	code = fmt.Sprint(code, "%set position counter\n")
+	code = fmt.Sprint(code, fmt.Sprintf("mul %s,r0,r0\n", indexReg.String()))
+	code = fmt.Sprint(code, beginCopyTag)
+	code = fmt.Sprint(code, "%move data via register\n")
+	code = fmt.Sprint(code, fmt.Sprintf("lb %s,0(%s)\n", copyReg.String(), ptrReg.String()))
+	code = fmt.Sprint(code, fmt.Sprintf("sb 0(%s),%s\n", registerb.String(), copyReg.String()))
+	code = fmt.Sprint(code, "%increment registers\n")
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,1\n", ptrReg.String(), ptrReg))
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,1\n", registerb.String(), registerb))
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,1\n", indexReg.String(), indexReg))
+	code = fmt.Sprint(code, "%branch out if done\n")
+	code = fmt.Sprint(code, fmt.Sprintf("subi %s,%s,%d\n", branchReg.String(), indexReg.String(), size))
+	code = fmt.Sprint(code, fmt.Sprintf("bnz %s,%s\n", branchReg.String(), beginCopyTag))
+	code = fmt.Sprint(code, endCopyTag)
 	globalregisterPool.Put(register)
 	globalregisterPool.Put(registerb)
 	globalregisterPool.Put(ptrReg)
+	globalregisterPool.Put(copyReg)
+	globalregisterPool.Put(branchReg)
+	globalregisterPool.Put(indexReg)
 	writeToCode(code)
 	writeToCode("% end assignment \n")
 
@@ -552,14 +591,14 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 		}
 
 	default:
-		_, _, t, _, err := getSomeTag(n.getLeftMostChild().getTable())
+		_, _, t, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 		if err != nil {
 			panic(err)
 		}
 		tagleftOffsetSize = t
 
 	}
-	_, _, varTagOffsetSize, _, err := getSomeTag(n.getTable())
+	_, _, varTagOffsetSize, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
 		panic(err)
 	}
@@ -577,15 +616,17 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 	writeToCode("% end var offset calculation\n")
 }
 
-func getSomeTag(table *symbolTable) (tagname string, tagType string, tagOffset int, tagSize int, err error) {
+func getSomeTag(table *symbolTable) (tagname string, tagType string, tagOffset int, tagSize int, concType string, err error) {
 	var tagRecord *symbolTableRecord
 	typeInfo := ""
 	offset := 0
 	size := 0
+	concreteType := ""
 	tagRecord = table.getEntry(map[int]interface{}{FILTER_KIND: TEMP_VAR})
 	if tagRecord != nil {
 		offset = tagRecord.getOffset()
 		size = tagRecord.getSize()
+		concreteType = tagRecord.getType().String()
 	}
 	typeInfo = TEMP_VAR
 	if tagRecord == nil {
@@ -594,6 +635,7 @@ func getSomeTag(table *symbolTable) (tagname string, tagType string, tagOffset i
 		if tagRecord != nil {
 			offset = tagRecord.getOffset()
 			size = tagRecord.getSize()
+			concreteType = tagRecord.getType().String()
 		}
 	}
 	if tagRecord == nil {
@@ -602,20 +644,21 @@ func getSomeTag(table *symbolTable) (tagname string, tagType string, tagOffset i
 		if tagRecord != nil {
 			offset = tagRecord.getOffset()
 			size = tagRecord.getSize()
+			concreteType = tagRecord.getType().String()
 		}
 
 	}
 	if tagRecord == nil {
-		return "", "", 0, 0, fmt.Errorf("must contain something")
+		return "", "", 0, 0, "", fmt.Errorf("must contain something")
 	}
 	//fmt.Println(tagRecord.getName(), " ", tagRecord.getTag(), " ", tagRecord.getOffset(), " ", tagRecord.getSize())
-	return tagRecord.getTag(), typeInfo, offset, size, nil
+	return tagRecord.getTag(), typeInfo, offset, size, concreteType, nil
 
 }
 
 func (v *codeGenVisitor) visitWrite(n *writeNode) {
 	writeToCode("% begin write \n")
-	_, tagType, offsetTagStack, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	_, tagType, offsetTagStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		panic(err)
 	}
