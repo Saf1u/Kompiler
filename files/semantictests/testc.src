@@ -16,8 +16,14 @@ function main(y:integer[10])=>integer{
   write(0);
   write(p[1][0][1][0]);
   z=1 or 1;
-  z=5>2;
-  write(z);
+  z=1;
+  localvar x:integer;
+  x=0;
+  while(z<12){
+    x=x+z;
+    z=z+1;
+  };
+  write(x);
 }
 
 /*class human isa person{
