@@ -1213,8 +1213,8 @@ func (i *program) Accept(v visitor) {
 		writeToCode("muli r0,r0,0\n")
 		writeToCode("muli r14,r0,0\n")
 		writeToCode(fmt.Sprintf("addi r14,r0,%s\n", STACK_BASE))
-		writeToCode("%r14 is stack ptr, stack grows downwards\n")
-		writeToCode(fmt.Sprintf("addi r14,r14,%s\n", "2048"))
+		writeToCode("%r14 is stack ptr, stack grows downwards or upwards\n")
+		//writeToCode(fmt.Sprintf("addi r14,r14,%s\n", "2048"))
 		writeToCode("%24kb stack\n")
 	}
 	n := i.getLeftMostChild()
@@ -1326,7 +1326,7 @@ type ifStatementNode struct {
 
 func (i *ifStatementNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
-	tag := ""
+	tagOffsetSize := 0
 	var elseTag string
 	var endIfTag string
 	var reg register
@@ -1346,13 +1346,13 @@ func (i *ifStatementNode) Accept(v visitor) {
 		case *codeGenVisitor:
 			switch n.(type) {
 			case *relOpNode:
-				tag, _, err = getSomeTag(n.getTable())
+				_, _, tagOffsetSize, _, err = getSomeTag(n.getTable())
 				if err != nil {
 					panic(err)
 				}
 			case *statBlockNode:
 				if n.getRightSibling() != nil {
-					code := fmt.Sprintf("lw %s,%s(r0)\nbz %s,%s\n", reg.String(), tag, reg.String(), elseTag)
+					code := fmt.Sprintf("lw %s,%d(r14)\nbz %s,%s\n", reg.String(), tagOffsetSize, reg.String(), elseTag)
 					writeToCode(code)
 				} else {
 					code := fmt.Sprintf("j %s\n%s\n", endIfTag, elseTag)
@@ -1378,7 +1378,7 @@ type whileStatementNode struct {
 
 func (i *whileStatementNode) Accept(v visitor) {
 	n := i.getLeftMostChild()
-	tag := ""
+	tagOffsetSize := 0
 	var goWhileTag string
 	var endWhileTag string
 	var reg register
@@ -1400,13 +1400,13 @@ func (i *whileStatementNode) Accept(v visitor) {
 			case *relOpNode:
 				writeToCode(goWhileTag)
 				writeToCode("\n")
-				tag, _, err = getSomeTag(n.getTable())
+				_, _, tagOffsetSize, _, err = getSomeTag(n.getTable())
 				if err != nil {
 					panic(err)
 				}
 				n.Accept(v)
 			case *statBlockNode:
-				code := fmt.Sprintf("lw %s,%s(r0)\nbz %s,%s\n", reg.String(), tag, reg.String(), endWhileTag)
+				code := fmt.Sprintf("lw %s,%d(r14)\nbz %s,%s\n", reg.String(), tagOffsetSize, reg.String(), endWhileTag)
 				writeToCode(code)
 				n.Accept(v)
 				code = fmt.Sprintf("j %s\n%s\n", goWhileTag, endWhileTag)

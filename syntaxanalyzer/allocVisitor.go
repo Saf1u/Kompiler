@@ -177,24 +177,25 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 }
 
 func (v *memAllocVisitor) visitProgram(n *program) {
-	definitions := v.getGlobalTable().getEntries(
-		map[int]interface{}{
-			FILTER_KIND: FUNCDEF,
-		},
-	)
-	for _, definition := range definitions {
-		records := definition.getLink().getRecords()
-		for _, record := range records {
-			if record.getKind() != "parameter" {
-				tag := strings.TrimSpace(record.getTag())
-				writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res", record.getSize()))
-			}
-		}
-	}
+	// definitions := v.getGlobalTable().getEntries(
+	// 	map[int]interface{}{
+	// 		FILTER_KIND: FUNCDEF,
+	// 	},
+	// )
+	//for _, definition := range definitions {
+	// records := definition.getLink().getRecords()
+	// for _, record := range records {
+	// 	if record.getKind() != "parameter" {
+	// 		tag := strings.TrimSpace(record.getTag())
+	// 		writeToData(fmt.Sprintf("%-20s %-7s %d\n", tag, "res", record.getSize()))
+	// 	}
+	// }
+	//}
 	writeToData(fmt.Sprintf("%-20s %-7s %d\n", PRINT_BUFFER, "res", 200))
 	//200 CHAR BUFFER
 	writeToData(fmt.Sprintf("%-20s %-7s %d\n", STACK_BASE, "res", 2048))
 	writeToData(fmt.Sprintf("%-20s %-7s %s,%d,%d,%d\n", "newline", "db", "", 13, 10, 0))
+	writeToData("align\n")
 
 	//2KB STACK
 
@@ -283,7 +284,9 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 		regTag := generateNamedTag("returnAddress")
 		recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(retType), nil)
 		recordA.setSize(size)
+		recordA.setTag(tag)
 		regToJumpTo := newRecord(regTag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord("ptr"), nil)
+		regToJumpTo.setTag(regTag)
 		ptrSize, err := sizeOf("ptr")
 		if err != nil {
 			panic(err)
@@ -292,6 +295,7 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 			selfRef := generateNamedTag("self")
 			self := newRecord(selfRef, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(className), nil)
 			ptrSize, _ := sizeOf("ptr")
+			self.setTag(selfRef)
 			self.setSize(ptrSize)
 			v.functionScopelink.addtoStart(self)
 		}
