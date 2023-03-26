@@ -356,9 +356,14 @@ type visitor interface {
 	propagateId(string)
 	propagateDestRegister(register)
 	getGlobalTable() *symbolTable
+	propagateOffset(int)
 }
 type defaultVisitor struct {
 	gloablTable *symbolTable
+}
+
+func (v *defaultVisitor) propagateOffset(r int) {
+
 }
 
 func (v *defaultVisitor) propagateDestRegister(r register) {

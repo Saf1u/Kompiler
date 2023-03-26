@@ -293,3 +293,37 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 	}
 
 }
+
+func (v *memAllocVisitor) visitFuncCall(n *functionCall) {
+	// tag := generateNamedTag("functioncall")
+	// paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()
+	// switch n.getLeftMostChild().(type) {
+	// case *idNode:
+	// 	id := fmt.Sprint(typeSepeator, n.getLeftMostChild().(*idNode).identifier)
+	// 	possibleFunction, returnType := searchForFunction(id, v.getGlobalTable(), paramterList, basicCompare)
+	// 	if possibleFunction == nil {
+	// 		possibleFunction, returnType = searchForFunction(id, v.getGlobalTable(), paramterList, matchVariableArraysCompare)
+	// 	}
+	// 	if possibleFunction == nil {
+	// 		recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+	// 		size, _ := sizeOf(TYPE_ERR)
+	// 		recordA.setSize(size)
+	// 		v.functionScopelink.addRecord(recordA)
+	// 		return
+
+	// 	}
+	// 	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(returnType), nil)
+	// 	baseType := getBaseType(returnType)
+	// 	size, err := sizeOf(baseType)
+	// 	if err != nil {
+	// 		size = 0
+	// 	}
+	// 	size = size * getDimensions(returnType)
+	// 	recordA.setSize(size)
+	// 	recordA.setTag(tag)
+	// 	v.functionScopelink.addRecord(recordA)
+	// 	n.getTable().addRecord(recordA)
+
+	// }
+
+}

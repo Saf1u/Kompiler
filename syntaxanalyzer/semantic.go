@@ -1453,9 +1453,25 @@ func (i *funcDefNode) Accept(v visitor) {
 		FILTER_LINK: scope,
 	})
 	v.propgateScopeLink(scope)
+	if entry != nil {
+		v.propagateOffset(entry.getOffset())
+	}
 	typeinfo := ""
+	name := ""
 	if entry != nil {
 		typeinfo = entry.String()
+		name = entry.getName()
+	}
+	name = strings.ReplaceAll(name, "|", "")
+	name = generateNamedTag("fn" + name)
+	switch v.(type) {
+	case *codeGenVisitor:
+		switch i.getParent().(type) {
+		case *programBlockNode:
+		default:
+			writeToCode("%funcdef begin\n")
+			writeToCode(name + "\n")
+		}
 	}
 	v.propagateScope(typeinfo)
 	n := i.getLeftMostChild()
