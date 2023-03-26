@@ -58,6 +58,7 @@ lw r8,20(r14)
 add r8,r14,r8
 lw r8,0(r8)
 %s move ptr to prevent mem corruption
+addi r14,r14,124
 sw -8(r14),r8
 addi r8,r0,buffer
 sw -12(r14),r8
@@ -68,6 +69,7 @@ addi r8,r0,newline
 sw -8(r14),r8
 jl r15,putstr
 %s move ptr to og location 
+addi r14,r14,-124
 % end write
 % begin generating indice offseting
 addi r8,r0,0
@@ -81,6 +83,7 @@ lw r9,24(r14)
 add r9,r14,r9
 lw r9,0(r9)
 %s move ptr to prevent mem corruption
+addi r14,r14,124
 sw -8(r14),r9
 addi r9,r0,buffer
 sw -12(r14),r9
@@ -91,6 +94,7 @@ addi r9,r0,newline
 sw -8(r14),r9
 jl r15,putstr
 %s move ptr to og location 
+addi r14,r14,-124
 % end write
 % begin generating indice offseting
 addi r9,r0,0
@@ -142,6 +146,7 @@ lw r11,36(r14)
 add r11,r14,r11
 lw r11,0(r11)
 %s move ptr to prevent mem corruption
+addi r14,r14,124
 sw -8(r14),r11
 addi r11,r0,buffer
 sw -12(r14),r11
@@ -152,6 +157,7 @@ addi r11,r0,newline
 sw -8(r14),r11
 jl r15,putstr
 %s move ptr to og location 
+addi r14,r14,-124
 % end write
 % begin generating indice offseting
 addi r11,r0,0
@@ -165,6 +171,7 @@ lw r12,40(r14)
 add r12,r14,r12
 lw r12,0(r12)
 %s move ptr to prevent mem corruption
+addi r14,r14,124
 sw -8(r14),r12
 addi r12,r0,buffer
 sw -12(r14),r12
@@ -175,5 +182,6 @@ addi r12,r0,newline
 sw -8(r14),r12
 jl r15,putstr
 %s move ptr to og location 
+addi r14,r14,-124
 % end write
 hlt

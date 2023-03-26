@@ -727,7 +727,7 @@ func getSomeTag(table *symbolTable) (tagname string, tagType string, tagOffset i
 }
 
 func (v *codeGenVisitor) visitWrite(n *writeNode) {
-	//combinedOffset := 80 + v.offset
+	combinedOffset := 80 + v.offset
 	writeToCode("% begin write \n")
 	_, tagType, offsetTagStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
@@ -747,7 +747,7 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", locReg.String(), offsetTagStack))
 	}
 	code = fmt.Sprint(code, "%s move ptr to prevent mem corruption\n")
-	//code = fmt.Sprint(code, fmt.Sprintf("addi r14,r0,%d\n", combinedOffset))
+	code = fmt.Sprint(code, fmt.Sprintf("addi r14,r14,%d\n", combinedOffset))
 	code = fmt.Sprint(code, fmt.Sprintf("sw -8(r14),%s\n", locReg.String()))
 	code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,%s\n", locReg.String(), PRINT_BUFFER))
 	code = fmt.Sprint(code, fmt.Sprintf("sw -12(r14),%s\n", locReg.String()))
@@ -759,7 +759,7 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 	code = fmt.Sprint(code, fmt.Sprintf("sw -8(r14),%s\n", locReg.String()))
 	code = fmt.Sprint(code, ("jl r15,putstr\n"))
 	code = fmt.Sprint(code, "%s move ptr to og location \n")
-	//code = fmt.Sprint(code, fmt.Sprintf("addi r14,r14,%d\n", -combinedOffset))
+	code = fmt.Sprint(code, fmt.Sprintf("addi r14,r14,%d\n", -combinedOffset))
 	writeToCode(code)
 	globalregisterPool.Put(locReg)
 	writeToCode("% end write\n")
