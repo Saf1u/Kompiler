@@ -1,10 +1,7 @@
 package syntaxanalyzer
 
 import (
-	"compiler/configmap"
 	"fmt"
-	"os"
-	"sort"
 	"strings"
 )
 
@@ -163,6 +160,7 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 				fmt.Println(name)
 				return
 			}
+			entry = v.functionScopelink.getEntry(map[int]interface{}{FILTER_KIND: "parameter", FILTER_NAME: name})
 		}
 		entry.setTag(tag)
 		baseType := getBaseType(typeInfo)
@@ -184,33 +182,6 @@ func (v *memAllocVisitor) visitProgram(n *program) {
 	writeToData("align\n")
 
 	//2KB STACK
-
-	file := configmap.Get("file").(string)
-	errorFile := fmt.Sprint(file, ".outsemanticerrors")
-	symbolTableFile := fmt.Sprint(file, ".symbolTable")
-	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
-	if err != nil {
-		panic(err)
-	}
-	symbolTable, err := os.OpenFile(symbolTableFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
-	if err != nil {
-		panic(err)
-	}
-	sort.Slice(indexes, func(i, j int) bool {
-		return indexes[i] < indexes[j]
-	})
-
-	for _, line := range indexes {
-		errors := errorBin[line]
-		for _, error := range errors {
-			errFile.WriteString(error)
-			errFile.WriteString("\n")
-		}
-	}
-	old := os.Stdout
-	os.Stdout = symbolTable
-	v.getGlobalTable().print(10)
-	os.Stdout = old
 }
 
 func (v *memAllocVisitor) visitFuncDef(n *funcDefNode) {

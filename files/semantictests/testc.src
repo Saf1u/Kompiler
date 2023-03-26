@@ -1,19 +1,24 @@
-function main(y:integer)=>void{
+function main(p:integer)=>void{
   localvar x:integer;
-  x=102;
+
+  x=1293;
   write(x);
   write(x);
+  p=3123;
+  write(p);
+  write(p);
+ 
 }
 /*function side(r:integer)=>man{
   localvar x:integer;
   x=123;
   write(x);
 }*/
-class man{
+/*class man{
 private attribute age:integer;
 private attribute ageb:integer;
 private attribute agec:integer;
-};
+};*/
 
 /*class human isa person{
  public attribute house:integer[2][3];

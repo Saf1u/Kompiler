@@ -1,7 +1,10 @@
 package syntaxanalyzer
 
 import (
+	"compiler/configmap"
 	"fmt"
+	"os"
+	"sort"
 	"strings"
 )
 
@@ -31,7 +34,32 @@ func (v *codeGenVisitor) propagateId(s string) {
 	v.varId = s
 }
 func (v *codeGenVisitor) visitProgram(n *program) {
+	file := configmap.Get("file").(string)
+	errorFile := fmt.Sprint(file, ".outsemanticerrors")
+	symbolTableFile := fmt.Sprint(file, ".symbolTable")
+	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	symbolTable, err := os.OpenFile(symbolTableFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	sort.Slice(indexes, func(i, j int) bool {
+		return indexes[i] < indexes[j]
+	})
 
+	for _, line := range indexes {
+		errors := errorBin[line]
+		for _, error := range errors {
+			errFile.WriteString(error)
+			errFile.WriteString("\n")
+		}
+	}
+	old := os.Stdout
+	os.Stdout = symbolTable
+	v.getGlobalTable().print(10)
+	os.Stdout = old
 }
 func (v *codeGenVisitor) visitAdd(n *addNode) {
 	op := ""
@@ -77,6 +105,7 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 	switch typeLeftTag {
 	case TEMP_OFFSET:
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), offsetTagLeftStack))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
 
 	default:
@@ -85,6 +114,7 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 	switch typeRightTag {
 	case TEMP_OFFSET:
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), offsetTagRightStack))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registerb.String(), ptrReg.String()))
 
 	default:
@@ -140,6 +170,7 @@ func (v *codeGenVisitor) visitNot(n *notNode) {
 	switch tagType {
 	case TEMP_OFFSET:
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), tagOffset))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
 
 	default:
@@ -191,6 +222,7 @@ func (v *codeGenVisitor) visitSign(n *signNode) {
 	switch typeTag {
 	case TEMP_OFFSET:
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), tagOffset))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
 
 	default:
@@ -250,6 +282,7 @@ func (v *codeGenVisitor) visitMult(n *multNode) {
 	switch typeLeftTag {
 	case TEMP_OFFSET:
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), offsetTagLeftStack))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
 
 	default:
@@ -258,6 +291,7 @@ func (v *codeGenVisitor) visitMult(n *multNode) {
 	switch typeRightTag {
 	case TEMP_OFFSET:
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), offsetTagRightStack))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registerb.String(), ptrReg.String()))
 
 	default:
@@ -336,6 +370,7 @@ func (v *codeGenVisitor) visitRelOp(n *relOpNode) {
 	switch typeLeftTag {
 	case TEMP_OFFSET:
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), tagLeftOffset))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registera.String(), ptrReg.String()))
 
 	default:
@@ -344,6 +379,7 @@ func (v *codeGenVisitor) visitRelOp(n *relOpNode) {
 	switch typeRightTag {
 	case TEMP_OFFSET:
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), tagRightOffset))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", registerb.String(), ptrReg.String()))
 
 	default:
@@ -381,6 +417,7 @@ func (v *codeGenVisitor) visitIntlit(n *intLitNode) {
 }
 
 func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
+	//writeToCode(fmt.Sprintf("addi %s,r0,0\n", v.destReg))
 	writeToCode("% begin generating indice offseting\n")
 
 	entry := v.functionScopelink.getEntry(
@@ -389,6 +426,15 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 			FILTER_NAME: v.varId,
 		},
 	)
+	if entry == nil {
+		entry = v.functionScopelink.getEntry(
+			map[int]interface{}{
+				FILTER_KIND: "parameter",
+				FILTER_NAME: v.varId,
+			},
+		)
+	}
+
 	if entry == nil {
 		switch n.getParent().getLeftMostChild().(type) {
 		case *idNode:
@@ -433,15 +479,17 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	}
 	indiceIterator := n.getLeftMostChild()
 	tags := []int{}
+	tagType := []string{}
 	for indiceIterator != nil {
 		switch indiceIterator.(type) {
 		case *epsilonNode:
 		default:
-			_, _, tagOffsetSize, _, _, err := getSomeTag(indiceIterator.getTable())
+			_, typeTag, tagOffsetSize, _, _, err := getSomeTag(indiceIterator.getTable())
 			if err != nil {
 				panic(err)
 			}
 			tags = append(tags, tagOffsetSize)
+			tagType = append(tagType, typeTag)
 		}
 		indiceIterator = indiceIterator.getRightSibling()
 	}
@@ -467,7 +515,14 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	dimensions := delemitSizes(typeInfo)
 	for x := len(tags) - 1; x >= 0; x-- {
 		temp := "lw %s,%d(r14)\n"
-		codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf(temp, regWithTag.String(), tags[x]))
+		switch tagType[x] {
+		case TEMP_OFFSET:
+			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf(temp, regWithTag.String(), tags[x]))
+			code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", regWithTag.String(), regWithTag.String()))
+			code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", regWithTag.String(), regWithTag.String()))
+		default:
+			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf(temp, regWithTag.String(), tags[x]))
+		}
 		temp = "muli %s,%s,%d\n"
 		codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf(temp, regWithRunningMul.String(), regWithOne, baseTypeSize))
 		temp = "mul %s,%s,%s\n"
@@ -505,10 +560,7 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	if err != nil {
 		panic(err)
 	}
-	register, err := globalregisterPool.Get()
-	if err != nil {
-		panic(err)
-	}
+
 	registerb, err := globalregisterPool.Get()
 	if err != nil {
 		panic(err)
@@ -546,12 +598,14 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	if tagType == TEMP_OFFSET {
 		code = fmt.Sprint(code, "%set ptr\n")
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), offsetTagRightStack))
+		code = fmt.Sprint(code, fmt.Sprintf("addi %s,r14,r0\n", ptrReg.String()))
 	} else {
 		code = fmt.Sprint(code, "%read direct value address\n")
 		code = fmt.Sprint(code, fmt.Sprintf("add %s,r0,r14\n", ptrReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,%d\n", ptrReg.String(), ptrReg.String(), offsetTagRightStack))
 	}
 	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", registerb.String(), offsetTagLeftStack))
+	code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", registerb.String(), registerb.String()))
 	code = fmt.Sprint(code, "%set position counter\n")
 	code = fmt.Sprint(code, fmt.Sprintf("mul %s,r0,r0\n", indexReg.String()))
 	code = fmt.Sprint(code, beginCopyTag)
@@ -566,7 +620,7 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	code = fmt.Sprint(code, fmt.Sprintf("subi %s,%s,%d\n", branchReg.String(), indexReg.String(), size))
 	code = fmt.Sprint(code, fmt.Sprintf("bnz %s,%s\n", branchReg.String(), beginCopyTag))
 	code = fmt.Sprint(code, endCopyTag)
-	globalregisterPool.Put(register)
+
 	globalregisterPool.Put(registerb)
 	globalregisterPool.Put(ptrReg)
 	globalregisterPool.Put(copyReg)
@@ -590,7 +644,16 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 			},
 		)
 		if entry == nil {
+			entry = v.functionScopelink.getEntry(
+				map[int]interface{}{
+					FILTER_KIND: "parameter",
+					FILTER_NAME: id,
+				},
+			)
+		}
+		if entry == nil {
 			tagleftOffsetSize = 900
+			panic("no")
 		} else {
 			tagleftOffsetSize = entry.getOffset()
 		}
@@ -614,6 +677,8 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 	code := "addi %s,%s,%d\nsw %d(r14),%s\n"
 	code = fmt.Sprintf(code, tempReg.String(), v.destReg, tagleftOffsetSize,
 		varTagOffsetSize, tempReg.String())
+	//fmt.Println("...",tagleftOffsetSize)
+	//fmt.Println("...v",varTagOffsetSize)
 	writeToCode(code)
 
 	globalregisterPool.Put(v.destReg)
@@ -675,6 +740,7 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 	code := ""
 	if tagType == TEMP_OFFSET {
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", locReg.String(), offsetTagStack))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", locReg.String(), locReg.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", locReg.String(), locReg.String()))
 
 	} else {
