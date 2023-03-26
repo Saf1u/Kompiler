@@ -1458,19 +1458,28 @@ func (i *funcDefNode) Accept(v visitor) {
 	}
 	typeinfo := ""
 	name := ""
-	if entry != nil {
-		typeinfo = entry.String()
-		name = entry.getName()
+	switch v.(type) {
+	case *memAllocVisitor:
+		if entry != nil {
+			typeinfo = entry.String()
+			name = entry.getName()
+
+		}
+		name = strings.ReplaceAll(name, "|", "")
+		name = generateNamedTag("fn" + name)
+		if entry != nil {
+			entry.setTag(name)
+		}
 	}
-	name = strings.ReplaceAll(name, "|", "")
-	name = generateNamedTag("fn" + name)
 	switch v.(type) {
 	case *codeGenVisitor:
 		switch i.getParent().(type) {
 		case *programBlockNode:
 		default:
 			writeToCode("%funcdef begin\n")
-			writeToCode(name + "\n")
+			writeToCode(entry.getTag() + "\n")
+			returnTypeOffset := scope.getRecords()[1].getOffset()
+			writeToCode(fmt.Sprintf("sw %d(r14),r15\n", returnTypeOffset))
 		}
 	}
 	v.propagateScope(typeinfo)

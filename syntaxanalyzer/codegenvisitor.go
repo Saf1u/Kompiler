@@ -103,7 +103,7 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 	}
 	code := ""
 	switch typeLeftTag {
-		
+
 	case TEMP_OFFSET:
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), offsetTagLeftStack))
 		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
@@ -623,7 +623,7 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	if tagType == TEMP_OFFSET {
 		code = fmt.Sprint(code, "%set ptr\n")
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), offsetTagRightStack))
-		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(),ptrReg.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
 	} else {
 		code = fmt.Sprint(code, "%read direct value\n")
 		code = fmt.Sprint(code, fmt.Sprintf("add %s,r0,r14\n", ptrReg.String()))
@@ -797,28 +797,144 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 	writeToCode("% end write\n")
 
 }
+//f("lw %s,%d(r14)\n"
 func (v *codeGenVisitor) visitFuncDef(n *funcDefNode) {
+	scope := n.getTable()
 	switch n.getParent().(type) {
 	case *programBlockNode:
 		writeToCode("hlt\n")
 	default:
+		returnTypeOffset := scope.getRecords()[1].getOffset()
+		writeToCode(fmt.Sprintf("lw r15,%d(r14)\n", returnTypeOffset))
+		writeToCode("jr r15 \n")
 		writeToCode("%funcdef end\n")
 	}
 
 }
 
 func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
-	// paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()
-	// funcOffset := v.offset
-	// fmt.Println(funcOffset)
-	// switch n.getLeftMostChild().(type) {
-	// case *idNode:
-	// 	id := fmt.Sprint(typeSepeator, n.getLeftMostChild().(*idNode).identifier)
-	// 	possibleFunction, _ := searchForFunction(id, v.getGlobalTable(), paramterList, basicCompare)
-	// 	fmt.Println(possibleFunction.getName())
+	parameterNode := n.getLeftMostChild().getRightSibling()
+	paramterList := parameterNode.getSingleEntry().getType().String()
+	fmt.Println(paramterList)
+	currFuncOffset := v.offset
+	tagName := ""
+	//calledFuncOffset := 0
+	var calledFunctionTable []*symbolTableRecord
+	switch n.getLeftMostChild().(type) {
+	case *idNode:
+		id := fmt.Sprint(typeSepeator, n.getLeftMostChild().(*idNode).identifier)
+		possibleFunction, _ := searchForFunction(id, v.getGlobalTable(), paramterList, basicCompare)
+		//calledFuncOffset = possibleFunction.getOffset()
+		calledFunctionTable = possibleFunction.getLink().getRecords()
+		tagName = possibleFunction.getTag()
+	default:
+		panic("no")
 
-	// }
+	}
+	paramStart := 2
 
+	param := parameterNode.getLeftMostChild()
+	for param != nil {
+		switch param.(type) {
+		case *epsilonNode:
+		default:
+			_, tagType, tagOffset, _, concType, err := getSomeTag(param.getTable())
+			if err != nil {
+				panic(err)
+			}
+			size, err := sizeOf(concType)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println("tag:", tagType, ",offset:", tagOffset, "SIZE:", size, "type:", concType)
+			initateCopy(tagOffset, tagType, size, calledFunctionTable[paramStart].getOffset(), TEMP_VAR, currFuncOffset+calledFunctionTable[paramStart].getSize(), currFuncOffset)
+		}
+		param = param.getRightSibling()
+		paramStart++
+	}
+	writeToCode(fmt.Sprintf("addi r14,r14,%d\n", currFuncOffset))
+	writeToCode(fmt.Sprintf("jl r15, %s\n", tagName))
+	writeToCode(fmt.Sprintf("subi r14,r14,%d\n", currFuncOffset))
+
+}
+func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, destinationOffset int, destinationOffsetType string, destSize int, calledOffset int) {
+
+	registerb, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	ptrReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	copyReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	indexReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	branchReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+
+	if err != nil {
+		panic(err)
+	}
+	beginCopyTag := generateNamedTag("beginCopy") + "\n"
+	endCopyTag := generateNamedTag("endCopy") + "\n"
+
+	code := ""
+
+	code = fmt.Sprint(code, "%check if size is zero if yes, leave\n")
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,%d\n", branchReg.String(), sourceSize))
+	code = fmt.Sprint(code, fmt.Sprintf("bz %s,%s\n", branchReg.String(), endCopyTag))
+	code = fmt.Sprint(code, "%set left and right ptrs\n")
+	if sourceOffsetType == TEMP_OFFSET {
+		code = fmt.Sprint(code, "%set ptr\n")
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), sourceOffset))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
+	} else {
+		code = fmt.Sprint(code, "%read direct value\n")
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r0,r14\n", ptrReg.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,%d\n", ptrReg.String(), ptrReg.String(), sourceOffset))
+	}
+
+	if destinationOffsetType == TEMP_OFFSET {
+		code = fmt.Sprint(code, "%set ptr\n")
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", registerb.String(), destinationOffset+calledOffset))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", registerb.String(), registerb.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("addi %s,r14,%d\n", registerb.String(), calledOffset))
+	} else {
+		code = fmt.Sprint(code, "%read direct value\n")
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r0,r14\n", registerb.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,%d\n", registerb.String(), registerb.String(), destinationOffset+calledOffset))
+	}
+
+	code = fmt.Sprint(code, "%set position counter\n")
+	code = fmt.Sprint(code, fmt.Sprintf("mul %s,r0,r0\n", indexReg.String()))
+	code = fmt.Sprint(code, beginCopyTag)
+	code = fmt.Sprint(code, "%move data via register\n")
+	code = fmt.Sprint(code, fmt.Sprintf("lw %s,0(%s)\n", copyReg.String(), ptrReg.String()))
+	code = fmt.Sprint(code, fmt.Sprintf("sw 0(%s),%s\n", registerb.String(), copyReg.String()))
+	code = fmt.Sprint(code, "%increment registers\n")
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,4\n", ptrReg.String(), ptrReg))
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,4\n", registerb.String(), registerb))
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,4\n", indexReg.String(), indexReg))
+	code = fmt.Sprint(code, "%branch out if done\n")
+	code = fmt.Sprint(code, fmt.Sprintf("subi %s,%s,%d\n", branchReg.String(), indexReg.String(), sourceSize))
+	code = fmt.Sprint(code, fmt.Sprintf("bnz %s,%s\n", branchReg.String(), beginCopyTag))
+	code = fmt.Sprint(code, endCopyTag)
+
+	globalregisterPool.Put(registerb)
+	globalregisterPool.Put(ptrReg)
+	globalregisterPool.Put(copyReg)
+	globalregisterPool.Put(branchReg)
+	globalregisterPool.Put(indexReg)
+	writeToCode(code)
+	writeToCode("% end copy \n")
 }
 
 // func (v *codeGenVisitor) visitDot(n *dotNode) {

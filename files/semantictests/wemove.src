@@ -1,47 +1,18 @@
-function main(r:integer[10][10])=>void{
-  localvar p:integer[10][10];
+function main()=>void{
   localvar x:integer;
-  localvar z:integer;
- x=0;
- while(x<>10){
-  z=0;
-   while(z<>10){
-  p[x][z]=z;
-  z=z+1;
- };
- x=x+1;
- };
-
-side(10);
- x=0;
- localvar j:integer;
- j=1;
- while(x<>10){
-  z=0;
-   while(z<>10){
-  p[x][z]=p[x][z]+(10*x);
-  z=z+1;
- };
- x=x+1;
- };
-
- x=0;
- while(x<>10){
-  z=0;
-   while(z<>10){
-  write(p[x][z]);
-  z=z+1;
- };
- x=x+1;
- };
+  x=44;
+  side(x,11,22);
+  write(1);
 }
-function side(r:integer)=>man{
-  localvar x:integer;
-  x=123;
-  write(x);
+function side(a:integer,b:integer,c:integer)=>integer{
+    write(a);
+    write(b);
+    write(c);
+
 }
+
 class man{
-private attribute age:integer;
-private attribute ageb:integer;
-private attribute agec:integer;
+private attribute x:integer;
+private attribute y:integer;
+private attribute z:integer;
 };
