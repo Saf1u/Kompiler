@@ -119,6 +119,20 @@ func (v *memAllocVisitor) visitVar(n *varNode) {
 	v.functionScopelink.addRecord(recordA)
 
 }
+func (v *memAllocVisitor) visitIndiceList(n *indiceListNode) {
+	typeInfo := n.getTable().getSingleEntry().getType().String()
+	tag := getUniqueOffsetTag()
+	recordA := newRecord(tag, TEMP_LIT, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
+	size, err := sizeOf("integer")
+	if err != nil {
+		panic("shouldnt happen")
+	}
+	recordA.setSize(size)
+	recordA.setTag(tag)
+	n.getTable().addRecord(recordA)
+	v.functionScopelink.addRecord(recordA)
+
+}
 func (v *memAllocVisitor) visitDot(n *dotNode) {
 	switch n.getParent().(type) {
 	case *varNode:

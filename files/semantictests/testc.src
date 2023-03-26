@@ -1,13 +1,14 @@
-function main(p:integer)=>void{
+function main(p:integer[2][3][4])=>void{
   localvar x:integer;
-
-  x=1293;
-  write(x);
-  write(x);
-  p=3123;
-  write(p);
-  write(p);
- 
+  localvar z:integer;
+  x=3;
+  z=1;
+  p[1][1][3]=9;
+  write(p[z][z][x]);
+  write(p[1][1][3]);
+  p[1][z][3]=92;
+    write(p[z][z][3]);
+  write(p[1][1][x]);
 }
 /*function side(r:integer)=>man{
   localvar x:integer;

@@ -1813,14 +1813,6 @@ type varNode struct {
 }
 
 func (i *varNode) Accept(v visitor) {
-	switch v.(type) {
-	case *codeGenVisitor:
-		destReg, err := globalregisterPool.Get()
-		if err != nil {
-			panic(err)
-		}
-		v.propagateDestRegister(destReg)
-	}
 
 	n := i.getLeftMostChild()
 	switch n.(type) {
