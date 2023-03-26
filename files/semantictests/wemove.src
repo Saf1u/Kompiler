@@ -12,7 +12,7 @@ function main(r:integer[10][10])=>void{
  x=x+1;
  };
 
-side();
+side(10);
  x=0;
  localvar j:integer;
  j=1;
@@ -44,4 +44,4 @@ class man{
 private attribute age:integer;
 private attribute ageb:integer;
 private attribute agec:integer;
-}
+};
