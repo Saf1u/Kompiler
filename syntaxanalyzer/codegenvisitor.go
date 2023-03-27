@@ -555,7 +555,7 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 			}
 			dimension := dimensions[p]
 			if dimension == "" {
-				dimension = "0"
+				dimension = "1"
 			}
 			temp = "muli %s,%s,%s\n"
 			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf(temp, regWithRunningMul.String(), regWithRunningMul.String(), dimension))
@@ -626,6 +626,7 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 		code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,%d\n", ptrReg.String(), ptrReg.String(), offsetTagRightStack))
 	}
 	code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", registerb.String(), offsetTagLeftStack))
+	//nooooo we have passed the stack frame if ptr, do not add r14 as i will explicitly add the true offset
 	code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", registerb.String(), registerb.String()))
 	code = fmt.Sprint(code, "%set position counter\n")
 	code = fmt.Sprint(code, fmt.Sprintf("mul %s,r0,r0\n", indexReg.String()))

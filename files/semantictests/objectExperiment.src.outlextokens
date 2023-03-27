@@ -64,30 +64,31 @@
 
 [rcurbr, }, 82]
 
+[blockcmt, /*100\n200\n100\n120\n130\n150\n10\n11\n12\n13\n14\n20\n21\n22\n23\n24\n500\n300\n100\n120\n130\n550\n10\n11\n12\n13\n14\n20\n21\n22\n23\n24*/, 115]
+
+[inlinecmt, //both should be same, 117]
 
 
 
 
+[blockcmt, /*\n100\n200\n100\n120\n130\n150\n10\n11\n12\n13\n14\n20\n21\n22\n23\n24\n500\n300\n100\n120\n130\n550\n10\n11\n12\n13\n14\n20\n21\n22\n23\n24*/, 154]
 
-[blockcmt, /*100\n200\n100\n120\n130\n500\n300\n100\n120\n130*/, 98]
+[class, class, 156][id, man, 156][isa, isa, 156][id, boss, 156][lcurbr, {, 156]
+[attribute, attribute, 157][id, y, 157][colon, :, 157][integer, integer, 157][semi, ;, 157]
+[attribute, attribute, 158][id, x, 158][colon, :, 158][integer, integer, 158][lsqbr, [, 158][intlit, 5, 158][rsqbr, ], 158][lsqbr, [, 158][intlit, 10, 158][rsqbr, ], 158][semi, ;, 158]
+[attribute, attribute, 159][id, z, 159][colon, :, 159][integer, integer, 159][semi, ;, 159]
+[rcurbr, }, 160][semi, ;, 160]
 
-
-[class, class, 101][id, man, 101][isa, isa, 101][id, boss, 101][lcurbr, {, 101]
-[attribute, attribute, 102][id, y, 102][colon, :, 102][integer, integer, 102][semi, ;, 102]
-[attribute, attribute, 103][id, x, 103][colon, :, 103][integer, integer, 103][lsqbr, [, 103][intlit, 5, 103][rsqbr, ], 103][lsqbr, [, 103][intlit, 10, 103][rsqbr, ], 103][semi, ;, 103]
-[attribute, attribute, 104][id, z, 104][colon, :, 104][integer, integer, 104][semi, ;, 104]
-[rcurbr, }, 105][semi, ;, 105]
-
-[class, class, 107][id, boss, 107][isa, isa, 107][id, cause, 107][comma, ,, 107][id, pause, 107][lcurbr, {, 107]
-[attribute, attribute, 108][id, op, 108][colon, :, 108][integer, integer, 108][semi, ;, 108]
-[rcurbr, }, 109][semi, ;, 109]
-[class, class, 110][id, cause, 110][lcurbr, {, 110]
-[attribute, attribute, 111][id, lifePoints, 111][colon, :, 111][integer, integer, 111][lsqbr, [, 111][intlit, 5, 111][rsqbr, ], 111][semi, ;, 111]
-[attribute, attribute, 112][id, powerPoints, 112][colon, :, 112][integer, integer, 112][lsqbr, [, 112][intlit, 5, 112][rsqbr, ], 112][semi, ;, 112]
-[attribute, attribute, 113][id, age, 113][colon, :, 113][integer, integer, 113][lsqbr, [, 113][intlit, 5, 113][rsqbr, ], 113][semi, ;, 113]
-[rcurbr, }, 114][semi, ;, 114]
-[class, class, 115][id, pause, 115][lcurbr, {, 115]
-[attribute, attribute, 116][id, pauseAge, 116][colon, :, 116][integer, integer, 116][lsqbr, [, 116][intlit, 5, 116][rsqbr, ], 116][semi, ;, 116]
-[rcurbr, }, 117][semi, ;, 117]
+[class, class, 162][id, boss, 162][isa, isa, 162][id, cause, 162][comma, ,, 162][id, pause, 162][lcurbr, {, 162]
+[attribute, attribute, 163][id, op, 163][colon, :, 163][integer, integer, 163][semi, ;, 163]
+[rcurbr, }, 164][semi, ;, 164]
+[class, class, 165][id, cause, 165][lcurbr, {, 165]
+[attribute, attribute, 166][id, lifePoints, 166][colon, :, 166][integer, integer, 166][lsqbr, [, 166][intlit, 5, 166][rsqbr, ], 166][semi, ;, 166]
+[attribute, attribute, 167][id, powerPoints, 167][colon, :, 167][integer, integer, 167][lsqbr, [, 167][intlit, 5, 167][rsqbr, ], 167][semi, ;, 167]
+[attribute, attribute, 168][id, age, 168][colon, :, 168][integer, integer, 168][lsqbr, [, 168][intlit, 5, 168][rsqbr, ], 168][semi, ;, 168]
+[rcurbr, }, 169][semi, ;, 169]
+[class, class, 170][id, pause, 170][lcurbr, {, 170]
+[attribute, attribute, 171][id, pauseAge, 171][colon, :, 171][integer, integer, 171][lsqbr, [, 171][intlit, 5, 171][rsqbr, ], 171][semi, ;, 171]
+[rcurbr, }, 172][semi, ;, 172]
 
 

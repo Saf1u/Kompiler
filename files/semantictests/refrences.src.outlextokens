@@ -1,0 +1,7 @@
+[function, function, 1][id, main, 1][lpar, (, 1][rpar, ), 1][arrow, =>, 1][void, void, 1][lcurbr, {, 1]
+
+[rcurbr, }, 3]
+
+[function, function, 5][id, mutate, 5][lpar, (, 5][id, arr, 5][colon, :, 5][integer, integer, 5][lsqbr, [, 5][rsqbr, ], 5][lsqbr, [, 5][intlit, 5, 5][rsqbr, ], 5][rpar, ), 5][arrow, =>, 5][void, void, 5][lcurbr, {, 5]
+
+[rcurbr, }, 7]
