@@ -1,0 +1,11 @@
+
+[function, function, 2][id, main, 2][lpar, (, 2][rpar, ), 2][arrow, =>, 2][void, void, 2][lcurbr, {, 2]
+[localvar, localvar, 3][id, x, 3][colon, :, 3][id, man, 3][semi, ;, 3]
+[rcurbr, }, 4]
+
+[class, class, 6][id, man, 6][lcurbr, {, 6]
+[private, private, 7][attribute, attribute, 7][id, x, 7][colon, :, 7][integer, integer, 7][semi, ;, 7]
+[private, private, 8][attribute, attribute, 8][id, y, 8][colon, :, 8][integer, integer, 8][semi, ;, 8]
+[private, private, 9][attribute, attribute, 9][id, z, 9][colon, :, 9][integer, integer, 9][semi, ;, 9]
+[rcurbr, }, 10][semi, ;, 10]
+

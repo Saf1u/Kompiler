@@ -27,4 +27,6 @@
 
 
 
-[blockcmt, /*class man{\nprivate attribute x:integer;\nprivate attribute y:integer;\nprivate attribute z:integer;\n};*/, 34]
+
+
+[blockcmt, /*class man{\nprivate attribute x:integer;\nprivate attribute y:integer;\nprivate attribute z:integer;\n};*/, 36]

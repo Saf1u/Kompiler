@@ -1,0 +1,12 @@
+
+function main()=>void{
+ localvar x:man;
+ localvar y:integer;
+ y=x.a;
+}
+
+class man{
+private attribute x:integer;
+private attribute y:integer;
+private attribute z:integer;
+};

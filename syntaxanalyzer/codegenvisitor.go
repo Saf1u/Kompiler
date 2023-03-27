@@ -841,10 +841,12 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 			if err != nil {
 				panic(err)
 			}
-			size, err := sizeOf(concType)
+			baseType := getBaseType(concType)
+			size, err := sizeOf(baseType)
 			if err != nil {
-				panic(err)
+				size = 0
 			}
+			size = size * getDimensions(concType)
 			//fmt.Println("tag:", tagType, ",offset:", tagOffset, "SIZE:", size, "type:", concType)
 			initateCopy(tagOffset, tagType, size, calledFunctionTable[paramStart].getOffset(), TEMP_VAR, currFuncOffset+calledFunctionTable[paramStart].getSize(), currFuncOffset)
 		}
@@ -858,10 +860,12 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 	if err != nil {
 		panic(err)
 	}
-	size, err := sizeOf(concType)
+	baseType := getBaseType(concType)
+	size, err := sizeOf(baseType)
 	if err != nil {
-		panic(err)
+		size = 0
 	}
+	size = size * getDimensions(concType)
 	initateCopy(currFuncOffset, TEMP_VAR, size, tagOffset, tagType, size, 0)
 
 }
@@ -871,10 +875,12 @@ func (v *codeGenVisitor) visitReturn(n *returnNode) {
 	if err != nil {
 		panic(err)
 	}
-	size, err := sizeOf(concType)
+	baseType := getBaseType(concType)
+	size, err := sizeOf(baseType)
 	if err != nil {
-		panic(err)
+		size = 0
 	}
+	size = size * getDimensions(concType)
 	initateCopy(tagOffset, tagType, size, 0, TEMP_VAR, 0, 0)
 
 }

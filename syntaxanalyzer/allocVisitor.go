@@ -143,6 +143,7 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 		if err != nil {
 			panic("shouldnt happen")
 		}
+		n.getTable().print(10)
 		recordA.setSize(size)
 		recordA.setTag(tag)
 		n.getTable().addRecord(recordA)
