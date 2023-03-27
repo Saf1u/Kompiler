@@ -795,7 +795,8 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 	writeToCode("% end write\n")
 
 }
-//f("lw %s,%d(r14)\n"
+
+// f("lw %s,%d(r14)\n"
 func (v *codeGenVisitor) visitFuncDef(n *funcDefNode) {
 	scope := n.getTable()
 	switch n.getParent().(type) {
@@ -844,7 +845,7 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 			if err != nil {
 				panic(err)
 			}
-			fmt.Println("tag:", tagType, ",offset:", tagOffset, "SIZE:", size, "type:", concType)
+			//fmt.Println("tag:", tagType, ",offset:", tagOffset, "SIZE:", size, "type:", concType)
 			initateCopy(tagOffset, tagType, size, calledFunctionTable[paramStart].getOffset(), TEMP_VAR, currFuncOffset+calledFunctionTable[paramStart].getSize(), currFuncOffset)
 		}
 		param = param.getRightSibling()
@@ -853,6 +854,28 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 	writeToCode(fmt.Sprintf("addi r14,r14,%d\n", currFuncOffset))
 	writeToCode(fmt.Sprintf("jl r15, %s\n", tagName))
 	writeToCode(fmt.Sprintf("subi r14,r14,%d\n", currFuncOffset))
+	_, tagType, tagOffset, _, concType, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+	size, err := sizeOf(concType)
+	if err != nil {
+		panic(err)
+	}
+	initateCopy(currFuncOffset, TEMP_VAR, size, tagOffset, tagType, size, 0)
+
+}
+
+func (v *codeGenVisitor) visitReturn(n *returnNode) {
+	_, tagType, tagOffset, _, concType, err := getSomeTag(n.getLeftMostChild().getTable())
+	if err != nil {
+		panic(err)
+	}
+	size, err := sizeOf(concType)
+	if err != nil {
+		panic(err)
+	}
+	initateCopy(tagOffset, tagType, size, 0, TEMP_VAR, 0, 0)
 
 }
 func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, destinationOffset int, destinationOffsetType string, destSize int, calledOffset int) {

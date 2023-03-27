@@ -1,21 +1,20 @@
-function main(y:integer[3][2])=>void{
-  localvar x:integer;
-  x=100;
-  y[2][1]=10;
+function main()=>void{
+    localvar x:integer;
+     write(x);
+    x=factorial(14);
+    write(x);
 
-  side(x*2,y[2][1],y[2][1]*5);
-  write(x);
-    write(y[2][1]);
 }
-function side(a:integer,b:integer,c:integer)=>integer{
-    a=a/2;
-    b=b*3;
-    c=c/2;
-    write(a);
-    write(b);
-    write(c);
-    
+
+function factorial(n:integer)=>integer{
+    if (n==0)then{
+   return(1);
+    }else{
+   return(n*factorial(n-1));
+    };
 }
+
+
 
 /*class man{
 private attribute x:integer;
