@@ -191,9 +191,10 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 }
 
 func (v *memAllocVisitor) visitProgram(n *program) {
+	writeToData("org 0\n")
 	writeToData(fmt.Sprintf("%-20s %-7s %d\n", PRINT_BUFFER, "res", 200))
 	//200 CHAR BUFFER
-	writeToData(fmt.Sprintf("%-20s %-7s %d\n", STACK_BASE, "res", 2048))
+	writeToData(fmt.Sprintf("%-20s %-7s %d\n", STACK_BASE, "res", 4096))
 	writeToData(fmt.Sprintf("%-20s %-7s %s,%d,%d,%d\n", "newline", "db", "", 13, 10, 0))
 	writeToData("align\n")
 

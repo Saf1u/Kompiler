@@ -3,9 +3,9 @@ function main()=>void{
  localvar person:man;
  localvar personb:man;
  person=func(100,200,100);
- personb=func(500,300,100);
+// personb=func(500,300,100);
  printman(person);
- printman(personb);
+// printman(personb);
 
 }
 
@@ -16,6 +16,18 @@ person.x[0][0]=paramc;
 person.x[4][5]=paramc+20;
 person.x[4][9]=paramc+30;
 person.z=paramb;
+person.op=param+10;
+localvar index:integer;
+index=0;
+while(index<>5){
+    person.age[index]=index+10;
+    index=index+1;
+};
+index=0;
+while(index<>5){
+    person.pauseAge[index]=index+20;
+    index=index+1;
+};
 return(person);
 }
 
@@ -33,16 +45,25 @@ function printman(person:man)=>void{
 
 
 
+/*100
+200
+100
+120
+130
+500
+300
+100
+120
+130*/
 
 
-
-class man{
+class man isa boss{
  attribute y:integer;
   attribute x:integer[5][10];
  attribute z:integer;
 };
 
-/*class boss isa cause,pause{
+class boss isa cause,pause{
  attribute op:integer;
 };
 class cause{
@@ -52,5 +73,5 @@ class cause{
 };
 class pause{
  attribute pauseAge:integer[5];
-};*/
+};
 
