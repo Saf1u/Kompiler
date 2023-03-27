@@ -11,8 +11,6 @@ import (
 type codeGenVisitor struct {
 	*defaultVisitor
 	scope             string
-	varId             string
-	destReg           register
 	functionScopelink *symbolTable
 	offset            int
 }
@@ -22,7 +20,7 @@ func (v *codeGenVisitor) propagateOffset(r int) {
 }
 
 func (v *codeGenVisitor) propagateDestRegister(r register) {
-	v.destReg = r
+
 }
 func (v *codeGenVisitor) propagateScope(scopeInfo string) {
 	v.scope = scopeInfo
@@ -31,7 +29,7 @@ func (v *codeGenVisitor) propgateScopeLink(s *symbolTable) {
 	v.functionScopelink = s
 }
 func (v *codeGenVisitor) propagateId(s string) {
-	v.varId = s
+
 }
 func (v *codeGenVisitor) visitProgram(n *program) {
 	file := configmap.Get("file").(string)

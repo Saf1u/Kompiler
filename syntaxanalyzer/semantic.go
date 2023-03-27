@@ -1458,18 +1458,20 @@ func (i *funcDefNode) Accept(v visitor) {
 	}
 	typeinfo := ""
 	name := ""
+	if entry != nil {
+		typeinfo = entry.String()
+		name = entry.getName()
+
+	}
 	switch v.(type) {
 	case *memAllocVisitor:
-		if entry != nil {
-			typeinfo = entry.String()
-			name = entry.getName()
 
-		}
 		name = strings.ReplaceAll(name, "|", "")
 		name = generateNamedTag("fn" + name)
 		if entry != nil {
 			entry.setTag(name)
 		}
+
 	}
 	switch v.(type) {
 	case *codeGenVisitor:
@@ -1824,12 +1826,6 @@ type varNode struct {
 func (i *varNode) Accept(v visitor) {
 
 	n := i.getLeftMostChild()
-	switch n.(type) {
-	case *idNode:
-		id := n.(*idNode).identifier
-		v.propagateId(id)
-	}
-
 	for n != nil {
 		n.Accept(v)
 		n = n.getRightSibling()
