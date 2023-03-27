@@ -3,9 +3,9 @@ function main()=>void{
  localvar person:man;
  localvar personb:man;
  person=func(100,200,100);
-// personb=func(500,300,100);
+ personb=func(500,300,100);
  printman(person);
-// printman(personb);
+ printman(personb);
 
 }
 
@@ -16,7 +16,7 @@ person.x[0][0]=paramc;
 person.x[4][5]=paramc+20;
 person.x[4][9]=paramc+30;
 person.z=paramb;
-person.op=param+10;
+person.op=param+50;
 localvar index:integer;
 index=0;
 while(index<>5){
@@ -37,6 +37,18 @@ function printman(person:man)=>void{
  write(person.x[0][0]);
  write(person.x[4][5]);
  write(person.x[4][9]);
+ write(person.op);
+localvar index:integer;
+index=0;
+ while(index<>5){
+   write(person.age[index]);
+    index=index+1;
+};
+index=0;
+while(index<>5){
+    write(person.pauseAge[index]);
+    index=index+1;
+};
 
 }
 

@@ -3,9 +3,9 @@
 [localvar, localvar, 3][id, person, 3][colon, :, 3][id, man, 3][semi, ;, 3]
 [localvar, localvar, 4][id, personb, 4][colon, :, 4][id, man, 4][semi, ;, 4]
 [id, person, 5][equal, =, 5][id, func, 5][lpar, (, 5][intlit, 100, 5][comma, ,, 5][intlit, 200, 5][comma, ,, 5][intlit, 100, 5][rpar, ), 5][semi, ;, 5]
-[inlinecmt, // personb=func(500,300,100);, 6]
+[id, personb, 6][equal, =, 6][id, func, 6][lpar, (, 6][intlit, 500, 6][comma, ,, 6][intlit, 300, 6][comma, ,, 6][intlit, 100, 6][rpar, ), 6][semi, ;, 6]
 [id, printman, 7][lpar, (, 7][id, person, 7][rpar, ), 7][semi, ;, 7]
-[inlinecmt, // printman(personb);, 8]
+[id, printman, 8][lpar, (, 8][id, personb, 8][rpar, ), 8][semi, ;, 8]
 
 [rcurbr, }, 10]
 
@@ -16,7 +16,7 @@
 [id, person, 16][dot, ., 16][id, x, 16][lsqbr, [, 16][intlit, 4, 16][rsqbr, ], 16][lsqbr, [, 16][intlit, 5, 16][rsqbr, ], 16][equal, =, 16][id, paramc, 16][plus, +, 16][intlit, 20, 16][semi, ;, 16]
 [id, person, 17][dot, ., 17][id, x, 17][lsqbr, [, 17][intlit, 4, 17][rsqbr, ], 17][lsqbr, [, 17][intlit, 9, 17][rsqbr, ], 17][equal, =, 17][id, paramc, 17][plus, +, 17][intlit, 30, 17][semi, ;, 17]
 [id, person, 18][dot, ., 18][id, z, 18][equal, =, 18][id, paramb, 18][semi, ;, 18]
-[id, person, 19][dot, ., 19][id, op, 19][equal, =, 19][id, param, 19][plus, +, 19][intlit, 10, 19][semi, ;, 19]
+[id, person, 19][dot, ., 19][id, op, 19][equal, =, 19][id, param, 19][plus, +, 19][intlit, 50, 19][semi, ;, 19]
 [localvar, localvar, 20][id, index, 20][colon, :, 20][integer, integer, 20][semi, ;, 20]
 [id, index, 21][equal, =, 21][intlit, 0, 21][semi, ;, 21]
 [while, while, 22][lpar, (, 22][id, index, 22][neq, <>, 22][intlit, 5, 22][rpar, ), 22][lcurbr, {, 22]
@@ -37,33 +37,45 @@
 [write, write, 37][lpar, (, 37][id, person, 37][dot, ., 37][id, x, 37][lsqbr, [, 37][intlit, 0, 37][rsqbr, ], 37][lsqbr, [, 37][intlit, 0, 37][rsqbr, ], 37][rpar, ), 37][semi, ;, 37]
 [write, write, 38][lpar, (, 38][id, person, 38][dot, ., 38][id, x, 38][lsqbr, [, 38][intlit, 4, 38][rsqbr, ], 38][lsqbr, [, 38][intlit, 5, 38][rsqbr, ], 38][rpar, ), 38][semi, ;, 38]
 [write, write, 39][lpar, (, 39][id, person, 39][dot, ., 39][id, x, 39][lsqbr, [, 39][intlit, 4, 39][rsqbr, ], 39][lsqbr, [, 39][intlit, 9, 39][rsqbr, ], 39][rpar, ), 39][semi, ;, 39]
+[write, write, 40][lpar, (, 40][id, person, 40][dot, ., 40][id, op, 40][rpar, ), 40][semi, ;, 40]
+[localvar, localvar, 41][id, index, 41][colon, :, 41][integer, integer, 41][semi, ;, 41]
+[id, index, 42][equal, =, 42][intlit, 0, 42][semi, ;, 42]
+[while, while, 43][lpar, (, 43][id, index, 43][neq, <>, 43][intlit, 5, 43][rpar, ), 43][lcurbr, {, 43]
+[write, write, 44][lpar, (, 44][id, person, 44][dot, ., 44][id, age, 44][lsqbr, [, 44][id, index, 44][rsqbr, ], 44][rpar, ), 44][semi, ;, 44]
+[id, index, 45][equal, =, 45][id, index, 45][plus, +, 45][intlit, 1, 45][semi, ;, 45]
+[rcurbr, }, 46][semi, ;, 46]
+[id, index, 47][equal, =, 47][intlit, 0, 47][semi, ;, 47]
+[while, while, 48][lpar, (, 48][id, index, 48][neq, <>, 48][intlit, 5, 48][rpar, ), 48][lcurbr, {, 48]
+[write, write, 49][lpar, (, 49][id, person, 49][dot, ., 49][id, pauseAge, 49][lsqbr, [, 49][id, index, 49][rsqbr, ], 49][rpar, ), 49][semi, ;, 49]
+[id, index, 50][equal, =, 50][id, index, 50][plus, +, 50][intlit, 1, 50][semi, ;, 50]
+[rcurbr, }, 51][semi, ;, 51]
 
-[rcurbr, }, 41]
+[rcurbr, }, 53]
 
 
 
 
 
 
-[blockcmt, /*100\n200\n100\n120\n130\n500\n300\n100\n120\n130*/, 57]
+[blockcmt, /*100\n200\n100\n120\n130\n500\n300\n100\n120\n130*/, 69]
 
 
-[class, class, 60][id, man, 60][isa, isa, 60][id, boss, 60][lcurbr, {, 60]
-[attribute, attribute, 61][id, y, 61][colon, :, 61][integer, integer, 61][semi, ;, 61]
-[attribute, attribute, 62][id, x, 62][colon, :, 62][integer, integer, 62][lsqbr, [, 62][intlit, 5, 62][rsqbr, ], 62][lsqbr, [, 62][intlit, 10, 62][rsqbr, ], 62][semi, ;, 62]
-[attribute, attribute, 63][id, z, 63][colon, :, 63][integer, integer, 63][semi, ;, 63]
-[rcurbr, }, 64][semi, ;, 64]
-
-[class, class, 66][id, boss, 66][isa, isa, 66][id, cause, 66][comma, ,, 66][id, pause, 66][lcurbr, {, 66]
-[attribute, attribute, 67][id, op, 67][colon, :, 67][integer, integer, 67][semi, ;, 67]
-[rcurbr, }, 68][semi, ;, 68]
-[class, class, 69][id, cause, 69][lcurbr, {, 69]
-[attribute, attribute, 70][id, lifePoints, 70][colon, :, 70][integer, integer, 70][lsqbr, [, 70][intlit, 5, 70][rsqbr, ], 70][semi, ;, 70]
-[attribute, attribute, 71][id, powerPoints, 71][colon, :, 71][integer, integer, 71][lsqbr, [, 71][intlit, 5, 71][rsqbr, ], 71][semi, ;, 71]
-[attribute, attribute, 72][id, age, 72][colon, :, 72][integer, integer, 72][lsqbr, [, 72][intlit, 5, 72][rsqbr, ], 72][semi, ;, 72]
-[rcurbr, }, 73][semi, ;, 73]
-[class, class, 74][id, pause, 74][lcurbr, {, 74]
-[attribute, attribute, 75][id, pauseAge, 75][colon, :, 75][integer, integer, 75][lsqbr, [, 75][intlit, 5, 75][rsqbr, ], 75][semi, ;, 75]
+[class, class, 72][id, man, 72][isa, isa, 72][id, boss, 72][lcurbr, {, 72]
+[attribute, attribute, 73][id, y, 73][colon, :, 73][integer, integer, 73][semi, ;, 73]
+[attribute, attribute, 74][id, x, 74][colon, :, 74][integer, integer, 74][lsqbr, [, 74][intlit, 5, 74][rsqbr, ], 74][lsqbr, [, 74][intlit, 10, 74][rsqbr, ], 74][semi, ;, 74]
+[attribute, attribute, 75][id, z, 75][colon, :, 75][integer, integer, 75][semi, ;, 75]
 [rcurbr, }, 76][semi, ;, 76]
+
+[class, class, 78][id, boss, 78][isa, isa, 78][id, cause, 78][comma, ,, 78][id, pause, 78][lcurbr, {, 78]
+[attribute, attribute, 79][id, op, 79][colon, :, 79][integer, integer, 79][semi, ;, 79]
+[rcurbr, }, 80][semi, ;, 80]
+[class, class, 81][id, cause, 81][lcurbr, {, 81]
+[attribute, attribute, 82][id, lifePoints, 82][colon, :, 82][integer, integer, 82][lsqbr, [, 82][intlit, 5, 82][rsqbr, ], 82][semi, ;, 82]
+[attribute, attribute, 83][id, powerPoints, 83][colon, :, 83][integer, integer, 83][lsqbr, [, 83][intlit, 5, 83][rsqbr, ], 83][semi, ;, 83]
+[attribute, attribute, 84][id, age, 84][colon, :, 84][integer, integer, 84][lsqbr, [, 84][intlit, 5, 84][rsqbr, ], 84][semi, ;, 84]
+[rcurbr, }, 85][semi, ;, 85]
+[class, class, 86][id, pause, 86][lcurbr, {, 86]
+[attribute, attribute, 87][id, pauseAge, 87][colon, :, 87][integer, integer, 87][lsqbr, [, 87][intlit, 5, 87][rsqbr, ], 87][semi, ;, 87]
+[rcurbr, }, 88][semi, ;, 88]
 
 
