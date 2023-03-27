@@ -27,6 +27,8 @@ function factorial(n:integer)=>integer{
 
 
 
+
+
 /*class man{
 private attribute x:integer;
 private attribute y:integer;
