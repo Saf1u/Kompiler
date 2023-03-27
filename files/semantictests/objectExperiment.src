@@ -1,12 +1,56 @@
 
 function main()=>void{
- localvar x:man;
- localvar y:integer;
- y=x.a;
+ localvar person:man;
+ localvar personb:man;
+ person=func(100,200,100);
+ personb=func(500,300,100);
+ printman(person);
+ printman(personb);
+
 }
 
+function func(param:integer,paramb:integer,paramc:integer)=>man{
+localvar person:man;
+person.y=param;
+person.x[0][0]=paramc;
+person.x[4][5]=paramc+20;
+person.x[4][9]=paramc+30;
+person.z=paramb;
+return(person);
+}
+
+function printman(person:man)=>void{
+     write(person.y);
+ write(person.z);
+ write(person.x[0][0]);
+ write(person.x[4][5]);
+ write(person.x[4][9]);
+
+}
+
+
+
+
+
+
+
+
+
 class man{
-private attribute x:integer;
-private attribute y:integer;
-private attribute z:integer;
+ attribute y:integer;
+  attribute x:integer[5][10];
+ attribute z:integer;
 };
+
+/*class boss isa cause,pause{
+ attribute op:integer;
+};
+class cause{
+    attribute lifePoints:integer[5];
+    attribute powerPoints:integer[5];
+    attribute age:integer[5];
+};
+class pause{
+ attribute pauseAge:integer[5];
+};*/
+

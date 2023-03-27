@@ -143,7 +143,7 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 		if err != nil {
 			panic("shouldnt happen")
 		}
-		n.getTable().print(10)
+		
 		recordA.setSize(size)
 		recordA.setTag(tag)
 		n.getTable().addRecord(recordA)
@@ -151,6 +151,7 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 	default:
 		panic("not yet implemented functions")
 	}
+
 
 }
 

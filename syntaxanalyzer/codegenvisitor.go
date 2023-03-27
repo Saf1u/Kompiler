@@ -450,24 +450,22 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 			fmt.Println("not defined var")
 			return
 		case *dotNode:
-			records := n.getParent().getLeftMostChild().getTable().getRecords()
-			id := n.getParent().getLeftMostChild().getLeftMostChild().getRightSibling().getSingleEntry().name
-			for _, record := range records {
-				if record.getKind() != TEMP_OFFSET {
-					className := record.getType().String()
-					classTable := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: className})
-					if classTable == nil {
-						fmt.Println("class not defined var")
-						return
-					}
-					entry = classTable.getLink().getEntry(map[int]interface{}{FILTER_KIND: VARIABLE, FILTER_NAME: id})
-					if entry == nil {
-						fmt.Println(" not defined var")
-						return
-					}
-
-				}
+			class := n.getParent().getLeftMostChild().getTable().getRecords()[0].getType().String()
+			id := n.getParent().getLeftMostChild().getLeftMostChild().getRightSibling().(*idNode).identifier
+			entry = v.gloablTable.getEntry(
+				map[int]interface{}{
+					FILTER_KIND: CLASS,
+					FILTER_NAME: class,
+				},
+			)
+			if entry == nil {
+				panic("not now")
 			}
+			entry = recursivelySearchForId(entry.getLink(), id)
+			if entry == nil {
+				panic("not now")
+			}
+
 		default:
 			panic("odd")
 
@@ -657,6 +655,24 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 func (v *codeGenVisitor) visitVar(n *varNode) {
 	writeToCode("% begin var offset calculation\n")
 	tagleftOffsetSize := 0
+	code := ""
+	_, _, indiceTag, _, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
+	if err != nil {
+		panic(err)
+	}
+
+	_, _, varTagOffsetSize, _, _, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+	regX, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	regY, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
 	switch n.getLeftMostChild().(type) {
 	case *idNode:
 		id := n.getLeftMostChild().getTable().getSingleEntry().getName()
@@ -680,35 +696,22 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 		} else {
 			tagleftOffsetSize = entry.getOffset()
 		}
+		code = fmt.Sprintf("addi %s,r0,%d\nlw %s,%d(r14)\n add %s,%s,%s\nsw %d(r14),%s\n", regX.String(), tagleftOffsetSize, regY.String(), indiceTag, regX.String(), regX.String(), regY.String(), varTagOffsetSize, regX.String())
+
+	case *dotNode:
+		_, _, tagleftOffsetSize, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
+		if err != nil {
+			panic("not now")
+		}
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", regY.String(), indiceTag))
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", regX.String(), tagleftOffsetSize))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,%s,%s\n", regX.String(), regX.String(), regY.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("sw %d(r14),%s\n", varTagOffsetSize, regX.String()))
 
 	default:
-		_, _, t, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
-		if err != nil {
-			panic(err)
-		}
-		tagleftOffsetSize = t
+		panic("none")
 
 	}
-
-	_, _, indiceTag, _, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
-	if err != nil {
-		panic(err)
-	}
-
-	_, _, varTagOffsetSize, _, _, err := getSomeTag(n.getTable())
-	if err != nil {
-		panic(err)
-	}
-	regX, err := globalregisterPool.Get()
-	if err != nil {
-		panic(err)
-	}
-	regY, err := globalregisterPool.Get()
-	if err != nil {
-		panic(err)
-	}
-
-	code := fmt.Sprintf("addi %s,r0,%d\nlw %s,%d(r14)\n add %s,%s,%s\nsw %d(r14),%s\n", regX.String(), tagleftOffsetSize, regY.String(), indiceTag, regX.String(), regX.String(), regY.String(), varTagOffsetSize, regX.String())
 
 	writeToCode(code)
 	globalregisterPool.Put(regX)
@@ -814,7 +817,6 @@ func (v *codeGenVisitor) visitFuncDef(n *funcDefNode) {
 func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 	parameterNode := n.getLeftMostChild().getRightSibling()
 	paramterList := parameterNode.getSingleEntry().getType().String()
-	fmt.Println(paramterList)
 	currFuncOffset := v.offset
 	tagName := ""
 	//calledFuncOffset := 0
@@ -824,6 +826,9 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 		id := fmt.Sprint(typeSepeator, n.getLeftMostChild().(*idNode).identifier)
 		possibleFunction, _ := searchForFunction(id, v.getGlobalTable(), paramterList, basicCompare)
 		//calledFuncOffset = possibleFunction.getOffset()
+		if possibleFunction == nil {
+			panic("no shouldnt")
+		}
 		calledFunctionTable = possibleFunction.getLink().getRecords()
 		tagName = possibleFunction.getTag()
 	default:
@@ -964,51 +969,53 @@ func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, dest
 	writeToCode("% end copy \n")
 }
 
-// func (v *codeGenVisitor) visitDot(n *dotNode) {
-// 	tagleft := ""
-// 	switch n.getLeftMostChild().(type) {
-// 	case *varNode:
-// 		id := n.getLeftMostChild().getTable().getSingleEntry().getName()
-// 		entry := v.functionScopelink.getEntry(
-// 			map[int]interface{}{
-// 				FILTER_KIND: VARIABLE,
-// 				FILTER_NAME: id,
-// 			},
-// 		)
-// 		if entry == nil {
-// 			tagleft = "nonesenseTag"
-// 		} else {
-// 			tagleft = entry.getTag()
-// 		}
+func (v *codeGenVisitor) visitDot(n *dotNode) {
+	switch n.getLeftMostChild().(type) {
+	case *varNode:
+		_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
+		if err != nil {
+			panic(err)
+		}
+		_, _, leftagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
+		if err != nil {
+			panic(err)
+		}
+		destReg, err := globalregisterPool.Get()
+		if err != nil {
+			panic(err)
+		}
 
-// 	default:
-// 		panic("never happen")
+		writeToCode("%begin dot offsetting\n")
+		switch n.getParent().(type) {
+		case *varNode:
+			typeInfo := n.getTable().getRecords()[0].getType().String()
+			//certified lhs type
+			id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
+			class := v.getGlobalTable().getEntry(map[int]interface{}{
+				FILTER_KIND: CLASS,
+				FILTER_NAME: typeInfo,
+			})
+			if class == nil {
+				fmt.Println("how?")
+				os.Exit(1)
+			}
+			_, offset, found := recursivelySearchForIdWithOffset(class.getLink(), id)
+			if !found {
+				panic("not now")
+			}
 
-// 	}
-// 	mytag, _, err := getSomeTag(n.getTable())
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	writeToCode("%begin dot offsetting\n")
-// 	switch n.getParent().(type) {
-// 	case *varNode:
-// 		typeInfo := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
-// 		id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
-// 		class := v.getGlobalTable().getEntry(map[int]interface{}{
-// 			FILTER_KIND: CLASS,
-// 			FILTER_NAME: typeInfo,
-// 		})
-// 		if class == nil {
-// 			fmt.Println("how?")
-// 			os.Exit(1)
-// 		}
-// 		_, offset, found := recursivelySearchForIdWithOffset(class.getLink(), id)
-// 		fmt.Println(-offset)
-// 		fmt.Println(found)
-// 	}
-// 	writeToCode("%end dot offsetting\n")
+			codeBlock := fmt.Sprint("", fmt.Sprintf("lw %s,%d(r14)\n", destReg.String(), leftagOffset))
+			temp := "addi %s,%s,%d\n"
+			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf(temp, destReg.String(), destReg.String(), offset))
+			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
+			writeToCode(codeBlock)
+			globalregisterPool.Put(destReg)
 
-// }
+		}
+		writeToCode("%end dot offsetting\n")
+	}
+
+}
 
 func recursivelySearchForIdWithOffset(classTable *symbolTable, identifier string) (*symbolTableRecord, int, bool) {
 	record := classTable.getEntry(
