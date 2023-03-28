@@ -1,7 +1,7 @@
 class man{
       attribute x:integer;
       attribute h:integer;
-      attribute amounts:integer[10];
+      attribute amounts:integer[5];
     // public function evaluate:(y: integer) => man;
     public constructor: (A: integer, B: integer,C:integer,D:integer,E:integer);
 };
@@ -16,23 +16,30 @@ function man::constructor(A: integer, B: integer,C:integer,D:integer,E:integer){
     z.x=A;
     z.h=B;
     
-    z.amounts[9]=C;
-    z.amounts[8]=D;
-    z.amounts[7]=E;
-
-     z.amounts[6]=C+10;
-    z.amounts[5]=D+10;
-    z.amounts[4]=E+10;
+    z.amounts[0]=C;
+    z.amounts[1]=D;
+    z.amounts[2]=E;
+    z.amounts[3]=C+10;
+    z.amounts[4]=D+10;
     return(z);
 }
 
 function main()=>void{
     localvar z:man(2,3,10,20,30);
+    localvar y:man(10,9,5,4,3);
     write(z.x);
     write(z.h);
     localvar index:integer;
-    while(index<>10){
+    while(index<>5){
         write(z.amounts[index]);
+        index=index+1;
+    };
+    index=0;
+    write(0);
+     write(y.x);
+    write(y.h);
+     while(index<>5){
+        write(y.amounts[index]);
         index=index+1;
     };
 }
