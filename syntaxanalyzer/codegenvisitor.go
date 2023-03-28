@@ -860,7 +860,7 @@ func (v *codeGenVisitor) visitLocalVarDecl(n *localVarNode) {
 				}
 				size = size * getDimensions(concType)
 				//fmt.Println("tag:", tagType, ",offset:", tagOffset, "SIZE:", size, "type:", concType)
-				initateCopy(tagOffset, tagType, size, calledFunctionTable[paramStart].getOffset(), TEMP_VAR, currFuncOffset+calledFunctionTable[paramStart].getSize(), currFuncOffset)
+				initateCopy(tagOffset, tagType, size, calledFunctionTable[paramStart].getOffset(), TEMP_VAR, currFuncOffset, 0, 0)
 			}
 			param = param.getRightSibling()
 			paramStart++
@@ -887,7 +887,7 @@ func (v *codeGenVisitor) visitLocalVarDecl(n *localVarNode) {
 			size = 0
 		}
 		size = size * getDimensions(concType)
-		initateCopy(currFuncOffset, TEMP_VAR, size, tagOffset, tagType, size, 0)
+		initateCopy(currFuncOffset, TEMP_VAR, size, tagOffset, tagType, 0, 0, 0)
 
 	}
 }
@@ -897,6 +897,10 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 	paramterList := parameterNode.getSingleEntry().getType().String()
 	currFuncOffset := v.offset
 	tagName := ""
+	classOffset := 0
+	classSize := 0
+	methodClassName := ""
+	isMethod := false
 	//calledFuncOffset := 0
 	var calledFunctionTable []*symbolTableRecord
 	switch n.getLeftMostChild().(type) {
@@ -909,11 +913,56 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 		}
 		calledFunctionTable = possibleFunction.getLink().getRecords()
 		tagName = possibleFunction.getTag()
-	default:
-		panic("no")
+	case *dotNode:
+		methodName := n.getLeftMostChild().getTable().getRecords()[0].getName()
+		objectClass := n.getLeftMostChild().getTable().getRecords()[0].getType().typeInfo
+		class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: objectClass}).getLink()
+		if class == nil {
+			panic("nooo")
+		}
+		classOffset = 0
+		found := true
+		possibleFunction, _, className := recursivelySearchForFunction(objectClass, class, methodName, paramterList, basicCompare)
+		if objectClass != className {
+			classOffset, found = getClassOffset(class, className)
+			if !found {
+				panic("nooo")
+			}
+		}
+		if possibleFunction == nil {
+			panic("no shouldnt")
+		}
+		globalTableEntry := fmt.Sprint(className, typeSepeator, possibleFunction.getName())
+		possibleFunction, _ = searchForFunction(globalTableEntry, v.getGlobalTable(), paramterList, basicCompare)
+		if possibleFunction == nil {
+			panic("no shouldnt")
+		}
+		tagName = possibleFunction.getTag()
+		isMethod = true
+		methodClassName = className
+		calledFunctionTable = possibleFunction.getLink().getRecords()
 
 	}
-	paramStart := 2
+	paramStart := 0
+	if isMethod {
+		_, tagType, tagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
+		if err != nil {
+			panic(err)
+		}
+		size, err := sizeOf(methodClassName)
+		if err != nil {
+			panic("nooo")
+		}
+		classSize = size
+		//move object to call space
+		initateCopy(tagOffset, tagType, size, calledFunctionTable[2].getOffset(), TEMP_VAR, currFuncOffset, classOffset, 0)
+
+		paramStart = 3
+
+	} else {
+		paramStart = 2
+
+	}
 
 	param := parameterNode.getLeftMostChild()
 	for param != nil {
@@ -931,7 +980,7 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 			}
 			size = size * getDimensions(concType)
 			//fmt.Println("tag:", tagType, ",offset:", tagOffset, "SIZE:", size, "type:", concType)
-			initateCopy(tagOffset, tagType, size, calledFunctionTable[paramStart].getOffset(), TEMP_VAR, currFuncOffset+calledFunctionTable[paramStart].getSize(), currFuncOffset)
+			initateCopy(tagOffset, tagType, size, calledFunctionTable[paramStart].getOffset(), TEMP_VAR, currFuncOffset, 0, 0)
 		}
 		param = param.getRightSibling()
 		paramStart++
@@ -949,7 +998,15 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 		size = 0
 	}
 	size = size * getDimensions(concType)
-	initateCopy(currFuncOffset, TEMP_VAR, size, tagOffset, tagType, size, 0)
+	initateCopy(currFuncOffset, TEMP_VAR, size, tagOffset, tagType, 0, 0, 0)
+	if isMethod {
+		_, tagType, tagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
+		if err != nil {
+			panic(err)
+		}
+		//move mutated object back
+		initateCopy(currFuncOffset+size+4, TEMP_VAR, classSize, tagOffset, tagType, 0, 0, classOffset)
+	}
 
 }
 
@@ -964,10 +1021,10 @@ func (v *codeGenVisitor) visitReturn(n *returnNode) {
 		size = 0
 	}
 	size = size * getDimensions(concType)
-	initateCopy(tagOffset, tagType, size, 0, TEMP_VAR, 0, 0)
+	initateCopy(tagOffset, tagType, size, 0, TEMP_VAR, 0, 0, 0)
 
 }
-func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, destinationOffset int, destinationOffsetType string, destSize int, calledOffset int) {
+func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, destinationOffset int, destinationOffsetType string, calledOffset int, sourceObjOffset int, destObjOffset int) {
 
 	registerb, err := globalregisterPool.Get()
 	if err != nil {
@@ -1006,6 +1063,7 @@ func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, dest
 		code = fmt.Sprint(code, "%set ptr\n")
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", ptrReg.String(), sourceOffset))
 		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", ptrReg.String(), ptrReg.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,%d\n", ptrReg.String(), ptrReg.String(), sourceObjOffset))
 	} else {
 		code = fmt.Sprint(code, "%read direct value\n")
 		code = fmt.Sprint(code, fmt.Sprintf("add %s,r0,r14\n", ptrReg.String()))
@@ -1016,6 +1074,7 @@ func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, dest
 		code = fmt.Sprint(code, "%set ptr\n")
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", registerb.String(), destinationOffset+calledOffset))
 		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", registerb.String(), registerb.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,%d\n", registerb.String(), registerb.String(), destObjOffset))
 		code = fmt.Sprint(code, fmt.Sprintf("addi %s,r14,%d\n", registerb.String(), calledOffset))
 	} else {
 		code = fmt.Sprint(code, "%read direct value\n")
@@ -1048,6 +1107,11 @@ func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, dest
 }
 
 func (v *codeGenVisitor) visitDot(n *dotNode) {
+	switch n.getParent().(type) {
+	default:
+	case *functionCall:
+
+	}
 	switch n.getLeftMostChild().(type) {
 	case *varNode:
 		_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
@@ -1087,9 +1151,15 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf(temp, destReg.String(), destReg.String(), offset))
 			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
 			writeToCode(codeBlock)
-			globalregisterPool.Put(destReg)
+
+		case *functionCall:
+			codeBlock := fmt.Sprint("", fmt.Sprintf("lw %s,%d(r14)\n", destReg.String(), leftagOffset))
+			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
+			writeToCode(codeBlock)
 
 		}
+
+		globalregisterPool.Put(destReg)
 		writeToCode("%end dot offsetting\n")
 	}
 
@@ -1117,4 +1187,22 @@ func recursivelySearchForIdWithOffset(classTable *symbolTable, identifier string
 		}
 	}
 	return nil, 0, false
+}
+
+func getClassOffset(classTable *symbolTable, identifier string) (int, bool) {
+	inheritedClasses := classTable.getEntries(
+		map[int]interface{}{
+			FILTER_KIND: CLASS,
+		},
+	)
+	for _, class := range inheritedClasses {
+		if class.getName() == identifier {
+			return class.getOffset(), true
+		}
+		off, found := getClassOffset(class.getLink(), identifier)
+		if found {
+			return class.getOffset() + off, found
+		}
+	}
+	return 0, false
 }

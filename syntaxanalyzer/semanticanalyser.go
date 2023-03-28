@@ -273,6 +273,15 @@ func CalculateClassSize(className string, symbTable *symbolTable) int {
 		if record.getKind() == VARIABLE {
 			typeInfo = record.getType().String()
 		}
+		if record.getKind() == FUNCDECL {
+			size := 0
+			record.setSize(size)
+			if i == 0 {
+				record.setOffset(0)
+			} else {
+				record.setOffset((records[i-1].getSize()) + (records[i-1].getOffset()))
+			}
+		}
 
 		if record.getKind() == VARIABLE || record.getKind() == CLASS {
 			baseType := getBaseType(typeInfo)
@@ -658,7 +667,7 @@ func searchForFunction(name string, globaltable *symbolTable, paramterList strin
 	return calledFunction, returnType
 
 }
-func recursivelySearchForFunction(classTable *symbolTable, identifier string, paramterList string, compare func(string, string) bool) (*symbolTableRecord, string) {
+func recursivelySearchForFunction(className string, classTable *symbolTable, identifier string, paramterList string, compare func(string, string) bool) (*symbolTableRecord, string, string) {
 	entries := classTable.getEntries(
 		map[int]interface{}{
 			FILTER_NAME: identifier,
@@ -676,7 +685,7 @@ func recursivelySearchForFunction(classTable *symbolTable, identifier string, pa
 			parameterType := funcType[index+1:]
 			if compare(parameterType, paramterList) {
 				calledFunction = function
-				return calledFunction, returnType
+				return calledFunction, returnType, className
 			}
 		}
 
@@ -686,13 +695,15 @@ func recursivelySearchForFunction(classTable *symbolTable, identifier string, pa
 			FILTER_KIND: CLASS,
 		},
 	)
+
 	for _, class := range inheritedClasses {
-		record, returnType := recursivelySearchForFunction(class.getLink(), identifier, paramterList, compare)
+		name := class.getName()
+		record, returnType, name := recursivelySearchForFunction(name, class.getLink(), identifier, paramterList, compare)
 		if record != nil {
-			return record, returnType
+			return record, returnType, name
 		}
 	}
-	return nil, ""
+	return nil, "", className
 }
 
 func (v *typeCheckVisitor) visitMult(n *multNode) {
@@ -801,12 +812,12 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 				n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 				return
 			}
-			function, returnType := recursivelySearchForFunction(c, id, paramterList, basicCompare)
+			function, returnType, _ := recursivelySearchForFunction(functionName[0], c, id, paramterList, basicCompare)
 			if function != nil {
 				n.getTable().addRecord(newRecord("return", "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
 				return
 			}
-			function, returnType = recursivelySearchForFunction(c, id, paramterList, matchVariableArraysCompare)
+			function, returnType, _ = recursivelySearchForFunction(functionName[0], c, id, paramterList, matchVariableArraysCompare)
 			if function != nil {
 				n.getTable().addRecord(newRecord("return", "return", "", n.getLineNumber(), newTypeRecord(returnType), nil))
 				return
@@ -845,9 +856,9 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 			return
 		}
-		calledFunction, returnType := recursivelySearchForFunction(c, id, paramterList, basicCompare)
+		calledFunction, returnType, _ := recursivelySearchForFunction(varType, c, id, paramterList, basicCompare)
 		if calledFunction == nil {
-			calledFunction, returnType = recursivelySearchForFunction(c, id, paramterList, matchVariableArraysCompare)
+			calledFunction, returnType, _ = recursivelySearchForFunction(varType, c, id, paramterList, matchVariableArraysCompare)
 		}
 		if calledFunction == nil {
 			saveError(n.getLineNumber(), functionNotDeclaredWithSignatureError, id, varType)

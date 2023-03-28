@@ -135,7 +135,7 @@ func (v *memAllocVisitor) visitIndiceList(n *indiceListNode) {
 }
 func (v *memAllocVisitor) visitDot(n *dotNode) {
 	switch n.getParent().(type) {
-	case *varNode:
+	default:
 		typeInfo := n.getParent().getTable().getSingleEntry().getType().String()
 		tag := getUniqueOffsetTag()
 		recordA := newRecord(tag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
@@ -148,8 +148,8 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 		recordA.setTag(tag)
 		n.getTable().addRecord(recordA)
 		v.functionScopelink.addRecord(recordA)
-	default:
-		panic("not yet implemented functions")
+		// default:
+		// 	panic("not yet implemented functions")
 	}
 
 }
@@ -291,33 +291,52 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 func (v *memAllocVisitor) visitFuncCall(n *functionCall) {
 	tag := generateNamedTag("functioncall")
 	paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()
+	returnType := ""
+	var possibleFunction *symbolTableRecord
 	switch n.getLeftMostChild().(type) {
 	case *idNode:
 		id := fmt.Sprint(typeSepeator, n.getLeftMostChild().(*idNode).identifier)
-		possibleFunction, returnType := searchForFunction(id, v.getGlobalTable(), paramterList, basicCompare)
+		possibleFunction, returnType = searchForFunction(id, v.getGlobalTable(), paramterList, basicCompare)
 		if possibleFunction == nil {
 			possibleFunction, returnType = searchForFunction(id, v.getGlobalTable(), paramterList, matchVariableArraysCompare)
 		}
-		if possibleFunction == nil {
-			recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
-			size, _ := sizeOf(TYPE_ERR)
-			recordA.setSize(size)
-			v.functionScopelink.addRecord(recordA)
-			return
 
+	case *dotNode:
+		class := n.getLeftMostChild().getTable().getRecords()[0].getType().String()
+		methodName := n.getLeftMostChild().getLeftMostChild().getRightSibling().(*idNode).identifier
+		entry := v.gloablTable.getEntry(
+			map[int]interface{}{
+				FILTER_KIND: CLASS,
+				FILTER_NAME: class,
+			},
+		)
+		if entry == nil {
+			panic("never happen")
 		}
-		recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(returnType), nil)
-		baseType := getBaseType(returnType)
-		size, err := sizeOf(baseType)
-		if err != nil {
-			size = 0
+		possibleFunction, returnType, _ = recursivelySearchForFunction(class, entry.getLink(), methodName, paramterList, basicCompare)
+		if possibleFunction == nil {
+			possibleFunction, returnType, _ = recursivelySearchForFunction(class, entry.getLink(), methodName, paramterList, matchVariableArraysCompare)
 		}
-		size = size * getDimensions(returnType)
-		recordA.setSize(size)
-		recordA.setTag(tag)
-		v.functionScopelink.addRecord(recordA)
-		n.getTable().addRecord(recordA)
 
 	}
+	if possibleFunction == nil {
+		recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		size, _ := sizeOf(TYPE_ERR)
+		recordA.setSize(size)
+		v.functionScopelink.addRecord(recordA)
+		return
+
+	}
+	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(returnType), nil)
+	baseType := getBaseType(returnType)
+	size, err := sizeOf(baseType)
+	if err != nil {
+		size = 0
+	}
+	size = size * getDimensions(returnType)
+	recordA.setSize(size)
+	recordA.setTag(tag)
+	v.functionScopelink.addRecord(recordA)
+	n.getTable().addRecord(recordA)
 
 }
