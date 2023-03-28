@@ -445,6 +445,26 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	}
 
 	if entry == nil {
+		callScope := v.scope
+		function := strings.Split(callScope, "~")[0]
+		functionNameParts := strings.Split(function, typeSepeator)
+
+		if functionNameParts[0] != "" && functionNameParts[0] != "constructor" {
+			classEntry := v.getGlobalTable().getEntry(
+				map[int]interface{}{
+					FILTER_KIND: CLASS,
+					FILTER_NAME: functionNameParts[0],
+				},
+			)
+			if classEntry == nil {
+				panic("shouldnt")
+			}
+			entry, _, _ = recursivelySearchForIdWithOffset(classEntry.getLink(), varId)
+
+		}
+	}
+
+	if entry == nil {
 		switch n.getParent().getLeftMostChild().(type) {
 		case *idNode:
 			fmt.Println("not defined var")
@@ -691,9 +711,41 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 				},
 			)
 		}
+
 		if entry == nil {
-			tagleftOffsetSize = 900
-			panic("no")
+			callScope := v.scope
+			function := strings.Split(callScope, "~")[0]
+			typeInfo := strings.Split(callScope, "~")[1]
+			functionNameParts := strings.Split(function, typeSepeator)
+			returnType := ""
+			returnMarkerIndex := strings.IndexRune(typeInfo, ':')
+			if returnMarkerIndex == -1 {
+				panic("shouldnt")
+			}
+			returnType = typeInfo[0:returnMarkerIndex]
+			retSize, err := sizeOf(returnType)
+			if err != nil {
+				panic("should exist")
+			}
+
+			if functionNameParts[0] != "" && functionNameParts[0] != "constructor" {
+				entry := v.getGlobalTable().getEntry(
+					map[int]interface{}{
+						FILTER_KIND: CLASS,
+						FILTER_NAME: functionNameParts[0],
+					},
+				)
+				if entry == nil {
+					panic("shouldnt")
+				}
+				_, offset, exist := recursivelySearchForIdWithOffset(entry.getLink(), id)
+				if !exist {
+					panic("shouldnt")
+				}
+				tagleftOffsetSize = offset + 4 + retSize				//obj location is retuen size + return addr+(the member offset)
+			} else {
+				panic("shouldnt")
+			}
 		} else {
 			tagleftOffsetSize = entry.getOffset()
 		}
@@ -1005,6 +1057,13 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 			panic(err)
 		}
 		//move mutated object back
+		// fmt.Println("currfuncstackoffset",currFuncOffset)
+		// fmt.Println("returnTypeSize",size)
+		// fmt.Println("objoffset",classOffset)
+		// fmt.Println("objptr",tagOffset)
+		// fmt.Println("classSize",classSize)
+		// fmt.Println("tag:",tagType)
+		writeToCode("%begin copy back object\n")
 		initateCopy(currFuncOffset+size+4, TEMP_VAR, classSize, tagOffset, tagType, 0, 0, classOffset)
 	}
 
@@ -1075,7 +1134,9 @@ func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, dest
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", registerb.String(), destinationOffset+calledOffset))
 		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", registerb.String(), registerb.String()))
 		code = fmt.Sprint(code, fmt.Sprintf("addi %s,%s,%d\n", registerb.String(), registerb.String(), destObjOffset))
-		code = fmt.Sprint(code, fmt.Sprintf("addi %s,r14,%d\n", registerb.String(), calledOffset))
+		//code = fmt.Sprint(code, fmt.Sprintf("addi %s,r14,%d\n", registerb.String(), calledOffset))
+		fmt.Println("should only be called for objects copy")
+		//only for object?
 	} else {
 		code = fmt.Sprint(code, "%read direct value\n")
 		code = fmt.Sprint(code, fmt.Sprintf("add %s,r0,r14\n", registerb.String()))
