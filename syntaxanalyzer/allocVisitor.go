@@ -168,6 +168,7 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 				FILTER_NAME: name,
 			},
 		)
+
 		if entry == nil {
 			if entry = v.functionScopelink.getEntry(map[int]interface{}{FILTER_KIND: "parameter", FILTER_NAME: name}); entry == nil {
 				funcName := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_LINK: v.functionScopelink}).getName()
@@ -185,6 +186,7 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 		}
 		size = size * getDimensions(typeInfo)
 		entry.setSize(size)
+		n.getTable().addRecord(entry)
 	}
 
 }

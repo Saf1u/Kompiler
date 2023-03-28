@@ -815,6 +815,83 @@ func (v *codeGenVisitor) visitFuncDef(n *funcDefNode) {
 
 }
 
+func (v *codeGenVisitor) visitLocalVarDecl(n *localVarNode) {
+	paramlist := n.getLeftMostChild().getRightSibling().getRightSibling()
+	switch paramlist.(type) {
+	default:
+	case *paramListNode:
+
+		paramterList := paramlist.getSingleEntry().getType().String()
+		currFuncOffset := v.offset
+		tagName := ""
+		var varId string
+		//calledFuncOffset := 0
+		var calledFunctionTable []*symbolTableRecord
+		switch n.getLeftMostChild().getRightSibling().(type) {
+		case *typeNode:
+			id := fmt.Sprint(n.getLeftMostChild().getRightSibling().(*typeNode).typeName, typeSepeator, "constructor")
+			varId = n.getLeftMostChild().(*idNode).identifier
+			possibleFunction, _ := searchForFunction(id, v.getGlobalTable(), paramterList, basicCompare)
+			//calledFuncOffset = possibleFunction.getOffset()
+			if possibleFunction == nil {
+				panic("no shouldnt")
+			}
+			calledFunctionTable = possibleFunction.getLink().getRecords()
+			tagName = possibleFunction.getTag()
+		default:
+			panic("no")
+
+		}
+		paramStart := 2
+
+		param := paramlist.getLeftMostChild()
+		for param != nil {
+			switch param.(type) {
+			case *epsilonNode:
+			default:
+				_, tagType, tagOffset, _, concType, err := getSomeTag(param.getTable())
+				if err != nil {
+					panic(err)
+				}
+				baseType := getBaseType(concType)
+				size, err := sizeOf(baseType)
+				if err != nil {
+					size = 0
+				}
+				size = size * getDimensions(concType)
+				//fmt.Println("tag:", tagType, ",offset:", tagOffset, "SIZE:", size, "type:", concType)
+				initateCopy(tagOffset, tagType, size, calledFunctionTable[paramStart].getOffset(), TEMP_VAR, currFuncOffset+calledFunctionTable[paramStart].getSize(), currFuncOffset)
+			}
+			param = param.getRightSibling()
+			paramStart++
+		}
+		writeToCode(fmt.Sprintf("addi r14,r14,%d\n", currFuncOffset))
+		writeToCode(fmt.Sprintf("jl r15, %s\n", tagName))
+		writeToCode(fmt.Sprintf("subi r14,r14,%d\n", currFuncOffset))
+		entry := v.functionScopelink.getEntry(
+			map[int]interface{}{
+				FILTER_KIND: VARIABLE,
+				FILTER_NAME: varId,
+			},
+		)
+		if entry == nil {
+			panic("nooo")
+		}
+		tagType := TEMP_VAR
+		tagOffset := entry.getOffset()
+		concType := entry.getType().String()
+
+		baseType := getBaseType(concType)
+		size, err := sizeOf(baseType)
+		if err != nil {
+			size = 0
+		}
+		size = size * getDimensions(concType)
+		initateCopy(currFuncOffset, TEMP_VAR, size, tagOffset, tagType, size, 0)
+
+	}
+}
+
 func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 	parameterNode := n.getLeftMostChild().getRightSibling()
 	paramterList := parameterNode.getSingleEntry().getType().String()

@@ -1,20 +1,38 @@
 class man{
-     attribute x:integer;
+      attribute x:integer;
       attribute h:integer;
-     public function evaluate:(y: integer) => man;
-    public constructor: (A: integer, B: integer, C: integer);
+      attribute amounts:integer[10];
+    // public function evaluate:(y: integer) => man;
+    public constructor: (A: integer, B: integer,C:integer,D:integer,E:integer);
 };
 
-function man::evaluate(y:integer)=>man{
+/*function man::evaluate(y:integer)=>man{
     localvar z:man;
     return(z);
-}
+}*/
 
-function man::constructor(A: integer, B: integer, C: integer){
+function man::constructor(A: integer, B: integer,C:integer,D:integer,E:integer){
     localvar z:man;
+    z.x=A;
+    z.h=B;
+    
+    z.amounts[9]=C;
+    z.amounts[8]=D;
+    z.amounts[7]=E;
+
+     z.amounts[6]=C+10;
+    z.amounts[5]=D+10;
+    z.amounts[4]=E+10;
     return(z);
 }
 
 function main()=>void{
-    localvar z:man(2,3,4);
+    localvar z:man(2,3,10,20,30);
+    write(z.x);
+    write(z.h);
+    localvar index:integer;
+    while(index<>10){
+        write(z.amounts[index]);
+        index=index+1;
+    };
 }
