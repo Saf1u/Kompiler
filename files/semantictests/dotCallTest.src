@@ -1,0 +1,20 @@
+class man{
+     attribute x:integer;
+      attribute h:integer;
+     public function evaluate:(y: integer) => man;
+    public constructor: (A: integer, B: integer, C: integer);
+};
+
+function man::evaluate(y:integer)=>man{
+    localvar z:man;
+    return(z);
+}
+
+function man::constructor(A: integer, B: integer, C: integer){
+    localvar z:man;
+    return(z);
+}
+
+function main()=>void{
+    localvar z:man(2,3,4);
+}

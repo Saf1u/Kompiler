@@ -143,7 +143,7 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 		if err != nil {
 			panic("shouldnt happen")
 		}
-		
+
 		recordA.setSize(size)
 		recordA.setTag(tag)
 		n.getTable().addRecord(recordA)
@@ -151,7 +151,6 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 	default:
 		panic("not yet implemented functions")
 	}
-
 
 }
 
@@ -210,6 +209,7 @@ func (v *memAllocVisitor) visitFuncDef(n *funcDefNode) {
 	if globalTableLink == nil {
 		panic("something went wrong")
 	}
+
 	records := n.getTable().getRecords()
 
 	for i, record := range records {
@@ -230,7 +230,7 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 	switch n.getParent().(type) {
 	case *funcDefNode:
 		funcName := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_LINK: v.functionScopelink}).getName()
-		nameParts := strings.Split(funcName, "|")
+		nameParts := strings.Split(funcName, typeSepeator)
 		name := n.getTable().getSingleEntry().getName()
 		index := strings.IndexRune(name, ':')
 		name = name[:index]
@@ -238,7 +238,7 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 		className := ""
 		retType := name
 		if retType == "" {
-			if nameParts[0] != "" {
+			if nameParts[0] != "" && nameParts[1] == "constructor" {
 				retType = nameParts[0]
 			} else {
 				retType = TYPE_ERR
@@ -248,6 +248,7 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 			generateSelfRef = true
 			className = nameParts[0]
 		}
+
 		baseType := getBaseType(retType)
 		size, err := sizeOf(baseType)
 		if err != nil {
@@ -267,10 +268,13 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 		}
 		if generateSelfRef {
 			selfRef := generateNamedTag("self")
-			self := newRecord(selfRef, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(className), nil)
-			ptrSize, _ := sizeOf("ptr")
+			self := newRecord(selfRef, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(className), nil)
+			classSize, err := sizeOf(className)
+			if err != nil {
+				panic(err)
+			}
 			self.setTag(selfRef)
-			self.setSize(ptrSize)
+			self.setSize(classSize)
 			v.functionScopelink.addtoStart(self)
 		}
 		regToJumpTo.setSize(ptrSize)
