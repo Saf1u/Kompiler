@@ -33,8 +33,10 @@ function man::mutateX(y: integer)=>integer{
     return(x);
 }
 function man::mutateAmount(pos:integer,val:integer)=>integer{
+    localvar old:integer;
+    old=amounts[pos];
     amounts[pos]=val;
-    return(amounts[pos]);
+    return(old);
 }
 /*function fan::evaluatefan(y:integer)=>integer{
     return(6);
@@ -74,18 +76,25 @@ function main()=>void{
   write(z.amounts[3]);
   write(z.amounts[4]);
 
-  z.mutateAmount(0,90);
-  z.mutateAmount(1,70);
-  z.mutateAmount(2,220);
-  z.mutateAmount(3,720);
-  z.mutateAmount(4,120);
+  localvar index:integer;
+
+  index=z.mutateAmount(0,90);
+  write(index);
+  index=z.mutateAmount(1,70);
+  write(index);
+  index=z.mutateAmount(2,220);
+  write(index);
+  index=z.mutateAmount(3,720);
+  write(index);
+  index=z.mutateAmount(4,120);
+  write(index);
 
   write(z.amounts[0]);
   write(z.amounts[1]);
   write(z.amounts[2]);
   write(z.amounts[3]);
   write(z.amounts[4]);
-  
+
  write(z.x);
  write(z.h);
   
