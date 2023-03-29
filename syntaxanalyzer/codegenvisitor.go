@@ -390,6 +390,37 @@ func (v *codeGenVisitor) visitIntlit(n *intLitNode) {
 
 func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	//writeToCode(fmt.Sprintf("addi %s,r0,0\n", v.destReg))
+	callScope := v.scope
+	function := strings.Split(callScope, "~")[0]
+	functionNameParts := strings.Split(function, typeSepeator)
+	_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+
+	regWithOne, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	destReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	regWithTag, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	regWithRunningMul, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		globalregisterPool.Put(regWithRunningMul)
+		globalregisterPool.Put(regWithOne)
+		globalregisterPool.Put(regWithTag)
+		globalregisterPool.Put(destReg)
+	}()
+	code := ""
 	writeToCode("% begin generating indice offseting\n")
 	sibling := n.getParent().getLeftMostChild()
 	varId := ""
@@ -397,6 +428,12 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	switch sibling.(type) {
 	case *idNode:
 		varId = sibling.(*idNode).identifier
+		if varId == "self" && functionNameParts[0] != "" {
+			code = fmt.Sprint(code, fmt.Sprintf("sw %d(r14),r0\n", offsetTagStack))
+			writeToCode(code)
+			writeToCode("% done generating indice offseting\n")
+			return
+		}
 		entry = v.functionScopelink.getEntry(map[int]interface{}{FILTER_KIND: VARIABLE, FILTER_NAME: varId})
 		if entry == nil {
 			entry = v.functionScopelink.getEntry(map[int]interface{}{FILTER_KIND: "parameter", FILTER_NAME: varId})
@@ -449,24 +486,6 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 
 	}
 
-	code := ""
-	_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
-	if err != nil {
-		panic(err)
-	}
-
-	regWithOne, err := globalregisterPool.Get()
-	if err != nil {
-		panic(err)
-	}
-	destReg, err := globalregisterPool.Get()
-	if err != nil {
-		panic(err)
-	}
-	regWithTag, err := globalregisterPool.Get()
-	if err != nil {
-		panic(err)
-	}
 	code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,1\n", regWithOne.String()))
 	typeInfo := entry.getType().String()
 	index := strings.IndexRune(typeInfo, '[')
@@ -474,16 +493,6 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	if err != nil {
 		panic(err)
 	}
-	regWithRunningMul, err := globalregisterPool.Get()
-	if err != nil {
-		panic(err)
-	}
-	defer func() {
-		globalregisterPool.Put(regWithRunningMul)
-		globalregisterPool.Put(regWithOne)
-		globalregisterPool.Put(regWithTag)
-		globalregisterPool.Put(destReg)
-	}()
 	code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,0\n", destReg.String()))
 	if index == -1 {
 		code = fmt.Sprint(code, fmt.Sprintf("sw %d(r14),r0\n", offsetTagStack))
@@ -694,9 +703,13 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 				if entry == nil {
 					panic("shouldnt")
 				}
-				_, offset, exist := recursivelySearchForIdWithOffset(entry.getLink(), id)
-				if !exist {
-					panic("shouldnt")
+				var offset int
+				var exist bool
+				if id != "self" {
+					_, offset, exist = recursivelySearchForIdWithOffset(entry.getLink(), id)
+					if !exist {
+						panic("shouldnt")
+					}
 				}
 				tagleftOffsetSize = offset + 4 + retSize //obj location is retuen size + return addr+(the member offset)
 			} else {

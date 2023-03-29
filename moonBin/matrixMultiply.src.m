@@ -1999,7 +1999,7 @@ add r10,r0,r14
 addi r10,r10,160
 %read direct value
 add r11,r0,r14
-addi r11,r11,564
+addi r11,r11,576
 %set position counter
 mul r8,r0,r0
 beginCopy45
@@ -2026,7 +2026,7 @@ add r12,r0,r14
 addi r12,r12,164
 %read direct value
 add r8,r0,r14
-addi r8,r8,568
+addi r8,r8,580
 %set position counter
 mul r10,r0,r0
 beginCopy46
@@ -2053,7 +2053,7 @@ add r11,r0,r14
 addi r11,r11,168
 %read direct value
 add r10,r0,r14
-addi r10,r10,572
+addi r10,r10,584
 %set position counter
 mul r12,r0,r0
 beginCopy47
@@ -2080,7 +2080,7 @@ add r8,r0,r14
 addi r8,r8,172
 %read direct value
 add r12,r0,r14
-addi r12,r12,576
+addi r12,r12,588
 %set position counter
 mul r11,r0,r0
 beginCopy48
@@ -2107,7 +2107,7 @@ add r10,r0,r14
 addi r10,r10,176
 %read direct value
 add r11,r0,r14
-addi r11,r11,580
+addi r11,r11,592
 %set position counter
 mul r8,r0,r0
 beginCopy49
@@ -2134,7 +2134,7 @@ add r12,r0,r14
 addi r12,r12,180
 %read direct value
 add r8,r0,r14
-addi r8,r8,584
+addi r8,r8,596
 %set position counter
 mul r10,r0,r0
 beginCopy50
@@ -2161,7 +2161,7 @@ add r11,r0,r14
 addi r11,r11,184
 %read direct value
 add r10,r0,r14
-addi r10,r10,588
+addi r10,r10,600
 %set position counter
 mul r12,r0,r0
 beginCopy51
@@ -2188,7 +2188,7 @@ add r8,r0,r14
 addi r8,r8,188
 %read direct value
 add r12,r0,r14
-addi r12,r12,592
+addi r12,r12,604
 %set position counter
 mul r11,r0,r0
 beginCopy52
@@ -2215,7 +2215,7 @@ add r10,r0,r14
 addi r10,r10,192
 %read direct value
 add r11,r0,r14
-addi r11,r11,596
+addi r11,r11,608
 %set position counter
 mul r8,r0,r0
 beginCopy53
@@ -2232,9 +2232,9 @@ bnz r12,beginCopy53
 
 endCopy53
 % end copy 
-addi r14,r14,524
+addi r14,r14,536
 jl r15, fnMatrixconstructor1
-subi r14,r14,524
+subi r14,r14,536
 %check if size is zero if yes, leave
 addi r11,r0,36
 bz r11,endCopy54
@@ -2242,7 +2242,7 @@ bz r11,endCopy54
 %set left and right ptrs
 %read direct value
 add r12,r0,r14
-addi r12,r12,524
+addi r12,r12,536
 %read direct value
 add r8,r0,r14
 addi r8,r8,124
@@ -2613,192 +2613,206 @@ add r6,r6,r12
 sw 336(r14),r6
 % end var offset calculation
 % begin generating indice offseting
-addi r12,r0,1
-addi r6,r0,0
 sw 340(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r6,r0,112
+addi r6,r0,40
 lw r11,340(r14)
  add r6,r6,r11
 sw 344(r14),r6
 % end var offset calculation
+%begin dot offsetting
+lw r11,344(r14)
+addi r11,r11,0
+sw 348(r14),r11
+%end dot offsetting
 % begin generating indice offseting
 addi r11,r0,1
 addi r6,r0,0
-sw 348(r14),r0
+sw 352(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r6,r0,120
-lw r12,348(r14)
+addi r6,r0,112
+lw r12,352(r14)
  add r6,r6,r12
-sw 352(r14),r6
+sw 356(r14),r6
 % end var offset calculation
 % begin generating indice offseting
 addi r12,r0,1
 addi r6,r0,0
-lw r11,352(r14)
-add r11,r14,r11
-lw r11,0(r11)
-muli r7,r12,4
-mul r7,r11,r7
-add r6,r6,r7
-lw r11,344(r14)
-add r11,r14,r11
-lw r11,0(r11)
-muli r7,r12,4
-mul r7,r11,r7
-muli r7,r7,3
-add r6,r6,r7
-sw 356(r14),r6
+sw 360(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r6,r0,40
-lw r11,356(r14)
+addi r6,r0,120
+lw r11,360(r14)
  add r6,r6,r11
-sw 360(r14),r6
+sw 364(r14),r6
 % end var offset calculation
 % begin generating indice offseting
 addi r11,r0,1
 addi r6,r0,0
-sw 364(r14),r0
+lw r12,364(r14)
+add r12,r14,r12
+lw r12,0(r12)
+muli r7,r11,4
+mul r7,r12,r7
+add r6,r6,r7
+lw r12,356(r14)
+add r12,r14,r12
+lw r12,0(r12)
+muli r7,r11,4
+mul r7,r12,r7
+muli r7,r7,3
+add r6,r6,r7
+sw 368(r14),r6
 % done generating indice offseting
 % begin var offset calculation
-addi r6,r0,76
-lw r12,364(r14)
- add r6,r6,r12
-sw 368(r14),r6
-% end var offset calculation
-%begin dot offsetting
 lw r12,368(r14)
-addi r12,r12,0
-sw 372(r14),r12
-%end dot offsetting
+lw r6,348(r14)
+add r6,r6,r12
+sw 372(r14),r6
+% end var offset calculation
 % begin generating indice offseting
 addi r12,r0,1
 addi r6,r0,0
 sw 376(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r6,r0,120
+addi r6,r0,76
 lw r11,376(r14)
  add r6,r6,r11
 sw 380(r14),r6
 % end var offset calculation
+%begin dot offsetting
+lw r11,380(r14)
+addi r11,r11,0
+sw 384(r14),r11
+%end dot offsetting
 % begin generating indice offseting
 addi r11,r0,1
 addi r6,r0,0
-sw 384(r14),r0
+sw 388(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r6,r0,116
-lw r12,384(r14)
+addi r6,r0,120
+lw r12,388(r14)
  add r6,r6,r12
-sw 388(r14),r6
+sw 392(r14),r6
 % end var offset calculation
 % begin generating indice offseting
 addi r12,r0,1
 addi r6,r0,0
-lw r11,388(r14)
-add r11,r14,r11
-lw r11,0(r11)
-muli r7,r12,4
-mul r7,r11,r7
-add r6,r6,r7
-lw r11,380(r14)
-add r11,r14,r11
-lw r11,0(r11)
-muli r7,r12,4
-mul r7,r11,r7
-muli r7,r7,3
-add r6,r6,r7
-sw 392(r14),r6
+sw 396(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-lw r11,392(r14)
-lw r6,372(r14)
-add r6,r6,r11
-sw 396(r14),r6
+addi r6,r0,116
+lw r11,396(r14)
+ add r6,r6,r11
+sw 400(r14),r6
+% end var offset calculation
+% begin generating indice offseting
+addi r11,r0,1
+addi r6,r0,0
+lw r12,400(r14)
+add r12,r14,r12
+lw r12,0(r12)
+muli r7,r11,4
+mul r7,r12,r7
+add r6,r6,r7
+lw r12,392(r14)
+add r12,r14,r12
+lw r12,0(r12)
+muli r7,r11,4
+mul r7,r12,r7
+muli r7,r7,3
+add r6,r6,r7
+sw 404(r14),r6
+% done generating indice offseting
+% begin var offset calculation
+lw r12,404(r14)
+lw r6,384(r14)
+add r6,r6,r12
+sw 408(r14),r6
 % end var offset calculation
 % begin mult op 
-lw r7,360(r14)
+lw r7,372(r14)
 add r7,r14,r7
-lw r11,0(r7)
-lw r7,396(r14)
+lw r12,0(r7)
+lw r7,408(r14)
 add r7,r14,r7
 lw r6,0(r7)
-mul r12,r11,r6
-sw 400(r14),r12
+mul r11,r12,r6
+sw 412(r14),r11
 % end mult op 
 % begin generating indice offseting
 addi r7,r0,1
-addi r12,r0,0
-sw 404(r14),r0
-% done generating indice offseting
-% begin var offset calculation
-addi r12,r0,124
-lw r6,404(r14)
- add r12,r12,r6
-sw 408(r14),r12
-% end var offset calculation
-%begin dot offsetting
-lw r6,408(r14)
-addi r6,r6,0
-sw 412(r14),r6
-%end dot offsetting
-% begin generating indice offseting
-addi r6,r0,1
-addi r12,r0,0
+addi r11,r0,0
 sw 416(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r12,r0,112
-lw r7,416(r14)
- add r12,r12,r7
-sw 420(r14),r12
+addi r11,r0,124
+lw r6,416(r14)
+ add r11,r11,r6
+sw 420(r14),r11
+% end var offset calculation
+%begin dot offsetting
+lw r6,420(r14)
+addi r6,r6,0
+sw 424(r14),r6
+%end dot offsetting
+% begin generating indice offseting
+addi r6,r0,1
+addi r11,r0,0
+sw 428(r14),r0
+% done generating indice offseting
+% begin var offset calculation
+addi r11,r0,112
+lw r7,428(r14)
+ add r11,r11,r7
+sw 432(r14),r11
 % end var offset calculation
 % begin generating indice offseting
 addi r7,r0,1
-addi r12,r0,0
-sw 424(r14),r0
+addi r11,r0,0
+sw 436(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r12,r0,116
-lw r6,424(r14)
- add r12,r12,r6
-sw 428(r14),r12
+addi r11,r0,116
+lw r6,436(r14)
+ add r11,r11,r6
+sw 440(r14),r11
 % end var offset calculation
 % begin generating indice offseting
 addi r6,r0,1
-addi r12,r0,0
-lw r7,428(r14)
+addi r11,r0,0
+lw r7,440(r14)
 add r7,r14,r7
 lw r7,0(r7)
-muli r11,r6,4
-mul r11,r7,r11
-add r12,r12,r11
-lw r7,420(r14)
+muli r12,r6,4
+mul r12,r7,r12
+add r11,r11,r12
+lw r7,432(r14)
 add r7,r14,r7
 lw r7,0(r7)
-muli r11,r6,4
-mul r11,r7,r11
-muli r11,r11,3
-add r12,r12,r11
-sw 432(r14),r12
+muli r12,r6,4
+mul r12,r7,r12
+muli r12,r12,3
+add r11,r11,r12
+sw 444(r14),r11
 % done generating indice offseting
 % begin var offset calculation
-lw r7,432(r14)
-lw r12,412(r14)
-add r12,r12,r7
-sw 436(r14),r12
+lw r7,444(r14)
+lw r11,424(r14)
+add r11,r11,r7
+sw 448(r14),r11
 % end var offset calculation
 % begin add op 
-lw r7,400(r14)
-lw r11,436(r14)
-add r11,r14,r11
-lw r12,0(r11)
-add r6,r7,r12
-sw 440(r14),r6
+lw r7,412(r14)
+lw r12,448(r14)
+add r12,r14,r12
+lw r11,0(r12)
+add r6,r7,r11
+sw 452(r14),r6
 % end add op 
 % begin assignment 
 %check if size is zero if yes, leave
@@ -2808,18 +2822,18 @@ bz r5,endCopy60
 %set left and right ptrs
 %read direct value
 add r6,r0,r14
-addi r6,r6,440
-lw r11,336(r14)
-add r11,r14,r11
+addi r6,r6,452
+lw r12,336(r14)
+add r12,r14,r12
 %set position counter
 mul r7,r0,r0
 beginCopy60
 %move data via register
-lw r12,0(r6)
-sw 0(r11),r12
+lw r11,0(r6)
+sw 0(r12),r11
 %increment registers
 addi r6,r6,4
-addi r11,r11,4
+addi r12,r12,4
 addi r7,r7,4
 %branch out if done
 subi r5,r7,4
@@ -2830,61 +2844,61 @@ endCopy60
 % begin generating indice offseting
 addi r7,r0,1
 addi r5,r0,0
-sw 444(r14),r0
+sw 456(r14),r0
 % done generating indice offseting
 % begin var offset calculation
 addi r5,r0,120
-lw r12,444(r14)
- add r5,r5,r12
-sw 448(r14),r5
+lw r11,456(r14)
+ add r5,r5,r11
+sw 460(r14),r5
 % end var offset calculation
 % begin generating indice offseting
-addi r12,r0,1
+addi r11,r0,1
 addi r5,r0,0
-sw 452(r14),r0
+sw 464(r14),r0
 % done generating indice offseting
 % begin var offset calculation
 addi r5,r0,120
-lw r7,452(r14)
+lw r7,464(r14)
  add r5,r5,r7
-sw 456(r14),r5
+sw 468(r14),r5
 % end var offset calculation
 % begin intlit storeage
 addi r7,r0,1
-sw 460(r14), r7
+sw 472(r14), r7
 % done intlit storeage
 % begin add op 
-lw r6,456(r14)
+lw r6,468(r14)
 add r6,r14,r6
 lw r7,0(r6)
-lw r5,460(r14)
-add r12,r7,r5
-sw 464(r14),r12
+lw r5,472(r14)
+add r11,r7,r5
+sw 476(r14),r11
 % end add op 
 % begin assignment 
 %check if size is zero if yes, leave
-addi r11,r0,4
-bz r11,endCopy61
+addi r12,r0,4
+bz r12,endCopy61
 
 %set left and right ptrs
 %read direct value
-add r12,r0,r14
-addi r12,r12,464
-lw r6,448(r14)
+add r11,r0,r14
+addi r11,r11,476
+lw r6,460(r14)
 add r6,r14,r6
 %set position counter
 mul r7,r0,r0
 beginCopy61
 %move data via register
-lw r5,0(r12)
+lw r5,0(r11)
 sw 0(r6),r5
 %increment registers
-addi r12,r12,4
+addi r11,r11,4
 addi r6,r6,4
 addi r7,r7,4
 %branch out if done
-subi r11,r7,4
-bnz r11,beginCopy61
+subi r12,r7,4
+bnz r12,beginCopy61
 
 endCopy61
 % end assignment 
@@ -2893,61 +2907,61 @@ endwhile3
 % begin generating indice offseting
 addi r10,r0,1
 addi r7,r0,0
-sw 468(r14),r0
+sw 480(r14),r0
 % done generating indice offseting
 % begin var offset calculation
 addi r7,r0,116
-lw r11,468(r14)
- add r7,r7,r11
-sw 472(r14),r7
+lw r12,480(r14)
+ add r7,r7,r12
+sw 484(r14),r7
 % end var offset calculation
 % begin generating indice offseting
-addi r11,r0,1
+addi r12,r0,1
 addi r7,r0,0
-sw 476(r14),r0
+sw 488(r14),r0
 % done generating indice offseting
 % begin var offset calculation
 addi r7,r0,116
-lw r10,476(r14)
+lw r10,488(r14)
  add r7,r7,r10
-sw 480(r14),r7
+sw 492(r14),r7
 % end var offset calculation
 % begin intlit storeage
 addi r10,r0,1
-sw 484(r14), r10
+sw 496(r14), r10
 % done intlit storeage
 % begin add op 
-lw r5,480(r14)
+lw r5,492(r14)
 add r5,r14,r5
 lw r10,0(r5)
-lw r7,484(r14)
-add r11,r10,r7
-sw 488(r14),r11
+lw r7,496(r14)
+add r12,r10,r7
+sw 500(r14),r12
 % end add op 
 % begin assignment 
 %check if size is zero if yes, leave
-addi r12,r0,4
-bz r12,endCopy62
+addi r11,r0,4
+bz r11,endCopy62
 
 %set left and right ptrs
 %read direct value
-add r11,r0,r14
-addi r11,r11,488
-lw r5,472(r14)
+add r12,r0,r14
+addi r12,r12,500
+lw r5,484(r14)
 add r5,r14,r5
 %set position counter
 mul r10,r0,r0
 beginCopy62
 %move data via register
-lw r7,0(r11)
+lw r7,0(r12)
 sw 0(r5),r7
 %increment registers
-addi r11,r11,4
+addi r12,r12,4
 addi r5,r5,4
 addi r10,r10,4
 %branch out if done
-subi r12,r10,4
-bnz r12,beginCopy62
+subi r11,r10,4
+bnz r11,beginCopy62
 
 endCopy62
 % end assignment 
@@ -2956,61 +2970,61 @@ endwhile2
 % begin generating indice offseting
 addi r9,r0,1
 addi r10,r0,0
-sw 492(r14),r0
+sw 504(r14),r0
 % done generating indice offseting
 % begin var offset calculation
 addi r10,r0,112
-lw r12,492(r14)
- add r10,r10,r12
-sw 496(r14),r10
+lw r11,504(r14)
+ add r10,r10,r11
+sw 508(r14),r10
 % end var offset calculation
 % begin generating indice offseting
-addi r12,r0,1
+addi r11,r0,1
 addi r10,r0,0
-sw 500(r14),r0
+sw 512(r14),r0
 % done generating indice offseting
 % begin var offset calculation
 addi r10,r0,112
-lw r9,500(r14)
+lw r9,512(r14)
  add r10,r10,r9
-sw 504(r14),r10
+sw 516(r14),r10
 % end var offset calculation
 % begin intlit storeage
 addi r9,r0,1
-sw 508(r14), r9
+sw 520(r14), r9
 % done intlit storeage
 % begin add op 
-lw r7,504(r14)
+lw r7,516(r14)
 add r7,r14,r7
 lw r9,0(r7)
-lw r10,508(r14)
-add r12,r9,r10
-sw 512(r14),r12
+lw r10,520(r14)
+add r11,r9,r10
+sw 524(r14),r11
 % end add op 
 % begin assignment 
 %check if size is zero if yes, leave
-addi r11,r0,4
-bz r11,endCopy63
+addi r12,r0,4
+bz r12,endCopy63
 
 %set left and right ptrs
 %read direct value
-add r12,r0,r14
-addi r12,r12,512
-lw r7,496(r14)
+add r11,r0,r14
+addi r11,r11,524
+lw r7,508(r14)
 add r7,r14,r7
 %set position counter
 mul r9,r0,r0
 beginCopy63
 %move data via register
-lw r10,0(r12)
+lw r10,0(r11)
 sw 0(r7),r10
 %increment registers
-addi r12,r12,4
+addi r11,r11,4
 addi r7,r7,4
 addi r9,r9,4
 %branch out if done
-subi r11,r9,4
-bnz r11,beginCopy63
+subi r12,r9,4
+bnz r12,beginCopy63
 
 endCopy63
 % end assignment 
@@ -3019,39 +3033,39 @@ endwhile1
 % begin generating indice offseting
 addi r8,r0,1
 addi r9,r0,0
-sw 516(r14),r0
+sw 528(r14),r0
 % done generating indice offseting
 % begin var offset calculation
 addi r9,r0,124
-lw r11,516(r14)
- add r9,r9,r11
-sw 520(r14),r9
+lw r12,528(r14)
+ add r9,r9,r12
+sw 532(r14),r9
 % end var offset calculation
 %check if size is zero if yes, leave
-addi r12,r0,36
-bz r12,endCopy64
+addi r11,r0,36
+bz r11,endCopy64
 
 %set left and right ptrs
 %set ptr
-lw r9,520(r14)
+lw r9,532(r14)
 add r9,r14,r9
 addi r9,r9,0
 %read direct value
-add r11,r0,r14
-addi r11,r11,0
+add r12,r0,r14
+addi r12,r12,0
 %set position counter
 mul r10,r0,r0
 beginCopy64
 %move data via register
 lw r8,0(r9)
-sw 0(r11),r8
+sw 0(r12),r8
 %increment registers
 addi r9,r9,4
-addi r11,r11,4
+addi r12,r12,4
 addi r10,r10,4
 %branch out if done
-subi r12,r10,36
-bnz r12,beginCopy64
+subi r11,r10,36
+bnz r11,beginCopy64
 
 endCopy64
 % end copy 
@@ -3062,57 +3076,116 @@ jr r15
 fnMatrixprint1
 sw 0(r14),r15
 % begin generating indice offseting
-addi r10,r0,1
-addi r12,r0,0
 sw 48(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r12,r0,40
-lw r8,48(r14)
- add r12,r12,r8
-sw 52(r14),r12
-% end var offset calculation
-% begin intlit storeage
-addi r8,r0,0
-sw 56(r14), r8
-% done intlit storeage
-% begin assignment 
-%check if size is zero if yes, leave
 addi r11,r0,4
-bz r11,endCopy65
+lw r8,48(r14)
+ add r11,r11,r8
+sw 52(r14),r11
+% end var offset calculation
+%begin dot offsetting
+lw r8,52(r14)
+addi r8,r8,0
+sw 56(r14),r8
+%end dot offsetting
+%check if size is zero if yes, leave
+addi r12,r0,36
+bz r12,endCopy65
 
 %set left and right ptrs
+%set ptr
+lw r11,56(r14)
+add r11,r14,r11
+addi r11,r11,0
 %read direct value
-add r12,r0,r14
-addi r12,r12,56
-lw r8,52(r14)
-add r8,r14,r8
+add r8,r0,r14
+addi r8,r8,216
 %set position counter
 mul r9,r0,r0
 beginCopy65
 %move data via register
-lw r10,0(r12)
+lw r10,0(r11)
 sw 0(r8),r10
 %increment registers
-addi r12,r12,4
+addi r11,r11,4
 addi r8,r8,4
 addi r9,r9,4
 %branch out if done
-subi r11,r9,4
-bnz r11,beginCopy65
+subi r12,r9,36
+bnz r12,beginCopy65
 
 endCopy65
-% end assignment 
+% end copy 
+addi r14,r14,212
+jl r15, fnMatrixTestSelf1
+subi r14,r14,212
+%check if size is zero if yes, leave
+addi r8,r0,0
+bz r8,endCopy66
+
+%set left and right ptrs
+%read direct value
+add r12,r0,r14
+addi r12,r12,212
+%read direct value
+add r9,r0,r14
+addi r9,r9,60
+%set position counter
+mul r11,r0,r0
+beginCopy66
+%move data via register
+lw r10,0(r12)
+sw 0(r9),r10
+%increment registers
+addi r12,r12,4
+addi r9,r9,4
+addi r11,r11,4
+%branch out if done
+subi r8,r11,0
+bnz r8,beginCopy66
+
+endCopy66
+% end copy 
+%begin copy back object
+%check if size is zero if yes, leave
+addi r9,r0,36
+bz r9,endCopy67
+
+%set left and right ptrs
+%read direct value
+add r8,r0,r14
+addi r8,r8,216
+%set ptr
+lw r11,56(r14)
+add r11,r14,r11
+addi r11,r11,0
+%set position counter
+mul r12,r0,r0
+beginCopy67
+%move data via register
+lw r10,0(r8)
+sw 0(r11),r10
+%increment registers
+addi r8,r8,4
+addi r11,r11,4
+addi r12,r12,4
+%branch out if done
+subi r9,r12,36
+bnz r9,beginCopy67
+
+endCopy67
+% end copy 
 % begin generating indice offseting
-addi r9,r0,1
-addi r11,r0,0
+addi r12,r0,1
+addi r9,r0,0
 sw 60(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r11,r0,44
+addi r9,r0,40
 lw r10,60(r14)
- add r11,r11,r10
-sw 64(r14),r11
+ add r9,r9,r10
+sw 64(r14),r9
 % end var offset calculation
 % begin intlit storeage
 addi r10,r0,0
@@ -3120,102 +3193,101 @@ sw 68(r14), r10
 % done intlit storeage
 % begin assignment 
 %check if size is zero if yes, leave
-addi r8,r0,4
-bz r8,endCopy66
+addi r11,r0,4
+bz r11,endCopy68
+
+%set left and right ptrs
+%read direct value
+add r9,r0,r14
+addi r9,r9,68
+lw r10,64(r14)
+add r10,r14,r10
+%set position counter
+mul r8,r0,r0
+beginCopy68
+%move data via register
+lw r12,0(r9)
+sw 0(r10),r12
+%increment registers
+addi r9,r9,4
+addi r10,r10,4
+addi r8,r8,4
+%branch out if done
+subi r11,r8,4
+bnz r11,beginCopy68
+
+endCopy68
+% end assignment 
+% begin generating indice offseting
+addi r8,r0,1
+addi r11,r0,0
+sw 72(r14),r0
+% done generating indice offseting
+% begin var offset calculation
+addi r11,r0,44
+lw r12,72(r14)
+ add r11,r11,r12
+sw 76(r14),r11
+% end var offset calculation
+% begin intlit storeage
+addi r12,r0,0
+sw 80(r14), r12
+% done intlit storeage
+% begin assignment 
+%check if size is zero if yes, leave
+addi r10,r0,4
+bz r10,endCopy69
 
 %set left and right ptrs
 %read direct value
 add r11,r0,r14
-addi r11,r11,68
-lw r10,64(r14)
-add r10,r14,r10
+addi r11,r11,80
+lw r12,76(r14)
+add r12,r14,r12
 %set position counter
-mul r12,r0,r0
-beginCopy66
+mul r9,r0,r0
+beginCopy69
 %move data via register
-lw r9,0(r11)
-sw 0(r10),r9
+lw r8,0(r11)
+sw 0(r12),r8
 %increment registers
 addi r11,r11,4
-addi r10,r10,4
 addi r12,r12,4
+addi r9,r9,4
 %branch out if done
-subi r8,r12,4
-bnz r8,beginCopy66
+subi r10,r9,4
+bnz r10,beginCopy69
 
-endCopy66
+endCopy69
 % end assignment 
 gowhile4
 % begin generating indice offseting
-addi r8,r0,1
-addi r9,r0,0
-sw 72(r14),r0
+addi r10,r0,1
+addi r8,r0,0
+sw 84(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r9,r0,40
-lw r11,72(r14)
- add r9,r9,r11
-sw 76(r14),r9
+addi r8,r0,40
+lw r11,84(r14)
+ add r8,r8,r11
+sw 88(r14),r8
 % end var offset calculation
 % begin intlit storeage
 addi r11,r0,3
-sw 80(r14), r11
+sw 92(r14), r11
 % done intlit storeage
 % begin RELOP op 
-lw r10,76(r14)
-add r10,r14,r10
-lw r11,0(r10)
-lw r9,80(r14)
-cne r8,r11,r9
-sw 84(r14),r8
+lw r12,88(r14)
+add r12,r14,r12
+lw r11,0(r12)
+lw r8,92(r14)
+cne r10,r11,r8
+sw 96(r14),r10
 % end relop op 
-lw r12,84(r14)
-bz r12,endwhile4
+lw r9,96(r14)
+bz r9,endwhile4
 % begin generating indice offseting
-addi r10,r0,1
-addi r8,r0,0
-sw 88(r14),r0
-% done generating indice offseting
-% begin var offset calculation
-addi r8,r0,44
-lw r9,88(r14)
- add r8,r8,r9
-sw 92(r14),r8
-% end var offset calculation
-% begin intlit storeage
-addi r9,r0,0
-sw 96(r14), r9
-% done intlit storeage
-% begin assignment 
-%check if size is zero if yes, leave
-addi r7,r0,4
-bz r7,endCopy67
-
-%set left and right ptrs
-%read direct value
-add r8,r0,r14
-addi r8,r8,96
-lw r9,92(r14)
-add r9,r14,r9
-%set position counter
-mul r11,r0,r0
-beginCopy67
-%move data via register
-lw r10,0(r8)
-sw 0(r9),r10
-%increment registers
-addi r8,r8,4
-addi r9,r9,4
-addi r11,r11,4
-%branch out if done
-subi r7,r11,4
-bnz r7,beginCopy67
-
-endCopy67
-% end assignment 
-gowhile5
-% begin generating indice offseting
-addi r7,r0,1
+addi r12,r0,1
 addi r10,r0,0
 sw 100(r14),r0
 % done generating indice offseting
@@ -3226,209 +3298,292 @@ lw r8,100(r14)
 sw 104(r14),r10
 % end var offset calculation
 % begin intlit storeage
-addi r8,r0,3
+addi r8,r0,0
 sw 108(r14), r8
 % done intlit storeage
+% begin assignment 
+%check if size is zero if yes, leave
+addi r7,r0,4
+bz r7,endCopy70
+
+%set left and right ptrs
+%read direct value
+add r10,r0,r14
+addi r10,r10,108
+lw r8,104(r14)
+add r8,r14,r8
+%set position counter
+mul r11,r0,r0
+beginCopy70
+%move data via register
+lw r12,0(r10)
+sw 0(r8),r12
+%increment registers
+addi r10,r10,4
+addi r8,r8,4
+addi r11,r11,4
+%branch out if done
+subi r7,r11,4
+bnz r7,beginCopy70
+
+endCopy70
+% end assignment 
+gowhile5
+% begin generating indice offseting
+addi r7,r0,1
+addi r12,r0,0
+sw 112(r14),r0
+% done generating indice offseting
+% begin var offset calculation
+addi r12,r0,44
+lw r10,112(r14)
+ add r12,r12,r10
+sw 116(r14),r12
+% end var offset calculation
+% begin intlit storeage
+addi r10,r0,3
+sw 120(r14), r10
+% done intlit storeage
 % begin RELOP op 
-lw r9,104(r14)
-add r9,r14,r9
-lw r8,0(r9)
-lw r10,108(r14)
-cne r7,r8,r10
-sw 112(r14),r7
+lw r8,116(r14)
+add r8,r14,r8
+lw r10,0(r8)
+lw r12,120(r14)
+cne r7,r10,r12
+sw 124(r14),r7
 % end relop op 
-lw r11,112(r14)
+lw r11,124(r14)
 bz r11,endwhile5
 % begin generating indice offseting
-addi r9,r0,1
-addi r7,r0,0
-sw 116(r14),r0
-% done generating indice offseting
-% begin var offset calculation
-addi r7,r0,40
-lw r10,116(r14)
- add r7,r7,r10
-sw 120(r14),r7
-% end var offset calculation
-% begin generating indice offseting
-addi r10,r0,1
-addi r7,r0,0
-sw 124(r14),r0
-% done generating indice offseting
-% begin var offset calculation
-addi r7,r0,44
-lw r9,124(r14)
- add r7,r7,r9
-sw 128(r14),r7
-% end var offset calculation
-% begin generating indice offseting
-addi r9,r0,1
-addi r7,r0,0
-lw r10,128(r14)
-add r10,r14,r10
-lw r10,0(r10)
-muli r8,r9,4
-mul r8,r10,r8
-add r7,r7,r8
-lw r10,120(r14)
-add r10,r14,r10
-lw r10,0(r10)
-muli r8,r9,4
-mul r8,r10,r8
-muli r8,r8,3
-add r7,r7,r8
-sw 132(r14),r7
+sw 128(r14),r0
 % done generating indice offseting
 % begin var offset calculation
 addi r7,r0,4
-lw r10,132(r14)
- add r7,r7,r10
-sw 136(r14),r7
+lw r12,128(r14)
+ add r7,r7,r12
+sw 132(r14),r7
 % end var offset calculation
-% begin write 
-lw r10,136(r14)
-add r10,r14,r10
-lw r10,0(r10)
-%s move ptr to prevent mem corruption
-addi r14,r14,268
-sw -8(r14),r10
-addi r10,r0,buffer
-sw -12(r14),r10
-jl r15,intstr
-sw -8(r14),r13
-jl r15,putstr
-addi r10,r0,newline
-sw -8(r14),r10
-jl r15,putstr
-%s move ptr to og location 
-addi r14,r14,-268
-% end write
+%begin dot offsetting
+lw r12,132(r14)
+addi r12,r12,0
+sw 136(r14),r12
+%end dot offsetting
 % begin generating indice offseting
-addi r10,r0,1
+addi r12,r0,1
 addi r7,r0,0
 sw 140(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r7,r0,44
-lw r9,140(r14)
- add r7,r7,r9
+addi r7,r0,40
+lw r8,140(r14)
+ add r7,r7,r8
 sw 144(r14),r7
 % end var offset calculation
 % begin generating indice offseting
-addi r9,r0,1
+addi r8,r0,1
 addi r7,r0,0
 sw 148(r14),r0
 % done generating indice offseting
 % begin var offset calculation
 addi r7,r0,44
-lw r10,148(r14)
- add r7,r7,r10
+lw r12,148(r14)
+ add r7,r7,r12
 sw 152(r14),r7
 % end var offset calculation
-% begin intlit storeage
-addi r10,r0,1
-sw 156(r14), r10
-% done intlit storeage
-% begin add op 
+% begin generating indice offseting
+addi r12,r0,1
+addi r7,r0,0
 lw r8,152(r14)
 add r8,r14,r8
-lw r10,0(r8)
-lw r7,156(r14)
-add r9,r10,r7
-sw 160(r14),r9
+lw r8,0(r8)
+muli r10,r12,4
+mul r10,r8,r10
+add r7,r7,r10
+lw r8,144(r14)
+add r8,r14,r8
+lw r8,0(r8)
+muli r10,r12,4
+mul r10,r8,r10
+muli r10,r10,3
+add r7,r7,r10
+sw 156(r14),r7
+% done generating indice offseting
+% begin var offset calculation
+lw r8,156(r14)
+lw r7,136(r14)
+add r7,r7,r8
+sw 160(r14),r7
+% end var offset calculation
+% begin write 
+lw r8,160(r14)
+add r8,r14,r8
+lw r8,0(r8)
+%s move ptr to prevent mem corruption
+addi r14,r14,292
+sw -8(r14),r8
+addi r8,r0,buffer
+sw -12(r14),r8
+jl r15,intstr
+sw -8(r14),r13
+jl r15,putstr
+addi r8,r0,newline
+sw -8(r14),r8
+jl r15,putstr
+%s move ptr to og location 
+addi r14,r14,-292
+% end write
+% begin generating indice offseting
+addi r8,r0,1
+addi r7,r0,0
+sw 164(r14),r0
+% done generating indice offseting
+% begin var offset calculation
+addi r7,r0,44
+lw r12,164(r14)
+ add r7,r7,r12
+sw 168(r14),r7
+% end var offset calculation
+% begin generating indice offseting
+addi r12,r0,1
+addi r7,r0,0
+sw 172(r14),r0
+% done generating indice offseting
+% begin var offset calculation
+addi r7,r0,44
+lw r8,172(r14)
+ add r7,r7,r8
+sw 176(r14),r7
+% end var offset calculation
+% begin intlit storeage
+addi r8,r0,1
+sw 180(r14), r8
+% done intlit storeage
+% begin add op 
+lw r10,176(r14)
+add r10,r14,r10
+lw r8,0(r10)
+lw r7,180(r14)
+add r12,r8,r7
+sw 184(r14),r12
 % end add op 
 % begin assignment 
 %check if size is zero if yes, leave
 addi r5,r0,4
-bz r5,endCopy68
+bz r5,endCopy71
 
 %set left and right ptrs
 %read direct value
-add r9,r0,r14
-addi r9,r9,160
-lw r8,144(r14)
-add r8,r14,r8
+add r12,r0,r14
+addi r12,r12,184
+lw r10,168(r14)
+add r10,r14,r10
 %set position counter
-mul r10,r0,r0
-beginCopy68
+mul r8,r0,r0
+beginCopy71
 %move data via register
-lw r7,0(r9)
-sw 0(r8),r7
+lw r7,0(r12)
+sw 0(r10),r7
 %increment registers
-addi r9,r9,4
-addi r8,r8,4
+addi r12,r12,4
 addi r10,r10,4
+addi r8,r8,4
 %branch out if done
-subi r5,r10,4
-bnz r5,beginCopy68
+subi r5,r8,4
+bnz r5,beginCopy71
 
-endCopy68
+endCopy71
 % end assignment 
 j gowhile5
 endwhile5
 % begin generating indice offseting
 addi r11,r0,1
-addi r10,r0,0
-sw 164(r14),r0
+addi r8,r0,0
+sw 188(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r10,r0,40
-lw r5,164(r14)
- add r10,r10,r5
-sw 168(r14),r10
+addi r8,r0,40
+lw r5,188(r14)
+ add r8,r8,r5
+sw 192(r14),r8
 % end var offset calculation
 % begin generating indice offseting
 addi r5,r0,1
-addi r10,r0,0
-sw 172(r14),r0
+addi r8,r0,0
+sw 196(r14),r0
 % done generating indice offseting
 % begin var offset calculation
-addi r10,r0,40
-lw r11,172(r14)
- add r10,r10,r11
-sw 176(r14),r10
+addi r8,r0,40
+lw r11,196(r14)
+ add r8,r8,r11
+sw 200(r14),r8
 % end var offset calculation
 % begin intlit storeage
 addi r11,r0,1
-sw 180(r14), r11
+sw 204(r14), r11
 % done intlit storeage
 % begin add op 
-lw r7,176(r14)
+lw r7,200(r14)
 add r7,r14,r7
 lw r11,0(r7)
-lw r10,180(r14)
-add r5,r11,r10
-sw 184(r14),r5
+lw r8,204(r14)
+add r5,r11,r8
+sw 208(r14),r5
 % end add op 
 % begin assignment 
 %check if size is zero if yes, leave
-addi r9,r0,4
-bz r9,endCopy69
+addi r12,r0,4
+bz r12,endCopy72
 
 %set left and right ptrs
 %read direct value
 add r5,r0,r14
-addi r5,r5,184
-lw r7,168(r14)
+addi r5,r5,208
+lw r7,192(r14)
 add r7,r14,r7
 %set position counter
 mul r11,r0,r0
-beginCopy69
+beginCopy72
 %move data via register
-lw r10,0(r5)
-sw 0(r7),r10
+lw r8,0(r5)
+sw 0(r7),r8
 %increment registers
 addi r5,r5,4
 addi r7,r7,4
 addi r11,r11,4
 %branch out if done
-subi r9,r11,4
-bnz r9,beginCopy69
+subi r12,r11,4
+bnz r12,beginCopy72
 
-endCopy69
+endCopy72
 % end assignment 
 j gowhile4
 endwhile4
+lw r15,0(r14)
+jr r15 
+%funcdef end
+%funcdef begin
+fnMatrixTestSelf1
+sw 0(r14),r15
+% begin intlit storeage
+addi r9,r0,462
+sw 40(r14), r9
+% done intlit storeage
+% begin write 
+lw r9,40(r14)
+%s move ptr to prevent mem corruption
+addi r14,r14,124
+sw -8(r14),r9
+addi r9,r0,buffer
+sw -12(r14),r9
+jl r15,intstr
+sw -8(r14),r13
+jl r15,putstr
+addi r9,r0,newline
+sw -8(r14),r9
+jl r15,putstr
+%s move ptr to og location 
+addi r14,r14,-124
+% end write
 lw r15,0(r14)
 jr r15 
 %funcdef end

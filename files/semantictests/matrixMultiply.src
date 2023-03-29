@@ -23,6 +23,7 @@ attribute matrix:integer[3][3];
 public constructor: (a: integer,b:integer,c:integer,d:integer,e:integer,f:integer,g:integer,h:integer,i:integer);
  public function multiply:(x:Matrix)=>Matrix;
  public function print:()=>void;
+ private function TestSelf:()=>void;
 };
 
  function Matrix::constructor(a: integer,b:integer,c:integer,d:integer,e:integer,f:integer,g:integer,h:integer,i:integer){
@@ -56,7 +57,7 @@ public constructor: (a: integer,b:integer,c:integer,d:integer,e:integer,f:intege
         while(j<>3){
             n=0;
             while(n<>3){
-                matrixc.matrix[i][j]=(matrix[i][n]*x.matrix[n][j])+matrixc.matrix[i][j];
+                matrixc.matrix[i][j]=(self.matrix[i][n]*x.matrix[n][j])+matrixc.matrix[i][j];
                 n=n+1;
             };
             j=j+1;
@@ -66,6 +67,7 @@ public constructor: (a: integer,b:integer,c:integer,d:integer,e:integer,f:intege
     return (matrixc);
 }
  function Matrix::print()=>void{
+    self.TestSelf();
     localvar i:integer;
     localvar j:integer;
     i=0;
@@ -73,9 +75,13 @@ public constructor: (a: integer,b:integer,c:integer,d:integer,e:integer,f:intege
     while(i<>3){
         j=0;
         while(j<>3){
-            write(matrix[i][j]);
+            write(self.matrix[i][j]);
             j=j+1;
         };
         i=i+1;
     };
+}
+
+function Matrix::TestSelf()=>void{
+    write(462);
 }
