@@ -1034,6 +1034,7 @@ bz r12,endCopy6
 %set ptr
 lw r8,708(r14)
 add r8,r14,r8
+addi r8,r8,0
 %read direct value
 add r9,r0,r14
 addi r9,r9,1036
@@ -1158,6 +1159,7 @@ bz r11,endCopy8
 %set ptr
 lw r9,760(r14)
 add r9,r14,r9
+addi r9,r9,0
 %read direct value
 add r8,r0,r14
 addi r8,r8,1036

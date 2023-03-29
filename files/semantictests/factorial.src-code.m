@@ -84,6 +84,7 @@ bz r10,endCopy2
 %set ptr
 lw r8,64(r14)
 add r8,r14,r8
+addi r8,r8,0
 %read direct value
 add r9,r0,r14
 addi r9,r9,276
