@@ -1,7 +1,8 @@
-class man isa fan{
+class man isa ram{
       attribute x:integer;
       attribute h:integer;
       attribute amounts:integer[5];
+      attribute bossman:boss[4];
      public function mutateX:(y:integer) => integer;
      public function mutateH:(y:integer) => integer;
       public function mutateAmount:(pos:integer,val:integer) => integer;
@@ -9,10 +10,37 @@ class man isa fan{
   
 };
 
-class fan {
+class boss isa president{
+public function mutateTerm:(y:integer,term:integer,run:integer) => integer;
+};
 
-attribute xfan:integer;
-//public function evaluatefan:(y: integer) => integer;
+function boss::mutateTerm(term:integer,run:integer,y: integer)=>integer{
+    office[term].mutateRun(run,y);
+    return(0);
+}
+
+class president{
+ attribute office:terms[4];
+};
+class terms{
+    attribute runs:integer[5];
+    public function mutateRun:(y:integer,pos:integer) => integer;
+};
+ function terms::mutateRun(pos:integer,val:integer) => integer{
+    runs[pos]=val;
+    return(0);
+ }
+
+class ram isa van,fan{
+attribute po:integer;
+};
+class van{
+attribute ro:integer;
+};
+
+class fan {
+attribute xfan:integer[4];
+public function mutatefan:(y: integer,val:integer) => integer;
 };
 
 class dan{
@@ -38,9 +66,13 @@ function man::mutateAmount(pos:integer,val:integer)=>integer{
     amounts[pos]=val;
     return(old);
 }
-/*function fan::evaluatefan(y:integer)=>integer{
-    return(6);
+function fan::mutatefan(y:integer,val:integer)=>integer{
+    localvar old:integer;
+    old=xfan[y];
+    xfan[y]=val;
+    return(old);
 }
+/*
 function dan::evaluatedan(y:integer)=>integer{
     return(7);
 }
@@ -62,7 +94,31 @@ function man::constructor(A: integer, B: integer,C:integer,D:integer,E:integer){
 
 function main()=>void{
    localvar z:man(9,22,10,20,30);
- write(z.x);
+   write(z.xfan[0]);
+   z.mutatefan(0,22);
+    write(z.xfan[0]);
+       write(z.xfan[1]);
+   z.mutatefan(1,922);
+    write(z.xfan[1]);
+       write(z.xfan[0]);
+        z.mutatefan(3,322);
+    write(z.xfan[3]);
+      write(z.xfan[2]);
+
+      write(-1);
+      
+      write(z.bossman[0].office[0].runs[0]);
+      z.bossman[0].mutateTerm(0,0,42);
+      z.bossman[1].mutateTerm(1,0,92);
+      z.bossman[2].mutateTerm(1,0,62);
+      z.bossman[1].mutateTerm(1,2,92);
+      z.bossman[2].mutateTerm(2,3,162);
+      write(z.bossman[0].office[0].runs[0]);
+      write(z.bossman[1].office[1].runs[0]);
+      write(z.bossman[2].office[1].runs[0]);
+      write(z.bossman[1].office[1].runs[2]);
+      write(z.bossman[2].office[2].runs[3]);
+ /*write(z.x);
    z.mutateX(49);
   write(z.x);
 
@@ -96,7 +152,7 @@ function main()=>void{
   write(z.amounts[4]);
 
  write(z.x);
- write(z.h);
+ write(z.h);*/
   
 }
 
