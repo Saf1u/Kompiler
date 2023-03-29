@@ -8,32 +8,42 @@ class legend{
 };
 
 class warrior{
-  attribute x:integer[5];
-  public function set:(index:integer,val:integer) => void;
+  //attribute x:integer[5];
+  attribute z:integer;
+  //public function set:(index:integer,val:integer) => void;
+  public function getZ:()=>integer;
 };
 function man::leg()=>legend{
     localvar y:legend;
     return(y);
 }
-function warrior::set(index:integer,val:integer)=>void{
+/*function warrior::set(index:integer,val:integer)=>void{
     x[index]=val;
+}*/
+function warrior::getZ()=>integer{
+    return(z);
 }
 
 function legend::war()=>warrior{
     localvar y:warrior;
-    y.set(0,20);
+    y.z=212;
+    /*y.set(0,20);
     y.set(1,40);
-    y.set(2,50);
+    y.set(2,50);*/
     return(y);
 }
 
 function main()=>void{
-   localvar x:man;
-    localvar w:warrior;
+   localvar person:man;
+    localvar w:integer;
+    localvar obj:warrior;
    localvar l:legend;
-    w=x.leg().war();
-    write(w.x[0]);
-    write(w.x[1]);
-    write(w.x[2]);
+    
+   // w.set(0,55);
+  w=person.leg().war().z;
+  obj=person.leg().war();
+ write(obj.z);
+write(w);
+  // write(person.leg().war().getZ());
 
 }

@@ -462,7 +462,6 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 
 	default:
 		panic("odd")
-
 	}
 
 	if entry == nil {
@@ -470,7 +469,6 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 		case *idNode:
 			fmt.Println("not defined var")
 			return
-
 		default:
 			panic("odd")
 
@@ -1153,7 +1151,7 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 
 	}
 	switch n.getLeftMostChild().(type) {
-	case *varNode:
+	case *varNode, *functionCall:
 		_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
 		if err != nil {
 			panic(err)
@@ -1193,7 +1191,7 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 			writeToCode(codeBlock)
 
 		case *functionCall:
-			codeBlock := fmt.Sprint("", fmt.Sprintf("lw %s,%d(r14)\n", destReg.String(), leftagOffset))
+			codeBlock := fmt.Sprint("", fmt.Sprintf("addi %s,r0,%d\n", destReg.String(), leftagOffset))
 			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
 			writeToCode(codeBlock)
 
@@ -1201,6 +1199,8 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 
 		globalregisterPool.Put(destReg)
 		writeToCode("%end dot offsetting\n")
+	default:
+		panic("nooo")
 	}
 
 }
