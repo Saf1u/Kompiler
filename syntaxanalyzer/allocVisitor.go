@@ -1,7 +1,10 @@
 package syntaxanalyzer
 
 import (
+	"compiler/configmap"
 	"fmt"
+	"os"
+	"sort"
 	"strings"
 )
 
@@ -198,6 +201,33 @@ func (v *memAllocVisitor) visitProgram(n *program) {
 	writeToData(fmt.Sprintf("%-20s %-7s %d\n", STACK_BASE, "res", 4096))
 	writeToData(fmt.Sprintf("%-20s %-7s %s,%d,%d,%d\n", "newline", "db", "", 13, 10, 0))
 	writeToData("align\n")
+
+	file := configmap.Get("file").(string)
+	errorFile := fmt.Sprint(file, ".outsemanticerrors")
+	symbolTableFile := fmt.Sprint(file, ".symbolTable")
+	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	symbolTable, err := os.OpenFile(symbolTableFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	sort.Slice(indexes, func(i, j int) bool {
+		return indexes[i] < indexes[j]
+	})
+
+	for _, line := range indexes {
+		errors := errorBin[line]
+		for _, error := range errors {
+			errFile.WriteString(error)
+			errFile.WriteString("\n")
+		}
+	}
+	old := os.Stdout
+	os.Stdout = symbolTable
+	v.getGlobalTable().print(10)
+	os.Stdout = old
 
 	//2KB STACK
 }

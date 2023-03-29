@@ -8,42 +8,71 @@ class legend{
 };
 
 class warrior{
-  //attribute x:integer[5];
+  attribute x:weapon[5];
   attribute z:integer;
-  //public function set:(index:integer,val:integer) => void;
+  public function set:(index:integer,val:weapon) => void;
   public function getZ:()=>integer;
 };
 function man::leg()=>legend{
     localvar y:legend;
     return(y);
 }
-/*function warrior::set(index:integer,val:integer)=>void{
+function warrior::set(index:integer,val:weapon)=>void{
     x[index]=val;
-}*/
+}
 function warrior::getZ()=>integer{
     return(z);
+}
+class weapon{
+      attribute powerLevel:integer;
+      public constructor: (A: integer);
+      public function getPowerLevel:()=>integer;
+       public function incPower:()=>void;
+};
+function weapon::constructor(A:integer){
+    localvar x:weapon;
+    x.powerLevel=A;
+    return(x);
+}
+
+function weapon::getPowerLevel()=>integer{
+    return(powerLevel);
+}
+function weapon::incPower()=>void{
+    powerLevel=powerLevel+1;
 }
 
 function legend::war()=>warrior{
     localvar y:warrior;
     y.z=212;
-    /*y.set(0,20);
-    y.set(1,40);
-    y.set(2,50);*/
+    localvar a:weapon(10);
+    localvar b:weapon(40);
+    localvar c:weapon(50);
+    y.set(0,a);
+    y.set(1,b);
+    y.set(2,c);
     return(y);
 }
 
 function main()=>void{
    localvar person:man;
-    localvar w:integer;
-    localvar obj:warrior;
-   localvar l:legend;
+   localvar w:weapon;
+   localvar p:weapon;
+   localvar j:weapon;
+
     
-   // w.set(0,55);
-  w=person.leg().war().z;
-  obj=person.leg().war();
- write(obj.z);
-write(w);
-  // write(person.leg().war().getZ());
+  w=person.leg().war().x[0];
+  p=person.leg().war().x[1];
+  j=person.leg().war().x[2];
+  w.powerLevel=22;
+  p.powerLevel=42;
+  j.powerLevel=32;
+  w.incPower();
+  p.incPower();
+  j.incPower();
+  write(w.getPowerLevel());
+  write(p.getPowerLevel());
+  write(j.getPowerLevel());
+
 
 }

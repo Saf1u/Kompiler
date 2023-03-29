@@ -1,10 +1,8 @@
 package syntaxanalyzer
 
 import (
-	"compiler/configmap"
 	"fmt"
 	"os"
-	"sort"
 	"strings"
 )
 
@@ -32,32 +30,7 @@ func (v *codeGenVisitor) propagateId(s string) {
 
 }
 func (v *codeGenVisitor) visitProgram(n *program) {
-	file := configmap.Get("file").(string)
-	errorFile := fmt.Sprint(file, ".outsemanticerrors")
-	symbolTableFile := fmt.Sprint(file, ".symbolTable")
-	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
-	if err != nil {
-		panic(err)
-	}
-	symbolTable, err := os.OpenFile(symbolTableFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
-	if err != nil {
-		panic(err)
-	}
-	sort.Slice(indexes, func(i, j int) bool {
-		return indexes[i] < indexes[j]
-	})
 
-	for _, line := range indexes {
-		errors := errorBin[line]
-		for _, error := range errors {
-			errFile.WriteString(error)
-			errFile.WriteString("\n")
-		}
-	}
-	old := os.Stdout
-	os.Stdout = symbolTable
-	v.getGlobalTable().print(10)
-	os.Stdout = old
 }
 func (v *codeGenVisitor) visitAdd(n *addNode) {
 	op := ""
@@ -1145,29 +1118,26 @@ func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, dest
 }
 
 func (v *codeGenVisitor) visitDot(n *dotNode) {
-	switch n.getParent().(type) {
-	default:
-	case *functionCall:
-
+	_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
+	if err != nil {
+		panic(err)
+	}
+	_, _, leftagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	if err != nil {
+		panic(err)
+	}
+	destReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
 	}
 	switch n.getLeftMostChild().(type) {
-	case *varNode, *functionCall:
-		_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
-		if err != nil {
-			panic(err)
-		}
-		_, _, leftagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
-		if err != nil {
-			panic(err)
-		}
-		destReg, err := globalregisterPool.Get()
-		if err != nil {
-			panic(err)
-		}
+	case *varNode:
 
 		writeToCode("%begin dot offsetting\n")
+		offset := 0
 		switch n.getParent().(type) {
 		case *varNode:
+			found := false
 			typeInfo := n.getTable().getRecords()[0].getType().String()
 			//certified lhs type
 			id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
@@ -1179,26 +1149,46 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 				fmt.Println("how?")
 				os.Exit(1)
 			}
-			_, offset, found := recursivelySearchForIdWithOffset(class.getLink(), id)
+			_, offset, found = recursivelySearchForIdWithOffset(class.getLink(), id)
 			if !found {
 				panic("not now")
 			}
-
-			codeBlock := fmt.Sprint("", fmt.Sprintf("lw %s,%d(r14)\n", destReg.String(), leftagOffset))
-			temp := "addi %s,%s,%d\n"
-			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf(temp, destReg.String(), destReg.String(), offset))
-			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
-			writeToCode(codeBlock)
-
-		case *functionCall:
-			codeBlock := fmt.Sprint("", fmt.Sprintf("addi %s,r0,%d\n", destReg.String(), leftagOffset))
-			codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
-			writeToCode(codeBlock)
-
 		}
+
+		codeBlock := fmt.Sprint("", fmt.Sprintf("lw %s,%d(r14)\n", destReg.String(), leftagOffset))
+		temp := "addi %s,%s,%d\n"
+		codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf(temp, destReg.String(), destReg.String(), offset))
+		codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
+		writeToCode(codeBlock)
 
 		globalregisterPool.Put(destReg)
 		writeToCode("%end dot offsetting\n")
+	case *functionCall:
+		offset := 0
+		switch n.getParent().(type) {
+		case *varNode:
+			found := false
+			typeInfo := n.getTable().getRecords()[0].getType().String()
+			//certified lhs type
+			id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
+			class := v.getGlobalTable().getEntry(map[int]interface{}{
+				FILTER_KIND: CLASS,
+				FILTER_NAME: typeInfo,
+			})
+			if class == nil {
+				fmt.Println("how?")
+				os.Exit(1)
+			}
+			_, offset, found = recursivelySearchForIdWithOffset(class.getLink(), id)
+			if !found {
+				panic("not now")
+			}
+		}
+		codeBlock := fmt.Sprint("", fmt.Sprintf("addi %s,r0,%d\n", destReg.String(), leftagOffset))
+		codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("addi %s,%s,%d\n", destReg.String(), destReg.String(), offset))
+		codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
+		writeToCode(codeBlock)
+
 	default:
 		panic("nooo")
 	}
