@@ -1,35 +1,53 @@
 function main()=>void{
-    localvar matrixa:integer[3][3];
-    localvar matrixc:integer[3][3];
-    localvar matrixb:integer[3][3];
-    matrixa[0][0]=10;
-    matrixa[0][1]=9;
-    matrixa[0][2]=4;
+    localvar matrixa:Matrix(10,9,4,
+                            6,71,11,
+                            2,4,5);
+    localvar matrixb:Matrix(1,11,7,
+                           12,42,21,
+                           42,2,4);
+    localvar matrixc:Matrix;
+    matrixc=matrixa.multiply(matrixb);
+    matrixc.print();
+    write(-1);
+    matrixa.print();
+    write(-1);
+    matrixb.print();
 
-    matrixa[1][0]=6;
-    matrixa[1][1]=71;
-    matrixa[1][2]=11;
-
-
-    matrixa[2][0]=2;
-    matrixa[2][1]=4;
-    matrixa[2][2]=5;
-
-    matrixb[0][0]=1;
-    matrixb[0][1]=11;
-    matrixb[0][2]=7;
-
-    matrixb[1][0]=12;
-    matrixb[1][1]=42;
-    matrixb[1][2]=21;
+    
+}
 
 
-    matrixb[2][0]=42;
-    matrixb[2][1]=2;
-    matrixb[2][2]=4;
+
+class Matrix{
+attribute matrix:integer[3][3];
+public constructor: (a: integer,b:integer,c:integer,d:integer,e:integer,f:integer,g:integer,h:integer,i:integer);
+ public function multiply:(x:Matrix)=>Matrix;
+ public function print:()=>void;
+};
+
+ function Matrix::constructor(a: integer,b:integer,c:integer,d:integer,e:integer,f:integer,g:integer,h:integer,i:integer){
+    localvar mat:Matrix;
+     mat.matrix[0][0]=a;
+     mat.matrix[0][1]=b;
+     mat.matrix[0][2]=c;
+
+     mat.matrix[1][0]=d;
+     mat.matrix[1][1]=e;
+     mat.matrix[1][2]=f;
+
+
+     mat.matrix[2][0]=g;
+     mat.matrix[2][1]=h;
+     mat.matrix[2][2]=i;
+     return(mat);
+
+}
+
+ function Matrix::multiply(x:Matrix)=>Matrix{
     localvar i:integer;
     localvar j:integer;
     localvar n:integer;
+    localvar matrixc:Matrix(0,0,0,0,0,0,0,0,0);
     i=0;
     j=0;
     n=0;
@@ -38,23 +56,26 @@ function main()=>void{
         while(j<>3){
             n=0;
             while(n<>3){
-                matrixc[i][j]=(matrixa[i][n]*matrixb[n][j])+matrixc[i][j];
+                matrixc.matrix[i][j]=(matrix[i][n]*x.matrix[n][j])+matrixc.matrix[i][j];
                 n=n+1;
             };
             j=j+1;
         };
         i=i+1;
     };
-
+    return (matrixc);
+}
+ function Matrix::print()=>void{
+    localvar i:integer;
+    localvar j:integer;
     i=0;
     j=0;
     while(i<>3){
         j=0;
         while(j<>3){
-            write(matrixc[i][j]);
+            write(matrix[i][j]);
             j=j+1;
         };
         i=i+1;
     };
-
 }
