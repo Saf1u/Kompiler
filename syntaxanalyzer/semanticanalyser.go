@@ -992,12 +992,18 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 	}
 	//was checking scope it was called in, if a method scope it searches inheritance heirarchy
 	if entry == nil {
-		classTable := v.getGlobalTable().getEntry(
+		classEntry := v.getGlobalTable().getEntry(
 			map[int]interface{}{
 				FILTER_NAME: class,
 				FILTER_KIND: CLASS,
 			},
-		).getLink()
+		)
+		if classEntry == nil {
+			saveError(n.getLineNumber(), "ERROR:  class \"%s\" does not exist:%d", class)
+			n.getTable().addRecord(newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
+			return
+		}
+		classTable := classEntry.getLink()
 		entry = recursivelySearchForId(classTable, identifier)
 	}
 	if entry == nil {

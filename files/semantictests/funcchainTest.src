@@ -1,0 +1,39 @@
+
+
+class man{
+     public function leg:() => legend;
+};
+class legend{
+    public function war:() => warrior;
+};
+
+class warrior{
+  attribute x:integer[5];
+  public function set:(index:integer,val:integer) => void;
+};
+function man::leg()=>legend{
+    localvar y:legend;
+    return(y);
+}
+function warrior::set(index:integer,val:integer)=>void{
+    x[index]=val;
+}
+
+function legend::war()=>warrior{
+    localvar y:warrior;
+    y.set(0,20);
+    y.set(1,40);
+    y.set(2,50);
+    return(y);
+}
+
+function main()=>void{
+   localvar x:man;
+    localvar w:warrior;
+   localvar l:legend;
+    w=x.leg().war();
+    write(w.x[0]);
+    write(w.x[1]);
+    write(w.x[2]);
+
+}

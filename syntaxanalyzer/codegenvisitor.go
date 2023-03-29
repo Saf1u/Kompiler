@@ -420,48 +420,49 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	writeToCode("% begin generating indice offseting\n")
 	sibling := n.getParent().getLeftMostChild()
 	varId := ""
+	var entry *symbolTableRecord
 	switch sibling.(type) {
 	case *idNode:
 		varId = sibling.(*idNode).identifier
-	case *dotNode:
-		varId = sibling.getLeftMostChild().getRightSibling().(*idNode).identifier
+		entry = v.functionScopelink.getEntry(map[int]interface{}{FILTER_KIND: VARIABLE, FILTER_NAME: varId})
+		if entry == nil {
+			entry = v.functionScopelink.getEntry(map[int]interface{}{FILTER_KIND: "parameter", FILTER_NAME: varId})
+		}
 
-	default:
-		panic("noooo!")
-	}
-	entry := v.functionScopelink.getEntry(
-		map[int]interface{}{
-			FILTER_KIND: VARIABLE,
-			FILTER_NAME: varId,
-		},
-	)
-	if entry == nil {
-		entry = v.functionScopelink.getEntry(
+		if entry == nil {
+			callScope := v.scope
+			function := strings.Split(callScope, "~")[0]
+			functionNameParts := strings.Split(function, typeSepeator)
+
+			if functionNameParts[0] != "" && functionNameParts[0] != "constructor" {
+				classEntry := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: functionNameParts[0]})
+				if classEntry == nil {
+					panic("shouldnt")
+				}
+				entry, _, _ = recursivelySearchForIdWithOffset(classEntry.getLink(), varId)
+
+			}
+		}
+	case *dotNode:
+		class := n.getParent().getLeftMostChild().getTable().getRecords()[0].getType().String()
+		id := n.getParent().getLeftMostChild().getLeftMostChild().getRightSibling().(*idNode).identifier
+		entry = v.gloablTable.getEntry(
 			map[int]interface{}{
-				FILTER_KIND: "parameter",
-				FILTER_NAME: varId,
+				FILTER_KIND: CLASS,
+				FILTER_NAME: class,
 			},
 		)
-	}
-
-	if entry == nil {
-		callScope := v.scope
-		function := strings.Split(callScope, "~")[0]
-		functionNameParts := strings.Split(function, typeSepeator)
-
-		if functionNameParts[0] != "" && functionNameParts[0] != "constructor" {
-			classEntry := v.getGlobalTable().getEntry(
-				map[int]interface{}{
-					FILTER_KIND: CLASS,
-					FILTER_NAME: functionNameParts[0],
-				},
-			)
-			if classEntry == nil {
-				panic("shouldnt")
-			}
-			entry, _, _ = recursivelySearchForIdWithOffset(classEntry.getLink(), varId)
-
+		if entry == nil {
+			panic("not now")
 		}
+		entry = recursivelySearchForId(entry.getLink(), id)
+		if entry == nil {
+			panic("not now")
+		}
+
+	default:
+		panic("odd")
+
 	}
 
 	if entry == nil {
@@ -469,22 +470,6 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 		case *idNode:
 			fmt.Println("not defined var")
 			return
-		case *dotNode:
-			class := n.getParent().getLeftMostChild().getTable().getRecords()[0].getType().String()
-			id := n.getParent().getLeftMostChild().getLeftMostChild().getRightSibling().(*idNode).identifier
-			entry = v.gloablTable.getEntry(
-				map[int]interface{}{
-					FILTER_KIND: CLASS,
-					FILTER_NAME: class,
-				},
-			)
-			if entry == nil {
-				panic("not now")
-			}
-			entry = recursivelySearchForId(entry.getLink(), id)
-			if entry == nil {
-				panic("not now")
-			}
 
 		default:
 			panic("odd")
@@ -742,7 +727,7 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 				if !exist {
 					panic("shouldnt")
 				}
-				tagleftOffsetSize = offset + 4 + retSize				//obj location is retuen size + return addr+(the member offset)
+				tagleftOffsetSize = offset + 4 + retSize //obj location is retuen size + return addr+(the member offset)
 			} else {
 				panic("shouldnt")
 			}
@@ -1057,12 +1042,6 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 			panic(err)
 		}
 		//move mutated object back
-		// fmt.Println("currfuncstackoffset",currFuncOffset)
-		// fmt.Println("returnTypeSize",size)
-		// fmt.Println("objoffset",classOffset)
-		// fmt.Println("objptr",tagOffset)
-		// fmt.Println("classSize",classSize)
-		// fmt.Println("tag:",tagType)
 		writeToCode("%begin copy back object\n")
 		initateCopy(currFuncOffset+size+4, TEMP_VAR, classSize, tagOffset, tagType, 0, 0, classOffset)
 	}

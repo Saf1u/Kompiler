@@ -93,7 +93,7 @@ function man::constructor(A: integer, B: integer,C:integer,D:integer,E:integer){
 }
 
 function main()=>void{
-   localvar z:man(9,22,10,20,30);
+   /*localvar z:man(9,22,10,20,30);
    write(z.xfan[0]);
    z.mutatefan(0,22);
     write(z.xfan[0]);
@@ -117,7 +117,7 @@ function main()=>void{
       write(z.bossman[1].office[1].runs[0]);
       write(z.bossman[2].office[1].runs[0]);
       write(z.bossman[1].office[1].runs[2]);
-      write(z.bossman[2].office[2].runs[3]);
+      write(z.bossman[2].office[2].runs[3]);*/
  /*write(z.x);
    z.mutateX(49);
   write(z.x);
