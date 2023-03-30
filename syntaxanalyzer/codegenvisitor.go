@@ -1249,3 +1249,41 @@ func getClassOffset(classTable *symbolTable, identifier string) (int, bool) {
 	}
 	return 0, false
 }
+
+// type check on read not implemented
+func (v *codeGenVisitor) visitReadStatement(n *readStatementNode) {
+	combinedOffset := 80 + v.offset
+	writeToCode("% begin read \n")
+	_, tagType, offsetTagStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
+	if err != nil {
+		panic(err)
+	}
+	locReg, err := globalregisterPool.Get()
+	if err != nil {
+		panic(err)
+	}
+	code := ""
+	code = fmt.Sprint(code, "%s move ptr to prevent mem corruption\n")
+	code = fmt.Sprint(code, fmt.Sprintf("addi r14,r14,%d\n", combinedOffset))
+	code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,%s\n", locReg.String(), PRINT_BUFFER))
+	code = fmt.Sprint(code, fmt.Sprintf("sw -8(r14),%s\n", locReg.String()))
+	code = fmt.Sprint(code, ("jl r15,getstr\n"))
+	code = fmt.Sprint(code, ("jl r15,strint\n"))
+	//res in r13
+	code = fmt.Sprint(code, "%s move ptr to og location \n")
+	code = fmt.Sprint(code, fmt.Sprintf("addi r14,r14,%d\n", -combinedOffset))
+
+	if tagType == TEMP_OFFSET {
+		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", locReg.String(), offsetTagStack))
+		code = fmt.Sprint(code, fmt.Sprintf("add %s,r14,%s\n", locReg.String(), locReg.String()))
+		code = fmt.Sprint(code, fmt.Sprintf("sw 0(%s),r13\n", locReg.String()))
+
+	} else {
+		code = fmt.Sprint(code, fmt.Sprintf("sw %d(r14),r13\n", offsetTagStack))
+	}
+
+	writeToCode(code)
+	globalregisterPool.Put(locReg)
+	writeToCode("% end read\n")
+
+}
