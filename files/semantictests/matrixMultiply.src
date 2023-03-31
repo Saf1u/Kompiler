@@ -12,6 +12,7 @@ function main()=>void{
     matrixa.print();
     write(-1);
     matrixb.print();
+    write(matrixb.matrix[3-1][1-1]);
 
     
 }

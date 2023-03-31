@@ -50,7 +50,7 @@ add r11,r0,r14
 addi r11,r11,112
 %read direct value
 add r12,r0,r14
-addi r12,r12,340
+addi r12,r12,384
 %set position counter
 mul r9,r0,r0
 beginCopy1
@@ -77,7 +77,7 @@ add r8,r0,r14
 addi r8,r8,116
 %read direct value
 add r9,r0,r14
-addi r9,r9,344
+addi r9,r9,388
 %set position counter
 mul r11,r0,r0
 beginCopy2
@@ -104,7 +104,7 @@ add r12,r0,r14
 addi r12,r12,120
 %read direct value
 add r11,r0,r14
-addi r11,r11,348
+addi r11,r11,392
 %set position counter
 mul r8,r0,r0
 beginCopy3
@@ -131,7 +131,7 @@ add r9,r0,r14
 addi r9,r9,124
 %read direct value
 add r8,r0,r14
-addi r8,r8,352
+addi r8,r8,396
 %set position counter
 mul r12,r0,r0
 beginCopy4
@@ -158,7 +158,7 @@ add r11,r0,r14
 addi r11,r11,128
 %read direct value
 add r12,r0,r14
-addi r12,r12,356
+addi r12,r12,400
 %set position counter
 mul r9,r0,r0
 beginCopy5
@@ -185,7 +185,7 @@ add r8,r0,r14
 addi r8,r8,132
 %read direct value
 add r9,r0,r14
-addi r9,r9,360
+addi r9,r9,404
 %set position counter
 mul r11,r0,r0
 beginCopy6
@@ -212,7 +212,7 @@ add r12,r0,r14
 addi r12,r12,136
 %read direct value
 add r11,r0,r14
-addi r11,r11,364
+addi r11,r11,408
 %set position counter
 mul r8,r0,r0
 beginCopy7
@@ -239,7 +239,7 @@ add r9,r0,r14
 addi r9,r9,140
 %read direct value
 add r8,r0,r14
-addi r8,r8,368
+addi r8,r8,412
 %set position counter
 mul r12,r0,r0
 beginCopy8
@@ -266,7 +266,7 @@ add r11,r0,r14
 addi r11,r11,144
 %read direct value
 add r12,r0,r14
-addi r12,r12,372
+addi r12,r12,416
 %set position counter
 mul r9,r0,r0
 beginCopy9
@@ -283,9 +283,9 @@ bnz r8,beginCopy9
 
 endCopy9
 % end copy 
-addi r14,r14,300
+addi r14,r14,344
 jl r15, fnMatrixconstructor1
-subi r14,r14,300
+subi r14,r14,344
 %check if size is zero if yes, leave
 addi r12,r0,36
 bz r12,endCopy10
@@ -293,7 +293,7 @@ bz r12,endCopy10
 %set left and right ptrs
 %read direct value
 add r8,r0,r14
-addi r8,r8,300
+addi r8,r8,344
 %read direct value
 add r9,r0,r14
 addi r9,r9,4
@@ -359,7 +359,7 @@ add r12,r0,r14
 addi r12,r12,148
 %read direct value
 add r11,r0,r14
-addi r11,r11,340
+addi r11,r11,384
 %set position counter
 mul r8,r0,r0
 beginCopy11
@@ -386,7 +386,7 @@ add r9,r0,r14
 addi r9,r9,152
 %read direct value
 add r8,r0,r14
-addi r8,r8,344
+addi r8,r8,388
 %set position counter
 mul r12,r0,r0
 beginCopy12
@@ -413,7 +413,7 @@ add r11,r0,r14
 addi r11,r11,156
 %read direct value
 add r12,r0,r14
-addi r12,r12,348
+addi r12,r12,392
 %set position counter
 mul r9,r0,r0
 beginCopy13
@@ -440,7 +440,7 @@ add r8,r0,r14
 addi r8,r8,160
 %read direct value
 add r9,r0,r14
-addi r9,r9,352
+addi r9,r9,396
 %set position counter
 mul r11,r0,r0
 beginCopy14
@@ -467,7 +467,7 @@ add r12,r0,r14
 addi r12,r12,164
 %read direct value
 add r11,r0,r14
-addi r11,r11,356
+addi r11,r11,400
 %set position counter
 mul r8,r0,r0
 beginCopy15
@@ -494,7 +494,7 @@ add r9,r0,r14
 addi r9,r9,168
 %read direct value
 add r8,r0,r14
-addi r8,r8,360
+addi r8,r8,404
 %set position counter
 mul r12,r0,r0
 beginCopy16
@@ -521,7 +521,7 @@ add r11,r0,r14
 addi r11,r11,172
 %read direct value
 add r12,r0,r14
-addi r12,r12,364
+addi r12,r12,408
 %set position counter
 mul r9,r0,r0
 beginCopy17
@@ -548,7 +548,7 @@ add r8,r0,r14
 addi r8,r8,176
 %read direct value
 add r9,r0,r14
-addi r9,r9,368
+addi r9,r9,412
 %set position counter
 mul r11,r0,r0
 beginCopy18
@@ -575,7 +575,7 @@ add r12,r0,r14
 addi r12,r12,180
 %read direct value
 add r11,r0,r14
-addi r11,r11,372
+addi r11,r11,416
 %set position counter
 mul r8,r0,r0
 beginCopy19
@@ -592,9 +592,9 @@ bnz r9,beginCopy19
 
 endCopy19
 % end copy 
-addi r14,r14,300
+addi r14,r14,344
 jl r15, fnMatrixconstructor1
-subi r14,r14,300
+subi r14,r14,344
 %check if size is zero if yes, leave
 addi r11,r0,36
 bz r11,endCopy20
@@ -602,7 +602,7 @@ bz r11,endCopy20
 %set left and right ptrs
 %read direct value
 add r9,r0,r14
-addi r9,r9,300
+addi r9,r9,344
 %read direct value
 add r8,r0,r14
 addi r8,r8,40
@@ -671,7 +671,7 @@ add r11,r14,r11
 addi r11,r11,0
 %read direct value
 add r10,r0,r14
-addi r10,r10,340
+addi r10,r10,384
 %set position counter
 mul r9,r0,r0
 beginCopy21
@@ -699,7 +699,7 @@ add r8,r14,r8
 addi r8,r8,0
 %read direct value
 add r9,r0,r14
-addi r9,r9,376
+addi r9,r9,420
 %set position counter
 mul r11,r0,r0
 beginCopy22
@@ -716,9 +716,9 @@ bnz r10,beginCopy22
 
 endCopy22
 % end copy 
-addi r14,r14,300
+addi r14,r14,344
 jl r15, fnMatrixmultiply1
-subi r14,r14,300
+subi r14,r14,344
 %check if size is zero if yes, leave
 addi r9,r0,36
 bz r9,endCopy23
@@ -726,7 +726,7 @@ bz r9,endCopy23
 %set left and right ptrs
 %read direct value
 add r10,r0,r14
-addi r10,r10,300
+addi r10,r10,344
 %read direct value
 add r11,r0,r14
 addi r11,r11,212
@@ -754,7 +754,7 @@ bz r11,endCopy24
 %set left and right ptrs
 %read direct value
 add r9,r0,r14
-addi r9,r9,340
+addi r9,r9,384
 %set ptr
 lw r8,200(r14)
 add r8,r14,r8
@@ -829,7 +829,7 @@ add r8,r14,r8
 addi r8,r8,0
 %read direct value
 add r12,r0,r14
-addi r12,r12,304
+addi r12,r12,348
 %set position counter
 mul r11,r0,r0
 beginCopy26
@@ -846,9 +846,9 @@ bnz r10,beginCopy26
 
 endCopy26
 % end copy 
-addi r14,r14,300
+addi r14,r14,344
 jl r15, fnMatrixprint1
-subi r14,r14,300
+subi r14,r14,344
 %check if size is zero if yes, leave
 addi r12,r0,0
 bz r12,endCopy27
@@ -856,7 +856,7 @@ bz r12,endCopy27
 %set left and right ptrs
 %read direct value
 add r10,r0,r14
-addi r10,r10,300
+addi r10,r10,344
 %read direct value
 add r11,r0,r14
 addi r11,r11,260
@@ -884,7 +884,7 @@ bz r11,endCopy28
 %set left and right ptrs
 %read direct value
 add r12,r0,r14
-addi r12,r12,304
+addi r12,r12,348
 %set ptr
 lw r8,256(r14)
 add r8,r14,r8
@@ -917,7 +917,7 @@ sw 264(r14),r11
 % begin write 
 lw r9,264(r14)
 %s move ptr to prevent mem corruption
-addi r14,r14,380
+addi r14,r14,424
 sw -8(r14),r9
 addi r9,r0,buffer
 sw -12(r14),r9
@@ -928,7 +928,7 @@ addi r9,r0,newline
 sw -8(r14),r9
 jl r15,putstr
 %s move ptr to og location 
-addi r14,r14,-380
+addi r14,r14,-424
 % end write
 % begin generating indice offseting
 addi r9,r0,1
@@ -957,7 +957,7 @@ add r11,r14,r11
 addi r11,r11,0
 %read direct value
 add r10,r0,r14
-addi r10,r10,304
+addi r10,r10,348
 %set position counter
 mul r12,r0,r0
 beginCopy29
@@ -974,9 +974,9 @@ bnz r8,beginCopy29
 
 endCopy29
 % end copy 
-addi r14,r14,300
+addi r14,r14,344
 jl r15, fnMatrixprint1
-subi r14,r14,300
+subi r14,r14,344
 %check if size is zero if yes, leave
 addi r10,r0,0
 bz r10,endCopy30
@@ -984,7 +984,7 @@ bz r10,endCopy30
 %set left and right ptrs
 %read direct value
 add r8,r0,r14
-addi r8,r8,300
+addi r8,r8,344
 %read direct value
 add r12,r0,r14
 addi r12,r12,280
@@ -1012,7 +1012,7 @@ bz r12,endCopy31
 %set left and right ptrs
 %read direct value
 add r10,r0,r14
-addi r10,r10,304
+addi r10,r10,348
 %set ptr
 lw r11,276(r14)
 add r11,r14,r11
@@ -1045,7 +1045,7 @@ sw 284(r14),r12
 % begin write 
 lw r9,284(r14)
 %s move ptr to prevent mem corruption
-addi r14,r14,380
+addi r14,r14,424
 sw -8(r14),r9
 addi r9,r0,buffer
 sw -12(r14),r9
@@ -1056,7 +1056,7 @@ addi r9,r0,newline
 sw -8(r14),r9
 jl r15,putstr
 %s move ptr to og location 
-addi r14,r14,-380
+addi r14,r14,-424
 % end write
 % begin generating indice offseting
 addi r9,r0,1
@@ -1085,7 +1085,7 @@ add r12,r14,r12
 addi r12,r12,0
 %read direct value
 add r8,r0,r14
-addi r8,r8,304
+addi r8,r8,348
 %set position counter
 mul r10,r0,r0
 beginCopy32
@@ -1102,9 +1102,9 @@ bnz r11,beginCopy32
 
 endCopy32
 % end copy 
-addi r14,r14,300
+addi r14,r14,344
 jl r15, fnMatrixprint1
-subi r14,r14,300
+subi r14,r14,344
 %check if size is zero if yes, leave
 addi r8,r0,0
 bz r8,endCopy33
@@ -1112,7 +1112,7 @@ bz r8,endCopy33
 %set left and right ptrs
 %read direct value
 add r11,r0,r14
-addi r11,r11,300
+addi r11,r11,344
 %read direct value
 add r10,r0,r14
 addi r10,r10,300
@@ -1140,7 +1140,7 @@ bz r10,endCopy34
 %set left and right ptrs
 %read direct value
 add r8,r0,r14
-addi r8,r8,304
+addi r8,r8,348
 %set ptr
 lw r12,296(r14)
 add r12,r14,r12
@@ -1161,6 +1161,88 @@ bnz r10,beginCopy34
 
 endCopy34
 % end copy 
+% begin generating indice offseting
+addi r11,r0,1
+addi r10,r0,0
+sw 300(r14),r0
+% done generating indice offseting
+% begin var offset calculation
+addi r10,r0,40
+lw r9,300(r14)
+ add r10,r10,r9
+sw 304(r14),r10
+% end var offset calculation
+%begin dot offsetting
+lw r9,304(r14)
+addi r9,r9,0
+sw 308(r14),r9
+%end dot offsetting
+% begin intlit storeage
+addi r9,r0,3
+sw 312(r14), r9
+% done intlit storeage
+% begin intlit storeage
+addi r9,r0,1
+sw 316(r14), r9
+% done intlit storeage
+% begin add op 
+lw r9,312(r14)
+lw r10,316(r14)
+sub r11,r9,r10
+sw 320(r14),r11
+% end add op 
+% begin intlit storeage
+addi r8,r0,1
+sw 324(r14), r8
+% done intlit storeage
+% begin intlit storeage
+addi r8,r0,1
+sw 328(r14), r8
+% done intlit storeage
+% begin add op 
+lw r8,324(r14)
+lw r11,328(r14)
+sub r10,r8,r11
+sw 332(r14),r10
+% end add op 
+% begin generating indice offseting
+addi r9,r0,1
+addi r10,r0,0
+lw r11,332(r14)
+muli r8,r9,4
+mul r8,r11,r8
+add r10,r10,r8
+lw r11,320(r14)
+muli r8,r9,4
+mul r8,r11,r8
+muli r8,r8,3
+add r10,r10,r8
+sw 336(r14),r10
+% done generating indice offseting
+% begin var offset calculation
+lw r11,336(r14)
+lw r10,308(r14)
+add r10,r10,r11
+sw 340(r14),r10
+% end var offset calculation
+% begin write 
+lw r11,340(r14)
+add r11,r14,r11
+lw r11,0(r11)
+%s move ptr to prevent mem corruption
+addi r14,r14,424
+sw -8(r14),r11
+addi r11,r0,buffer
+sw -12(r14),r11
+jl r15,intstr
+sw -8(r14),r13
+jl r15,putstr
+addi r11,r0,newline
+sw -8(r14),r11
+jl r15,putstr
+%s move ptr to og location 
+addi r14,r14,-424
+% end write
 hlt
 %funcdef begin
 fnMatrixconstructor1
