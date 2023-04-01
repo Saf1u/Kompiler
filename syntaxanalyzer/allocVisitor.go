@@ -31,7 +31,7 @@ func (v *memAllocVisitor) visitAdd(n *addNode) {
 	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 	size, err := sizeOf(typeInfo)
 	if err != nil {
-		panic("shouldnt happen")
+		fmt.Println("ERROR, ASSIGNING BAD SIZE ADD")
 	}
 	recordA.setSize(size)
 	recordA.setTag(tag)
@@ -45,7 +45,7 @@ func (v *memAllocVisitor) visitMult(n *multNode) {
 	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 	size, err := sizeOf(typeInfo)
 	if err != nil {
-		panic("shouldnt happen")
+		fmt.Println("ERROR, ASSIGNING BAD SIZE MULT")
 	}
 	recordA.setSize(size)
 	recordA.setTag(tag)
@@ -59,7 +59,7 @@ func (v *memAllocVisitor) visitRelOp(n *relOpNode) {
 	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 	size, err := sizeOf(typeInfo)
 	if err != nil {
-		panic("shouldnt happen")
+		fmt.Println("ERROR, ASSIGNING BAD SIZE REL")
 	}
 	recordA.setSize(size)
 	recordA.setTag(tag)
@@ -73,7 +73,7 @@ func (v *memAllocVisitor) visitIntlit(n *intLitNode) {
 	recordA := newRecord(tag, TEMP_LIT, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 	size, err := sizeOf(typeInfo)
 	if err != nil {
-		panic("shouldnt happen")
+		fmt.Println("ERROR, ASSIGNING BAD SIZE INT")
 	}
 	recordA.setSize(size)
 	recordA.setTag(tag)
@@ -86,7 +86,7 @@ func (v *memAllocVisitor) visitNot(n *notNode) {
 	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 	size, err := sizeOf(typeInfo)
 	if err != nil {
-		panic("shouldnt happen")
+		fmt.Println("ERROR, ASSIGNING BAD SIZE NOT")
 	}
 	recordA.setSize(size)
 	recordA.setTag(tag)
@@ -100,7 +100,7 @@ func (v *memAllocVisitor) visitSign(n *signNode) {
 	recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 	size, err := sizeOf(typeInfo)
 	if err != nil {
-		panic("shouldnt happen")
+		fmt.Println("ERROR, ASSIGNING BAD SIZE SIGN")
 	}
 	recordA.setSize(size)
 	recordA.setTag(tag)
@@ -114,7 +114,7 @@ func (v *memAllocVisitor) visitVar(n *varNode) {
 	recordA := newRecord(tag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 	size, err := sizeOf("integer")
 	if err != nil {
-		panic("shouldnt happen")
+		fmt.Println("ERROR, ASSIGNING BAD SIZE VAR")
 	}
 	recordA.setSize(size)
 	recordA.setTag(tag)
@@ -128,7 +128,7 @@ func (v *memAllocVisitor) visitIndiceList(n *indiceListNode) {
 	recordA := newRecord(tag, TEMP_LIT, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 	size, err := sizeOf("integer")
 	if err != nil {
-		panic("shouldnt happen")
+		fmt.Println("ERROR, ASSIGNING BAD SIZE INDLIST")
 	}
 	recordA.setSize(size)
 	recordA.setTag(tag)
@@ -144,7 +144,7 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 		recordA := newRecord(tag, TEMP_OFFSET, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
 		size, err := sizeOf("integer")
 		if err != nil {
-			panic("shouldnt happen")
+			fmt.Println("ERROR, ASSIGNING BAD SIZE DOT")
 		}
 
 		recordA.setSize(size)
@@ -296,14 +296,14 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 		regToJumpTo.setTag(regTag)
 		ptrSize, err := sizeOf("ptr")
 		if err != nil {
-			panic(err)
+			fmt.Println("ERROR, ASSIGNING BAD SIZE RETURN")
 		}
 		if generateSelfRef {
 			selfRef := generateNamedTag("self")
 			self := newRecord(selfRef, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(className), nil)
 			classSize, err := sizeOf(className)
 			if err != nil {
-				panic(err)
+				fmt.Println("ERROR, ASSIGNING BAD SIZE RETURN")
 			}
 			self.setTag(selfRef)
 			self.setSize(classSize)
@@ -341,7 +341,8 @@ func (v *memAllocVisitor) visitFuncCall(n *functionCall) {
 			},
 		)
 		if entry == nil {
-			panic("never happen")
+			fmt.Println("ERROR, NO CLASS ENTRY USELESS CODE")
+			return
 		}
 		possibleFunction, returnType, _ = recursivelySearchForFunction(class, entry.getLink(), methodName, paramterList, basicCompare)
 		if possibleFunction == nil {
