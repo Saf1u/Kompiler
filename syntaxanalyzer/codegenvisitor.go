@@ -2,7 +2,6 @@ package syntaxanalyzer
 
 import (
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -46,15 +45,18 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 	writeToCode("% begin add op \n")
 	_, typeLeftTag, offsetTagLeftStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE ADDITION")
+		return
 	}
 	_, typeRightTag, offsetTagRightStack, _, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE ADDITION")
+		return
 	}
 	_, _, offsetSelfStack, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE ADDITION")
+		return
 	}
 	registera, err := globalregisterPool.Get()
 	if err != nil {
@@ -121,21 +123,25 @@ func (v *codeGenVisitor) visitNot(n *notNode) {
 	writeToCode("% begin not op \n")
 	_, tagType, tagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE NOT")
+		return
 	}
 	_, _, selfTagOffset, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE NOT")
+		return
 	}
 	registera, err := globalregisterPool.Get()
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE NOT")
+		return
 	}
 	branchTagZero := generateNamedTag("zero")
 	endTag := generateNamedTag("endnot")
 	ptrReg, err := globalregisterPool.Get()
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE NOT")
+		return
 	}
 
 	code := ""
@@ -170,12 +176,14 @@ func (v *codeGenVisitor) visitSign(n *signNode) {
 	writeToCode("% begin sign op \n")
 	_, typeTag, tagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE sign")
+		return
 	}
 
 	_, _, selfTagOffset, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE sign")
+		return
 	}
 	registera, err := globalregisterPool.Get()
 	if err != nil {
@@ -224,15 +232,18 @@ func (v *codeGenVisitor) visitMult(n *multNode) {
 	writeToCode("% begin mult op \n")
 	_, typeLeftTag, offsetTagLeftStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE MULT")
+		return
 	}
 	_, typeRightTag, offsetTagRightStack, _, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE MULT")
+		return
 	}
 	_, _, offsetSelfStack, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE MULT")
+		return
 	}
 	registera, err := globalregisterPool.Get()
 	if err != nil {
@@ -312,15 +323,18 @@ func (v *codeGenVisitor) visitRelOp(n *relOpNode) {
 	writeToCode("% begin RELOP op \n")
 	_, typeLeftTag, tagLeftOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE relop")
+		return
 	}
 	_, typeRightTag, tagRightOffset, _, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE relop")
+		return
 	}
 	_, _, selfTagOffset, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE relop")
+		return
 	}
 	registera, err := globalregisterPool.Get()
 	if err != nil {
@@ -373,7 +387,8 @@ func (v *codeGenVisitor) visitRelOp(n *relOpNode) {
 func (v *codeGenVisitor) visitIntlit(n *intLitNode) {
 	_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic("shouldnt happen")
+		fmt.Println("WARNING GENERATING USELESS CODE INTLIT")
+		return
 	}
 	val := n.value
 	reg, err := globalregisterPool.Get()
@@ -395,7 +410,8 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	functionNameParts := strings.Split(function, typeSepeator)
 	_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE indicelist")
+		return
 	}
 
 	regWithOne, err := globalregisterPool.Get()
@@ -447,7 +463,8 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 			if functionNameParts[0] != "" && functionNameParts[0] != "constructor" {
 				classEntry := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: functionNameParts[0]})
 				if classEntry == nil {
-					panic("shouldnt")
+					fmt.Println("WARNING GENERATING USELESS CODE indiceList")
+					return
 				}
 				entry, _, _ = recursivelySearchForIdWithOffset(classEntry.getLink(), varId)
 
@@ -463,11 +480,13 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 			},
 		)
 		if entry == nil {
-			panic("not now")
+			fmt.Println("WARNING GENERATING USELESS CODE indiceList")
+			return
 		}
 		entry = recursivelySearchForId(entry.getLink(), id)
 		if entry == nil {
-			panic("not now")
+			fmt.Println("WARNING GENERATING USELESS CODE indiceList")
+			return
 		}
 
 	default:
@@ -480,7 +499,8 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 			fmt.Println("not defined var")
 			return
 		default:
-			panic("odd")
+			fmt.Println("WARNING GENERATING USELESS CODE indiceList")
+			return
 
 		}
 
@@ -491,7 +511,8 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	index := strings.IndexRune(typeInfo, '[')
 	baseTypeSize, err := sizeOf(getBaseType(typeInfo))
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE indiceList")
+		return
 	}
 	code = fmt.Sprint(code, fmt.Sprintf("addi %s,r0,0\n", destReg.String()))
 	if index == -1 {
@@ -509,7 +530,8 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 		default:
 			_, typeTag, tagOffsetSize, _, _, err := getSomeTag(indiceIterator.getTable())
 			if err != nil {
-				panic(err)
+				fmt.Println("WARNING GENERATING USELESS CODE indiceList")
+				return
 			}
 			tags = append(tags, tagOffsetSize)
 			tagType = append(tagType, typeTag)
@@ -560,11 +582,13 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	writeToCode("% begin assignment \n")
 	_, _, offsetTagLeftStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE assign")
+		return
 	}
 	_, tagType, offsetTagRightStack, _, conType, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE assign")
+		return
 	}
 
 	registerb, err := globalregisterPool.Get()
@@ -644,12 +668,14 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 	code := ""
 	_, _, indiceTag, _, _, err := getSomeTag(n.getLeftMostChild().getRightSibling().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE VAR")
+		return
 	}
 
 	_, _, varTagOffsetSize, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE VAR")
+		return
 	}
 	regX, err := globalregisterPool.Get()
 	if err != nil {
@@ -669,12 +695,7 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 			},
 		)
 		if entry == nil {
-			entry = v.functionScopelink.getEntry(
-				map[int]interface{}{
-					FILTER_KIND: "parameter",
-					FILTER_NAME: id,
-				},
-			)
+			entry = v.functionScopelink.getEntry(map[int]interface{}{FILTER_KIND: "parameter", FILTER_NAME: id})
 		}
 
 		if entry == nil {
@@ -685,35 +706,38 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 			returnType := ""
 			returnMarkerIndex := strings.IndexRune(typeInfo, ':')
 			if returnMarkerIndex == -1 {
-				panic("shouldnt")
+				fmt.Println("WARNING GENERATING USELESS CODE VAR")
+				return
 			}
 			returnType = typeInfo[0:returnMarkerIndex]
 			retSize, err := sizeOf(returnType)
 			if err != nil {
-				panic("should exist")
+				retSize = 0
+				fmt.Println("WARNING GENERATING USELESS CODE VAR")
+
 			}
 
 			if functionNameParts[0] != "" && functionNameParts[0] != "constructor" {
-				entry := v.getGlobalTable().getEntry(
-					map[int]interface{}{
-						FILTER_KIND: CLASS,
-						FILTER_NAME: functionNameParts[0],
-					},
-				)
+				entry := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: functionNameParts[0]})
 				if entry == nil {
-					panic("shouldnt")
+					retSize = 0
+					fmt.Println("WARNING GENERATING USELESS CODE VAR")
 				}
 				var offset int
 				var exist bool
 				if id != "self" {
 					_, offset, exist = recursivelySearchForIdWithOffset(entry.getLink(), id)
 					if !exist {
-						panic("shouldnt")
+
+						fmt.Println("WARNING GENERATING USELESS CODE VAR")
+						return
 					}
 				}
 				tagleftOffsetSize = offset + 4 + retSize //obj location is retuen size + return addr+(the member offset)
 			} else {
-				panic("shouldnt")
+
+				fmt.Println("WARNING GENERATING USELESS CODE VAR")
+				return
 			}
 		} else {
 			tagleftOffsetSize = entry.getOffset()
@@ -723,7 +747,9 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 	case *dotNode:
 		_, _, tagleftOffsetSize, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 		if err != nil {
-			panic("not now")
+			tagleftOffsetSize = 33
+			fmt.Println("WARNING GENERATING USELESS CODE VAR")
+
 		}
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", regY.String(), indiceTag))
 		code = fmt.Sprint(code, fmt.Sprintf("lw %s,%d(r14)\n", regX.String(), tagleftOffsetSize))
@@ -786,7 +812,9 @@ func (v *codeGenVisitor) visitWrite(n *writeNode) {
 	writeToCode("% begin write \n")
 	_, tagType, offsetTagStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE WRITE")
+		tagType = TEMP_VAR
+		offsetTagStack = 22
 	}
 	locReg, err := globalregisterPool.Get()
 	if err != nil {
@@ -855,7 +883,8 @@ func (v *codeGenVisitor) visitLocalVarDecl(n *localVarNode) {
 			possibleFunction, _ := searchForFunction(id, v.getGlobalTable(), paramterList, basicCompare)
 			//calledFuncOffset = possibleFunction.getOffset()
 			if possibleFunction == nil {
-				panic("no shouldnt")
+				fmt.Println("WARNING GENERATING USELESS CODE LOCALVAR")
+				return
 			}
 			calledFunctionTable = possibleFunction.getLink().getRecords()
 			tagName = possibleFunction.getTag()
@@ -872,7 +901,10 @@ func (v *codeGenVisitor) visitLocalVarDecl(n *localVarNode) {
 			default:
 				_, tagType, tagOffset, _, concType, err := getSomeTag(param.getTable())
 				if err != nil {
-					panic(err)
+					fmt.Println("WARNING GENERATING USELESS CODE LOCALVAR")
+					tagType = TEMP_VAR
+					tagOffset = 10
+					concType = "integer"
 				}
 				baseType := getBaseType(concType)
 				size, err := sizeOf(baseType)
@@ -889,14 +921,10 @@ func (v *codeGenVisitor) visitLocalVarDecl(n *localVarNode) {
 		writeToCode(fmt.Sprintf("addi r14,r14,%d\n", currFuncOffset))
 		writeToCode(fmt.Sprintf("jl r15, %s\n", tagName))
 		writeToCode(fmt.Sprintf("subi r14,r14,%d\n", currFuncOffset))
-		entry := v.functionScopelink.getEntry(
-			map[int]interface{}{
-				FILTER_KIND: VARIABLE,
-				FILTER_NAME: varId,
-			},
-		)
+		entry := v.functionScopelink.getEntry(map[int]interface{}{FILTER_KIND: VARIABLE, FILTER_NAME: varId})
 		if entry == nil {
-			panic("nooo")
+			fmt.Println("WARNING GENERATING USELESS CODE LOCALVAR")
+			return
 		}
 		tagType := TEMP_VAR
 		tagOffset := entry.getOffset()
@@ -1045,7 +1073,11 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 func (v *codeGenVisitor) visitReturn(n *returnNode) {
 	_, tagType, tagOffset, _, concType, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE return")
+		tagType = TEMP_VAR
+		tagOffset = 10
+		concType = "integer"
+
 	}
 	baseType := getBaseType(concType)
 	size, err := sizeOf(baseType)
@@ -1054,7 +1086,6 @@ func (v *codeGenVisitor) visitReturn(n *returnNode) {
 	}
 	size = size * getDimensions(concType)
 	initateCopy(tagOffset, tagType, size, 0, TEMP_VAR, 0, 0, 0)
-
 }
 func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, destinationOffset int, destinationOffsetType string, calledOffset int, sourceObjOffset int, destObjOffset int) {
 
@@ -1143,11 +1174,13 @@ func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, dest
 func (v *codeGenVisitor) visitDot(n *dotNode) {
 	_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE DOT")
+		offsetTagStack = 10
 	}
 	_, _, leftagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE DOT")
+		leftagOffset = 10
 	}
 	destReg, err := globalregisterPool.Get()
 	if err != nil {
@@ -1164,17 +1197,16 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 			typeInfo := n.getTable().getRecords()[0].getType().String()
 			//certified lhs type
 			id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
-			class := v.getGlobalTable().getEntry(map[int]interface{}{
-				FILTER_KIND: CLASS,
-				FILTER_NAME: typeInfo,
-			})
+			class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: typeInfo})
 			if class == nil {
 				fmt.Println("how?")
-				os.Exit(1)
+				fmt.Println("WARNING GENERATING USELESS CODE DOT")
+				return
 			}
 			_, offset, found = recursivelySearchForIdWithOffset(class.getLink(), id)
 			if !found {
-				panic("not now")
+				fmt.Println("WARNING GENERATING USELESS CODE DOT")
+				offset = 10
 			}
 		}
 
@@ -1194,17 +1226,17 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 			typeInfo := n.getTable().getRecords()[0].getType().String()
 			//certified lhs type
 			id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
-			class := v.getGlobalTable().getEntry(map[int]interface{}{
-				FILTER_KIND: CLASS,
-				FILTER_NAME: typeInfo,
-			})
+			class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: typeInfo})
 			if class == nil {
 				fmt.Println("how?")
-				os.Exit(1)
+				fmt.Println("WARNING GENERATING USELESS CODE DOT")
+				return
 			}
 			_, offset, found = recursivelySearchForIdWithOffset(class.getLink(), id)
 			if !found {
-				panic("not now")
+				fmt.Println("how?")
+				fmt.Println("WARNING GENERATING USELESS CODE DOT")
+				return
 			}
 		}
 		codeBlock := fmt.Sprint("", fmt.Sprintf("addi %s,r0,%d\n", destReg.String(), leftagOffset))
@@ -1243,11 +1275,7 @@ func recursivelySearchForIdWithOffset(classTable *symbolTable, identifier string
 }
 
 func getClassOffset(classTable *symbolTable, identifier string) (int, bool) {
-	inheritedClasses := classTable.getEntries(
-		map[int]interface{}{
-			FILTER_KIND: CLASS,
-		},
-	)
+	inheritedClasses := classTable.getEntries(map[int]interface{}{FILTER_KIND: CLASS})
 	for _, class := range inheritedClasses {
 		if class.getName() == identifier {
 			return class.getOffset(), true
@@ -1266,7 +1294,9 @@ func (v *codeGenVisitor) visitReadStatement(n *readStatementNode) {
 	writeToCode("% begin read \n")
 	_, tagType, offsetTagStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
-		panic(err)
+		tagType = TEMP_VAR
+		offsetTagStack = 20
+		fmt.Println("WARNING GENERATING USELESS CODE read")
 	}
 	locReg, err := globalregisterPool.Get()
 	if err != nil {
