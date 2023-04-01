@@ -930,7 +930,8 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 		possibleFunction, _ := searchForFunction(id, v.getGlobalTable(), paramterList, basicCompare)
 		//calledFuncOffset = possibleFunction.getOffset()
 		if possibleFunction == nil {
-			panic("no shouldnt")
+			fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+			return
 		}
 		calledFunctionTable = possibleFunction.getLink().getRecords()
 		tagName = possibleFunction.getTag()
@@ -939,7 +940,8 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 		objectClass := n.getLeftMostChild().getTable().getRecords()[0].getType().typeInfo
 		class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: objectClass}).getLink()
 		if class == nil {
-			panic("nooo")
+			fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+			return
 		}
 		classOffset = 0
 		found := true
@@ -947,16 +949,19 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 		if objectClass != className {
 			classOffset, found = getClassOffset(class, className)
 			if !found {
-				panic("nooo")
+				fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+				return
 			}
 		}
 		if possibleFunction == nil {
-			panic("no shouldnt")
+			fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+			return
 		}
 		globalTableEntry := fmt.Sprint(className, typeSepeator, possibleFunction.getName())
 		possibleFunction, _ = searchForFunction(globalTableEntry, v.getGlobalTable(), paramterList, basicCompare)
 		if possibleFunction == nil {
-			panic("no shouldnt")
+			fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+			return
 		}
 		tagName = possibleFunction.getTag()
 		isMethod = true
@@ -968,11 +973,13 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 	if isMethod {
 		_, tagType, tagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 		if err != nil {
-			panic(err)
+			fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+			return
 		}
 		size, err := sizeOf(methodClassName)
 		if err != nil {
-			panic("nooo")
+			fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+			return
 		}
 		classSize = size
 		//move object to call space
@@ -992,7 +999,8 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 		default:
 			_, tagType, tagOffset, _, concType, err := getSomeTag(param.getTable())
 			if err != nil {
-				panic(err)
+				fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+				return
 			}
 			baseType := getBaseType(concType)
 			size, err := sizeOf(baseType)
@@ -1011,7 +1019,8 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 	writeToCode(fmt.Sprintf("subi r14,r14,%d\n", currFuncOffset))
 	_, tagType, tagOffset, _, concType, err := getSomeTag(n.getTable())
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+		return
 	}
 	baseType := getBaseType(concType)
 	size, err := sizeOf(baseType)
@@ -1023,7 +1032,8 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 	if isMethod {
 		_, tagType, tagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 		if err != nil {
-			panic(err)
+			fmt.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")
+			return
 		}
 		//move mutated object back
 		writeToCode("%begin copy back object\n")

@@ -13,6 +13,7 @@ function main()=>void{
     write(-1);
     matrixb.print();
     write(matrixb.matrix[3-1][1-1]);
+    write(matrixb.flag);
 
     
 }
@@ -21,10 +22,11 @@ function main()=>void{
 
 class Matrix{
 attribute matrix:integer[3][3];
+attribute flag:integer;
 public constructor: (a: integer,b:integer,c:integer,d:integer,e:integer,f:integer,g:integer,h:integer,i:integer);
  public function multiply:(x:Matrix)=>Matrix;
  public function print:()=>void;
- private function TestSelf:()=>void;
+ private function TestSelf:(v:integer)=>void;
 };
 
  function Matrix::constructor(a: integer,b:integer,c:integer,d:integer,e:integer,f:integer,g:integer,h:integer,i:integer){
@@ -68,7 +70,7 @@ public constructor: (a: integer,b:integer,c:integer,d:integer,e:integer,f:intege
     return (matrixc);
 }
  function Matrix::print()=>void{
-    self.TestSelf();
+    self.TestSelf(341);
     localvar i:integer;
     localvar j:integer;
     i=0;
@@ -83,6 +85,6 @@ public constructor: (a: integer,b:integer,c:integer,d:integer,e:integer,f:intege
     };
 }
 
-function Matrix::TestSelf()=>void{
-    write(462);
+function Matrix::TestSelf(val:integer)=>void{
+    flag=val;
 }
