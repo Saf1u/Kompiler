@@ -1,0 +1,32 @@
+function main()=> void{
+    localvar obj:temp;
+    obj.counter=0;
+    obj.counter=obj.counter+1;
+    obj.counter=obj.counter+1;
+    obj.counter=obj.counter+1;
+
+
+    write(obj.counter);//3
+
+    obj.y[3].x=0;
+    obj.y[3].x=obj.y[3].x+1;
+    obj.y[3].x=obj.y[3].x+1;
+    obj.y[3].x=obj.y[3].x+1;
+    obj.y[3].x=obj.y[3].x+1;
+    write(  obj.y[3].x);//4
+    write((obj.y[((3*2)+(3))/3].x+obj.counter)+numa()+(35*2/10));
+    //15
+
+}
+
+class temp{
+    attribute y:interTemp[4];
+    attribute counter:integer;
+};
+
+class interTemp{
+    attribute x:integer;
+};
+function numa()=>integer{
+    return(1);
+} 

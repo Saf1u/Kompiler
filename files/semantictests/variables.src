@@ -1,0 +1,10 @@
+function main()=>void{
+    localvar x:integer;
+    x=(numa()+5)*(1+3)+(numa());
+    write(x);
+    }
+
+
+function numa()=>integer{
+    return(1);
+} 
