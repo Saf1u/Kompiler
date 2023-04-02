@@ -133,15 +133,13 @@ func (v *codeGenVisitor) visitNot(n *notNode) {
 	}
 	registera, err := globalregisterPool.Get()
 	if err != nil {
-		fmt.Println("WARNING GENERATING USELESS CODE NOT")
-		return
+		panic(err)
 	}
 	branchTagZero := generateNamedTag("zero")
 	endTag := generateNamedTag("endnot")
 	ptrReg, err := globalregisterPool.Get()
 	if err != nil {
-		fmt.Println("WARNING GENERATING USELESS CODE NOT")
-		return
+		panic(err)
 	}
 
 	code := ""
@@ -614,7 +612,8 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 	conType = getBaseType(conType)
 	size, err := sizeOf(conType)
 	if err != nil {
-		panic(err)
+		fmt.Println("WARNING GENERATING USELESS CODE assign")
+		return
 	}
 	beginCopyTag := generateNamedTag("beginCopy") + "\n"
 	endCopyTag := generateNamedTag("endCopy") + "\n"
@@ -685,6 +684,10 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 	if err != nil {
 		panic(err)
 	}
+	defer func() {
+		globalregisterPool.Put(regX)
+		globalregisterPool.Put(regY)
+	}()
 	switch n.getLeftMostChild().(type) {
 	case *idNode:
 		id := n.getLeftMostChild().getTable().getSingleEntry().getName()
@@ -762,8 +765,6 @@ func (v *codeGenVisitor) visitVar(n *varNode) {
 	}
 
 	writeToCode(code)
-	globalregisterPool.Put(regX)
-	globalregisterPool.Put(regY)
 	writeToCode("% end var offset calculation\n")
 }
 
@@ -1186,6 +1187,7 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 	if err != nil {
 		panic(err)
 	}
+	defer globalregisterPool.Put(destReg)
 	switch n.getLeftMostChild().(type) {
 	case *varNode:
 
@@ -1199,7 +1201,7 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 			id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
 			class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: typeInfo})
 			if class == nil {
-				fmt.Println("how?")
+				//fmt.Println("how?")
 				fmt.Println("WARNING GENERATING USELESS CODE DOT")
 				return
 			}
@@ -1216,7 +1218,7 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 		codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
 		writeToCode(codeBlock)
 
-		globalregisterPool.Put(destReg)
+		
 		writeToCode("%end dot offsetting\n")
 	case *functionCall:
 		offset := 0
@@ -1228,13 +1230,13 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 			id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
 			class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: typeInfo})
 			if class == nil {
-				fmt.Println("how?")
+				//fmt.Println("how?")
 				fmt.Println("WARNING GENERATING USELESS CODE DOT")
 				return
 			}
 			_, offset, found = recursivelySearchForIdWithOffset(class.getLink(), id)
 			if !found {
-				fmt.Println("how?")
+				//fmt.Println("how?")
 				fmt.Println("WARNING GENERATING USELESS CODE DOT")
 				return
 			}

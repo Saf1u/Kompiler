@@ -80,6 +80,19 @@ func (v *memAllocVisitor) visitIntlit(n *intLitNode) {
 	n.getTable().addRecord(recordA)
 	v.functionScopelink.addRecord(recordA)
 }
+func (v *memAllocVisitor) visitFloatLit(n *floatNode) {
+	typeInfo := n.getTable().getSingleEntry().getType().String()
+	tag := getUniqueLitTag()
+	recordA := newRecord(tag, TEMP_FLOAT_LIT, "", n.getLineNumber(), newTypeRecord(typeInfo), nil)
+	size, err := sizeOf(typeInfo)
+	if err != nil {
+		fmt.Println("ERROR, ASSIGNING BAD SIZE FLOAT")
+	}
+	recordA.setSize(size)
+	recordA.setTag(tag)
+	n.getTable().addRecord(recordA)
+	v.functionScopelink.addRecord(recordA)
+}
 func (v *memAllocVisitor) visitNot(n *notNode) {
 	typeInfo := n.getTable().getSingleEntry().getType().String()
 	tag := getUniqueTempTag()

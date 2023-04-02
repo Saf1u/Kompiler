@@ -1,0 +1,34 @@
+ERROR:class "interTemp" does not exist line:11
+ERROR:could not find class "ERR" line:11
+ERROR:cannot assign mismatched types line:11
+ERROR:class "interTemp" does not exist line:12
+ERROR:could not find class "ERR" line:12
+ERROR:class "interTemp" does not exist line:12
+ERROR:could not find class "ERR" line:12
+ERROR:cannot operate on mismatched types line:12
+ERROR:cannot assign mismatched types line:12
+ERROR:class "interTemp" does not exist line:13
+ERROR:could not find class "ERR" line:13
+ERROR:class "interTemp" does not exist line:13
+ERROR:could not find class "ERR" line:13
+ERROR:cannot operate on mismatched types line:13
+ERROR:cannot assign mismatched types line:13
+ERROR:class "interTemp" does not exist line:14
+ERROR:could not find class "ERR" line:14
+ERROR:class "interTemp" does not exist line:14
+ERROR:could not find class "ERR" line:14
+ERROR:cannot operate on mismatched types line:14
+ERROR:cannot assign mismatched types line:14
+ERROR:class "interTemp" does not exist line:15
+ERROR:could not find class "ERR" line:15
+ERROR:class "interTemp" does not exist line:15
+ERROR:could not find class "ERR" line:15
+ERROR:cannot operate on mismatched types line:15
+ERROR:cannot assign mismatched types line:15
+ERROR:class "interTemp" does not exist line:16
+ERROR:could not find class "ERR" line:16
+ERROR:class "interTemp" does not exist line:17
+ERROR:could not find class "ERR" line:17
+ERROR:cannot operate on mismatched types line:17
+ERROR:cannot operate on mismatched types line:17
+ERROR:cannot operate on mismatched types line:17

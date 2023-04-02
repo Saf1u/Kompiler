@@ -53,6 +53,7 @@ const (
 	ACTIVE_PARAMETER = "PARAM_ENTRY_FOR_A_SCOPE"
 	TEMP_VAR         = "tempvar"
 	TEMP_LIT         = "templit"
+	TEMP_FLOAT_LIT   = "tempfloat"
 	MOON_CODE        = "code"
 	TEMP_OFFSET      = "offset"
 )
@@ -103,6 +104,7 @@ var (
 		TYPE_ERR:  0,
 		"void":    0,
 		"ptr":     4,
+		"float":   4,
 	}
 	tags               = map[string]int{}
 	registers          = []register{REG1, REG2, REG3, REG4, REG5, REG6, REG7, REG8, REG9, REG10, REG11, REG12}
