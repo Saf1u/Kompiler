@@ -7,6 +7,7 @@ import (
 	"os"
 	"reflect"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -584,6 +585,36 @@ func (v *defaultVisitor) visitAssign(n *assignStatNode) {
 }
 func (v *defaultVisitor) visitProgram(n *program) {
 
+}
+
+func (v *typeCheckVisitor) visitProgram(n *program) {
+	fmt.Println("nevaaaa")
+	file := configmap.Get("file").(string)
+	errorFile := fmt.Sprint(file, ".outsemanticerrors")
+	symbolTableFile := fmt.Sprint(file, ".symbolTable")
+	errFile, err := os.OpenFile(errorFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	symbolTable, err := os.OpenFile(symbolTableFile, os.O_TRUNC|os.O_CREATE|os.O_RDWR, 0755)
+	if err != nil {
+		panic(err)
+	}
+	sort.Slice(indexes, func(i, j int) bool {
+		return indexes[i] < indexes[j]
+	})
+
+	for _, line := range indexes {
+		errors := errorBin[line]
+		for _, error := range errors {
+			errFile.WriteString(error)
+			errFile.WriteString("\n")
+		}
+	}
+	old := os.Stdout
+	os.Stdout = symbolTable
+	v.getGlobalTable().print(10)
+	os.Stdout = old
 }
 
 type typeCheckVisitor struct {
