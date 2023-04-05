@@ -132,7 +132,8 @@ func (s *SyntaxanalyzerParser) Parse() node {
 						s.Pop("")
 						break
 					} else {
-						continue
+						s.semStack.dotFile.WriteString("}")
+						return s.semStack.Pop()
 					}
 
 				}
@@ -150,7 +151,8 @@ func (s *SyntaxanalyzerParser) Parse() node {
 							s.Pop("")
 							break
 						} else {
-							continue
+							s.semStack.dotFile.WriteString("}")
+							return s.semStack.Pop()
 						}
 
 					}
@@ -158,10 +160,16 @@ func (s *SyntaxanalyzerParser) Parse() node {
 
 				} else {
 					if token == nil {
-						os.Exit(0)
+						s.semStack.dotFile.WriteString("}")
+						return s.semStack.Pop()
 
 					}
-					realtype = s.skipError(*token)
+					var empty bool
+					realtype, empty = s.skipError(*token)
+					if empty {
+						s.semStack.dotFile.WriteString("}")
+						return s.semStack.Pop()
+					}
 				}
 			}
 		} else {
@@ -173,10 +181,16 @@ func (s *SyntaxanalyzerParser) Parse() node {
 				}
 			} else {
 				if token == nil {
-					os.Exit(0)
+					s.semStack.dotFile.WriteString("}")
+					return s.semStack.Pop()
 
 				}
-				realtype = s.skipError(*token)
+				var empty bool
+				realtype, empty = s.skipError(*token)
+				if empty {
+					s.semStack.dotFile.WriteString("}")
+					return s.semStack.Pop()
+				}
 			}
 		}
 	}
@@ -189,7 +203,7 @@ func (s *SyntaxanalyzerParser) Parse() node {
 	return s.semStack.Pop()
 }
 
-func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
+func (s *SyntaxanalyzerParser) skipError(token lexer.Token) (string, bool) {
 	s.writeError(token)
 	if setsLookUpTable.InFollow(s.Top(), token.TokenType) {
 		s.Pop("")
@@ -198,13 +212,13 @@ func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 			!(setsLookUpTable.Nullable(s.Top()) && setsLookUpTable.InFollow(s.Top(), token.TokenType)) {
 			temp := lexer.NextToken()
 			if temp == nil {
-				os.Exit(1)
+				return "", true
 			}
 			token = *temp
 		}
 	}
 
-	return replaceSelf(token.TokenType)
+	return replaceSelf(token.TokenType), false
 }
 
 func (s *SyntaxanalyzerParser) writeError(token lexer.Token) {
