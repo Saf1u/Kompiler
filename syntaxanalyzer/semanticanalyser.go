@@ -588,7 +588,6 @@ func (v *defaultVisitor) visitProgram(n *program) {
 }
 
 func (v *typeCheckVisitor) visitProgram(n *program) {
-	fmt.Println("nevaaaa")
 	file := configmap.Get("file").(string)
 	errorFile := fmt.Sprint(file, ".outsemanticerrors")
 	symbolTableFile := fmt.Sprint(file, ".symbolTable")

@@ -1,4 +1,4 @@
-
+$$$$$$$$$$$$$
    
 /* print the array */
 function printArray(arr: integer[9], size: integer) => void 
@@ -11,5 +11,11 @@ function printArray(arr: integer[9], size: integer) => void
     write(arr[i]);
       i = i+1;
   };
-} 
+} $$$$$$ !!!!`````
+
+function main()=>void{
+  localvar x:integer[9];
+  printArray(x,9);
+}
+|||
 

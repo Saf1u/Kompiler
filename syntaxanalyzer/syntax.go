@@ -54,6 +54,8 @@ type SyntaxanalyzerParser struct {
 	derivationFile  *os.File
 	errorFile       *os.File
 	traceDerivation bool
+	errParse        bool
+	stopSemantics   bool
 }
 
 func (s *SyntaxanalyzerParser) Top() string {
@@ -115,8 +117,10 @@ func NewSyntaxAnalyzer() *SyntaxanalyzerParser {
 func (s *SyntaxanalyzerParser) Parse() node {
 	s.stack.Push("$")
 	s.stack.Push("START")
+	s.errParse = true
+	s.stopSemantics = true
 	token := lexer.NextToken()
-	for token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT {
+	for token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT|| token.TokenType == lexer.INVALID_CHARACTER {
 		token = lexer.NextToken()
 	}
 	realtype := replaceSelf(token.TokenType)
@@ -124,7 +128,9 @@ func (s *SyntaxanalyzerParser) Parse() node {
 		x := s.Top()
 		if !nonTerminal[x] {
 			if action, exist := semanticActions[x]; exist {
-				action(s.semStack)
+				if s.errParse && s.stopSemantics {
+					action(s.semStack)
+				}
 				s.Pop("")
 				if token == nil {
 					//pop reptstart
@@ -137,11 +143,16 @@ func (s *SyntaxanalyzerParser) Parse() node {
 
 				}
 			} else {
+				if token == nil {
+					s.errParse = false
+					break
+
+				}
 				s.semStack.mostRecentTokenValue = *token
 				if realtype == x {
 					s.Pop(token.TokenValue)
 					token = lexer.NextToken()
-					for token != nil && (token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT) {
+					for token != nil && (token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT || token.TokenType == lexer.INVALID_CHARACTER) {
 						token = lexer.NextToken()
 					}
 					if token == nil {
@@ -158,10 +169,14 @@ func (s *SyntaxanalyzerParser) Parse() node {
 
 				} else {
 					if token == nil {
-						os.Exit(0)
+						s.errParse = false
+						break
 
 					}
 					realtype = s.skipError(*token)
+					if !s.errParse {
+						break
+					}
 				}
 			}
 		} else {
@@ -173,32 +188,43 @@ func (s *SyntaxanalyzerParser) Parse() node {
 				}
 			} else {
 				if token == nil {
-					os.Exit(0)
+					s.errParse = false
+					break
 
 				}
 				realtype = s.skipError(*token)
+				if !s.errParse {
+					break
+				}
 			}
 		}
 	}
-	if s.Top() != "$" {
-		fmt.Println(s.stack.container)
-		panic("unexpected termination")
+	if s.errParse && s.stopSemantics {
+		if s.Top() != "$" {
+			fmt.Println(s.stack.container)
+			panic("unexpected termination")
+		}
+		semanticActions["GROUPACTION"](s.semStack)
+		s.semStack.dotFile.WriteString("}")
+		return s.semStack.Pop()
+	} else {
+		return s.semStack.Pop()
 	}
-	semanticActions["GROUPACTION"](s.semStack)
-	s.semStack.dotFile.WriteString("}")
-	return s.semStack.Pop()
 }
 
 func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 	s.writeError(token)
 	if setsLookUpTable.InFollow(s.Top(), token.TokenType) {
+		s.stopSemantics = false
+		fmt.Println("WARNING AST NODE INCOMPLETE")
 		s.Pop("")
 	} else {
 		for !(setsLookUpTable.InFirst(s.Top(), token.TokenType)) &&
 			!(setsLookUpTable.Nullable(s.Top()) && setsLookUpTable.InFollow(s.Top(), token.TokenType)) {
 			temp := lexer.NextToken()
 			if temp == nil {
-				os.Exit(1)
+				s.errParse = false
+				return ""
 			}
 			token = *temp
 		}

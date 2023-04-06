@@ -1,4 +1,4 @@
-
+[invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1][invalidchar, $, 1]
 
 [blockcmt, /* print the array */, 3]
 [function, function, 4][id, printArray, 4][lpar, (, 4][id, arr, 4][colon, :, 4][integer, integer, 4][lsqbr, [, 4][intlit, 9, 4][rsqbr, ], 4][comma, ,, 4][id, size, 4][colon, :, 4][integer, integer, 4][rpar, ), 4][arrow, =>, 4][void, void, 4]
@@ -11,6 +11,12 @@
 [write, write, 11][lpar, (, 11][id, arr, 11][lsqbr, [, 11][id, i, 11][rsqbr, ], 11][rpar, ), 11][semi, ;, 11]
 [id, i, 12][equal, =, 12][id, i, 12][plus, +, 12][intlit, 1, 12][semi, ;, 12]
 [rcurbr, }, 13][semi, ;, 13]
-[rcurbr, }, 14]
+[rcurbr, }, 14][invalidchar, $, 14][invalidchar, $, 14][invalidchar, $, 14][invalidchar, $, 14][invalidchar, $, 14][invalidchar, $, 14][invalidchar, !, 14][invalidchar, !, 14][invalidchar, !, 14][invalidchar, !, 14][invalidchar, `, 14][invalidchar, `, 14][invalidchar, `, 14][invalidchar, `, 14][invalidchar, `, 14]
+
+[function, function, 16][id, main, 16][lpar, (, 16][rpar, ), 16][arrow, =>, 16][void, void, 16][lcurbr, {, 16]
+[localvar, localvar, 17][id, x, 17][colon, :, 17][integer, integer, 17][lsqbr, [, 17][intlit, 9, 17][rsqbr, ], 17][semi, ;, 17]
+[id, printArray, 18][lpar, (, 18][id, x, 18][comma, ,, 18][intlit, 9, 18][rpar, ), 18][semi, ;, 18]
+[rcurbr, }, 19]
+[invalidchar, |, 20][invalidchar, |, 20][invalidchar, |, 20]
 
 
