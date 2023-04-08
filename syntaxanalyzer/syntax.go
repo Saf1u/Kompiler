@@ -120,7 +120,7 @@ func (s *SyntaxanalyzerParser) Parse() node {
 	s.errParse = true
 	s.stopSemantics = true
 	token := lexer.NextToken()
-	for token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT|| token.TokenType == lexer.INVALID_CHARACTER {
+	for token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT || token.TokenType == lexer.INVALID_CHARACTER {
 		token = lexer.NextToken()
 	}
 	realtype := replaceSelf(token.TokenType)
@@ -128,7 +128,7 @@ func (s *SyntaxanalyzerParser) Parse() node {
 		x := s.Top()
 		if !nonTerminal[x] {
 			if action, exist := semanticActions[x]; exist {
-				if s.errParse && s.stopSemantics {
+				if s.stopSemantics {
 					action(s.semStack)
 				}
 				s.Pop("")
@@ -213,6 +213,8 @@ func (s *SyntaxanalyzerParser) Parse() node {
 }
 
 func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
+	lastChar := ""
+	lastline := 0
 	s.writeError(token)
 	if setsLookUpTable.InFollow(s.Top(), token.TokenType) {
 		s.stopSemantics = false
@@ -222,8 +224,13 @@ func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 		for !(setsLookUpTable.InFirst(s.Top(), token.TokenType)) &&
 			!(setsLookUpTable.Nullable(s.Top()) && setsLookUpTable.InFollow(s.Top(), token.TokenType)) {
 			temp := lexer.NextToken()
+			if temp != nil {
+				lastChar = temp.TokenValue
+				lastline = temp.LineNumber
+			}
 			if temp == nil {
 				s.errParse = false
+				s.errorFile.WriteString(fmt.Sprint("error at line number: ",lastline, " unexpected character: ", lastChar, " expected:", ";", "\n"))
 				return ""
 			}
 			token = *temp
