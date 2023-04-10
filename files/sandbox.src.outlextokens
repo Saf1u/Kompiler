@@ -1,0 +1,8 @@
+[invalidchar, @, 1][invalidchar, _, 1][invalidchar, _, 1][invalidchar, _, 1][invalidchar, _, 1][invalidchar, _, 1][id, error, 1]
+[invalidchar, @, 2][invalidchar, _, 2][invalidchar, _, 2][invalidchar, _, 2][invalidchar, _, 2][invalidchar, _, 2][id, error, 2]
+[function, function, 3][id, main, 3][lpar, (, 3][rpar, ), 3][arrow, =>, 3][void, void, 3][lcurbr, {, 3]
+[invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4][invalidchar, #, 4]
+[invalidchar, #, 5][invalidchar, #, 5][write, write, 5][lpar, (, 5][intlit, 100, 5][rpar, ), 5][semi, ;, 5][invalidchar, #, 5][invalidchar, #, 5][invalidchar, #, 5]
+[invalidchar, #, 6][invalidchar, #, 6][id, print, 6][lpar, (, 6][intlit, 200, 6][rpar, ), 6][semi, ;, 6][invalidchar, #, 6][invalidchar, #, 6][invalidchar, #, 6]
+[invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7][invalidchar, #, 7]
+[rcurbr, }, 8]

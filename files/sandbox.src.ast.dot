@@ -1,0 +1,39 @@
+digraph AST {
+node [shape=record];
+ node [fontname=Sans];charset="UTF-8" splines=true splines=spline rankdir =LR ordering="out"
+1[label="scopeNode| "];
+none3[shape="point"];
+4[label="fParamListNode"];
+4->none3;
+5[label="returnType|void"];
+7[label="IntLit|100"];
+8[label="WriteStatementNode"];
+8->7;
+9[label="Id|print"];
+11[label="IntLit|200"];
+12[label="AParamListNode"];
+12->11;
+13[label="funcCall"];
+13->12;
+13->9;
+14[label="StatBlock"];
+14->13;
+14->8;
+15[label="FuncDef"];
+0[label="Id|main"];
+15->14;
+15->5;
+15->4;
+15->0;
+15->1;
+16[label="ClassList"];
+17[label="FuncDeflList"];
+18[label="Prog"];
+19[label="ProgramBlock"];
+19->15;
+none20[shape="point"];
+none21[shape="point"];
+18->16;
+18->17;
+18->19;
+}

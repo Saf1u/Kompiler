@@ -1537,6 +1537,7 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 				}); exist != nil {
 					saveError(entry.getLine(), functionOverrloadWarn, entry.getName())
 				}
+
 				n.getTable().addRecord(newRecord(entry.getName(), entry.getKind(), entry.getVisibility(), entry.getLine(), entry.getType(), nil))
 			} else {
 				saveError(entry.getLine(), sameDeclarationInScopeError, entry.getKind(), entry.getName())
