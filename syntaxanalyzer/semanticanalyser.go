@@ -628,6 +628,9 @@ func (v *typeCheckVisitor) propagateScope(scopeInfo string) {
 func (v *typeCheckVisitor) visitAdd(n *addNode) {
 	leftop := n.getLeftMostChild()
 	rightop := leftop.getRightSibling()
+	if leftop == nil || rightop == nil {
+		return
+	}
 	typeLeftOp := leftop.getTable().getSingleEntry().getType()
 	typeRightOp := rightop.getTable().getSingleEntry().getType()
 	var rec *symbolTableRecord
@@ -651,6 +654,9 @@ func (v *typeCheckVisitor) visitAdd(n *addNode) {
 }
 func (v *typeCheckVisitor) visitParamlist(n *paramListNode) {
 	left := n.getLeftMostChild()
+	if left == nil {
+		return
+	}
 	typeInfo := ""
 	for left != nil {
 		switch left.(type) {
@@ -741,6 +747,9 @@ func recursivelySearchForFunction(className string, classTable *symbolTable, ide
 func (v *typeCheckVisitor) visitMult(n *multNode) {
 	leftop := n.getLeftMostChild()
 	rightop := leftop.getRightSibling()
+	if leftop == nil || rightop == nil {
+		return
+	}
 	typeLeftOp := leftop.getTable().getSingleEntry().getType()
 	typeRightOp := rightop.getTable().getSingleEntry().getType()
 	var rec *symbolTableRecord
@@ -773,7 +782,13 @@ func (v *typeCheckVisitor) visitFloatLit(n *floatNode) {
 	n.getTable().addRecord(floatRec)
 }
 func (v *typeCheckVisitor) visitNot(n *notNode) {
-	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+	leftchild := n.getLeftMostChild()
+	if leftchild == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	leftop := leftchild.getTable().getSingleEntry().getType().String()
 	if strings.ContainsRune(leftop, '[') {
 		saveError(n.getLineNumber(), noOperationsAllowedOnArrays)
 		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
@@ -785,7 +800,13 @@ func (v *typeCheckVisitor) visitNot(n *notNode) {
 
 }
 func (v *typeCheckVisitor) visitSign(n *signNode) {
-	leftop := n.getLeftMostChild().getTable().getSingleEntry().getType().String()
+	leftchild := n.getLeftMostChild()
+	if leftchild == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	leftop := leftchild.getTable().getSingleEntry().getType().String()
 	if strings.ContainsRune(leftop, '[') {
 		saveError(n.getLineNumber(), noOperationsAllowedOnArrays)
 		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
@@ -797,8 +818,20 @@ func (v *typeCheckVisitor) visitSign(n *signNode) {
 
 }
 func (v *typeCheckVisitor) visitAssign(n *assignStatNode) {
-	leftOp := n.getLeftMostChild().getSingleEntry()
-	rightOp := n.getLeftMostChild().getRightSibling().getSingleEntry()
+	leftChild := n.getLeftMostChild()
+	if leftChild == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	leftOp := leftChild.getSingleEntry()
+	rightChild := n.getLeftMostChild().getRightSibling()
+	if rightChild == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	rightOp := rightChild.getSingleEntry()
 	if !(leftOp.getType().String() != TYPE_ERR && rightOp.getType().String() != TYPE_ERR && leftOp.getType().String() == rightOp.getType().String()) {
 		saveError(n.getLineNumber(), cannotAssignError)
 	}
@@ -812,8 +845,20 @@ func (v *typeCheckVisitor) visitAssign(n *assignStatNode) {
 
 }
 func (v *typeCheckVisitor) visitRelOp(n *relOpNode) {
-	leftOp := n.getLeftMostChild().getSingleEntry()
-	rightOp := n.getLeftMostChild().getRightSibling().getSingleEntry()
+	leftChild := n.getLeftMostChild()
+	if leftChild == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	leftOp := leftChild.getSingleEntry()
+	rightChild := n.getLeftMostChild().getRightSibling()
+	if rightChild == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	rightOp := rightChild.getSingleEntry()
 	if !(leftOp.getType().String() != TYPE_ERR && rightOp.getType().String() != TYPE_ERR && leftOp.getType().String() == rightOp.getType().String()) {
 		cannotCompareError := "ERROR:cannot compare types line:%d"
 		saveError(n.getLineNumber(), cannotCompareError)
@@ -828,7 +873,19 @@ func (v *typeCheckVisitor) visitRelOp(n *relOpNode) {
 	n.getTable().addRecord(newRecord("", "", "", n.getLineNumber(), newTypeRecord(leftOp.getType().String()), nil))
 }
 func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
-	paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()
+	leftChild := n.getLeftMostChild()
+	if leftChild == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	rightChild := leftChild.getRightSibling()
+	if rightChild == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
+	paramterList := rightChild.getSingleEntry().getType().String()
 
 	switch n.getLeftMostChild().(type) {
 	case *idNode:
@@ -917,7 +974,17 @@ func (v *typeCheckVisitor) visitFuncCall(n *functionCall) {
 
 func (v *typeCheckVisitor) visitDot(n *dotNode) {
 	leftop := n.getLeftMostChild()
+	if leftop == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	rightop := leftop.getRightSibling()
+	if rightop == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 
 	typeLeftOp := leftop.getTable().getSingleEntry().getType().String()
 	if typeLeftOp == TYPE_ERR {
@@ -945,6 +1012,11 @@ func (v *typeCheckVisitor) visitDot(n *dotNode) {
 func (v *typeCheckVisitor) visitVar(n *varNode) {
 	lookupInfo := strings.Split(v.scope, "~")
 	if len(lookupInfo) == 1 {
+		if n.getLeftMostChild() == nil {
+			rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+			n.getTable().addRecord(rec)
+			return
+		}
 		n.getTable().addRecord(newRecord(n.getLeftMostChild().getSingleEntry().getName(), TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil))
 		return
 	}
@@ -956,6 +1028,14 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 			FILTER_NAME: lookupInfo[0],
 		},
 	)
+	if scope == nil {
+		return
+	}
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 
 	isDot := false
 	if reflect.TypeOf(n.getLeftMostChild()).String() == "*syntaxanalyzer.dotNode" {
@@ -972,6 +1052,11 @@ func (v *typeCheckVisitor) visitVar(n *varNode) {
 			return
 
 		}
+	}
+	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
 	}
 
 	left := n.getLeftMostChild().getSingleEntry()
@@ -1150,6 +1235,11 @@ func (v *typeCheckVisitor) visitReturn(n *returnNode) {
 	}
 	functionType := names[1]
 	functionName := names[0]
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	typeInfo := n.getLeftMostChild().getSingleEntry().getType().String()
 	if typeInfo == TYPE_ERR {
 		saveError(n.getLineNumber(), "ERROR:erronous return type:%d")
@@ -1242,11 +1332,15 @@ func (v *declarationVisitor) visitProgram(n *program) {
 }
 
 func (v *inheritVisitor) visitClassDecl(n *classDecl) {
-	entry := n.getTable().getEntry(
+	classInfo := n.getTable().getEntry(
 		map[int]interface{}{
 			FILTER_KIND: INHERITANCE,
 		},
-	).getName()
+	)
+	if classInfo == nil {
+		return
+	}
+	entry := classInfo.getName()
 
 	inheritanceList := strings.Split(entry, typeSepeator)
 	for _, inheritedClass := range inheritanceList {
@@ -1300,6 +1394,12 @@ func cyclicChecker(gloablTable *symbolTable, starter string, classToFind *symbol
 			FILTER_NAME: starter,
 		},
 	)
+	if class == nil {
+		return false
+	}
+	if class.getLink() == nil {
+		return false
+	}
 	entry := class.getLink().getEntry(
 		map[int]interface{}{
 			FILTER_KIND: INHERITANCE,
@@ -1459,6 +1559,11 @@ func (v *tableVisitor) visitClassDecl(n *classDecl) {
 func (v *tableVisitor) visitClassVarDecl(n *ClassVarNode) {
 	classVarEntry := newRecord("", VARIABLE, "", n.getLineNumber(), nil, nil)
 	typeInfo := ""
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
 	default:
@@ -1501,6 +1606,11 @@ func (v *tableVisitor) visitDim(n *dimNode) {
 // visitDimList provides a mock function with given fields: n*
 func (v *tableVisitor) visitDimList(n *dimListNode) {
 	listType := ""
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
 	default:
@@ -1520,6 +1630,11 @@ func (v *tableVisitor) visitDimList(n *dimListNode) {
 func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
 	fParamEntry := newRecord("", FPARAMLIST, "", n.getLineNumber(), nil, nil)
 	typeInfo := ""
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
 		n.table.addRecord(fParamEntry)
@@ -1550,6 +1665,11 @@ func (v *tableVisitor) visitFparamlist(n *fparamListNode) {
 func (v *tableVisitor) visitFuncDecl(n *funcDeclNode) {
 	funcDeclEntry := newRecord("", FUNCDECL, "", n.getLineNumber(), nil, nil)
 	typeInfo := ""
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	switch n.getLeftMostChild().(type) {
 	default:
 		left := n.getLeftMostChild()
@@ -1587,6 +1707,11 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 	scope := ""
 	id := ""
 	typeInfo := ""
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	switch n.getLeftMostChild().(type) {
 	default:
 		left := n.getLeftMostChild()
@@ -1656,6 +1781,11 @@ func (v *tableVisitor) visitId(n *idNode) {
 func (v *tableVisitor) visitInheritance(n *inheritanceNode) {
 	inheritanceEntry := newRecord("", INHERITANCE, "", n.getLineNumber(), nil, nil)
 	typeInfo := ""
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
 		n.table.addRecord(inheritanceEntry)
@@ -1686,6 +1816,11 @@ func (v *tableVisitor) visitLocalVarDecl(n *localVarNode) {
 
 	localVarEntry := newRecord("", VARIABLE, "", n.getLineNumber(), nil, nil)
 	typeInfo := ""
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
 	default:
@@ -1762,6 +1897,11 @@ func (v *typeCheckVisitor) visitLocalVarDecl(n *localVarNode) {
 		return
 	}
 	name := fmt.Sprint(entry.getName(), typeSepeator, "constructor")
+	if n.getLeftMostChild() == nil {
+		rec := newRecord(TYPE_ERR, TYPE_ERR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		n.getTable().addRecord(rec)
+		return
+	}
 	switch n.getLeftMostChild().(type) {
 	case *epsilonNode:
 	default:
