@@ -333,6 +333,14 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 
 func (v *memAllocVisitor) visitFuncCall(n *functionCall) {
 	tag := generateNamedTag("functioncall")
+	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
+		recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
+		size, _ := sizeOf(TYPE_ERR)
+		recordA.setSize(size)
+		v.functionScopelink.addRecord(recordA)
+		return
+
+	}
 	paramterList := n.getLeftMostChild().getRightSibling().getSingleEntry().getType().String()
 	returnType := ""
 	var possibleFunction *symbolTableRecord

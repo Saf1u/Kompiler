@@ -32,6 +32,9 @@ func (v *codeGenVisitor) visitProgram(n *program) {
 
 }
 func (v *codeGenVisitor) visitAdd(n *addNode) {
+	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
+		return
+	}
 	op := ""
 	switch n.value {
 	case "+":
@@ -120,6 +123,10 @@ func (v *codeGenVisitor) visitAdd(n *addNode) {
 }
 
 func (v *codeGenVisitor) visitNot(n *notNode) {
+	if n.getLeftMostChild() == nil {
+		return
+
+	}
 	writeToCode("% begin not op \n")
 	_, tagType, tagOffset, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
@@ -163,6 +170,9 @@ func (v *codeGenVisitor) visitNot(n *notNode) {
 }
 
 func (v *codeGenVisitor) visitSign(n *signNode) {
+	if n.getLeftMostChild() == nil {
+		return
+	}
 	op := ""
 	switch n.value {
 	case "+":
@@ -217,6 +227,9 @@ func (v *codeGenVisitor) visitSign(n *signNode) {
 }
 
 func (v *codeGenVisitor) visitMult(n *multNode) {
+	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
+		return
+	}
 	op := ""
 	switch n.value {
 	case "*":
@@ -302,6 +315,9 @@ func (v *codeGenVisitor) visitMult(n *multNode) {
 }
 
 func (v *codeGenVisitor) visitRelOp(n *relOpNode) {
+	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
+		return
+	}
 	op := ""
 	switch n.value {
 	case "==":
@@ -519,6 +535,9 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 		writeToCode("% done generating indice offseting\n")
 		return
 	}
+	if n.getLeftMostChild() == nil {
+		return
+	}
 	indiceIterator := n.getLeftMostChild()
 	tags := []int{}
 	tagType := []string{}
@@ -577,6 +596,9 @@ func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 
 }
 func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
+	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
+		return
+	}
 	writeToCode("% begin assignment \n")
 	_, _, offsetTagLeftStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
@@ -662,6 +684,9 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 }
 
 func (v *codeGenVisitor) visitVar(n *varNode) {
+	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
+		return
+	}
 	writeToCode("% begin var offset calculation\n")
 	tagleftOffsetSize := 0
 	code := ""
@@ -811,6 +836,9 @@ func getSomeTag(table *symbolTable) (tagname string, tagType string, tagOffset i
 func (v *codeGenVisitor) visitWrite(n *writeNode) {
 	combinedOffset := 80 + v.offset
 	writeToCode("% begin write \n")
+	if n.getLeftMostChild() == nil {
+		return
+	}
 	_, tagType, offsetTagStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		fmt.Println("WARNING GENERATING USELESS CODE WRITE")
@@ -866,7 +894,13 @@ func (v *codeGenVisitor) visitFuncDef(n *funcDefNode) {
 }
 
 func (v *codeGenVisitor) visitLocalVarDecl(n *localVarNode) {
+	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
+		return
+	}
 	paramlist := n.getLeftMostChild().getRightSibling().getRightSibling()
+	if paramlist == nil {
+		return
+	}
 	switch paramlist.(type) {
 	default:
 	case *paramListNode:
@@ -943,6 +977,9 @@ func (v *codeGenVisitor) visitLocalVarDecl(n *localVarNode) {
 }
 
 func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
+	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
+		return
+	}
 	parameterNode := n.getLeftMostChild().getRightSibling()
 	paramterList := parameterNode.getSingleEntry().getType().String()
 	currFuncOffset := v.offset
@@ -1072,6 +1109,9 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 }
 
 func (v *codeGenVisitor) visitReturn(n *returnNode) {
+	if n.getLeftMostChild() == nil {
+		return
+	}
 	_, tagType, tagOffset, _, concType, err := getSomeTag(n.getLeftMostChild().getTable())
 	if err != nil {
 		fmt.Println("WARNING GENERATING USELESS CODE return")
@@ -1173,6 +1213,9 @@ func initateCopy(sourceOffset int, sourceOffsetType string, sourceSize int, dest
 }
 
 func (v *codeGenVisitor) visitDot(n *dotNode) {
+	if n.getLeftMostChild() == nil {
+		return
+	}
 	_, _, offsetTagStack, _, _, err := getSomeTag(n.getTable())
 	if err != nil {
 		fmt.Println("WARNING GENERATING USELESS CODE DOT")
@@ -1198,6 +1241,9 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 			found := false
 			typeInfo := n.getTable().getRecords()[0].getType().String()
 			//certified lhs type
+			if n.getLeftMostChild().getRightSibling() == nil {
+				return
+			}
 			id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
 			class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: typeInfo})
 			if class == nil {
@@ -1218,7 +1264,6 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 		codeBlock = fmt.Sprint(codeBlock, fmt.Sprintf("sw %d(r14),%s\n", offsetTagStack, destReg.String()))
 		writeToCode(codeBlock)
 
-		
 		writeToCode("%end dot offsetting\n")
 	case *functionCall:
 		offset := 0
@@ -1227,6 +1272,9 @@ func (v *codeGenVisitor) visitDot(n *dotNode) {
 			found := false
 			typeInfo := n.getTable().getRecords()[0].getType().String()
 			//certified lhs type
+			if n.getLeftMostChild().getRightSibling() == nil {
+				return
+			}
 			id := n.getLeftMostChild().getRightSibling().getSingleEntry().getName()
 			class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: typeInfo})
 			if class == nil {
@@ -1292,6 +1340,9 @@ func getClassOffset(classTable *symbolTable, identifier string) (int, bool) {
 
 // type check on read not implemented
 func (v *codeGenVisitor) visitReadStatement(n *readStatementNode) {
+	if n.getLeftMostChild() == nil {
+		return
+	}
 	combinedOffset := 80 + v.offset
 	writeToCode("% begin read \n")
 	_, tagType, offsetTagStack, _, _, err := getSomeTag(n.getLeftMostChild().getTable())
