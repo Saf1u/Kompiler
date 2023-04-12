@@ -213,8 +213,6 @@ func (s *SyntaxanalyzerParser) Parse() node {
 }
 
 func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
-	lastChar := ""
-	lastline := 0
 	s.writeError(token)
 	if setsLookUpTable.InFollow(s.Top(), token.TokenType) {
 		s.stopSemantics = false
@@ -224,13 +222,8 @@ func (s *SyntaxanalyzerParser) skipError(token lexer.Token) string {
 		for !(setsLookUpTable.InFirst(s.Top(), token.TokenType)) &&
 			!(setsLookUpTable.Nullable(s.Top()) && setsLookUpTable.InFollow(s.Top(), token.TokenType)) {
 			temp := lexer.NextToken()
-			if temp != nil {
-				lastChar = temp.TokenValue
-				lastline = temp.LineNumber
-			}
 			if temp == nil {
 				s.errParse = false
-				s.errorFile.WriteString(fmt.Sprint("error at line number: ",lastline, " unexpected character: ", lastChar, " expected:", ";", "\n"))
 				return ""
 			}
 			token = *temp

@@ -36,7 +36,9 @@ func (v *memAllocVisitor) visitAdd(n *addNode) {
 	recordA.setSize(size)
 	recordA.setTag(tag)
 	n.getTable().addRecord(recordA)
-	v.functionScopelink.addRecord(recordA)
+	if v.functionScopelink != nil {
+		v.functionScopelink.addRecord(recordA)
+	}
 
 }
 func (v *memAllocVisitor) visitMult(n *multNode) {
@@ -64,7 +66,9 @@ func (v *memAllocVisitor) visitRelOp(n *relOpNode) {
 	recordA.setSize(size)
 	recordA.setTag(tag)
 	n.getTable().addRecord(recordA)
-	v.functionScopelink.addRecord(recordA)
+	if v.functionScopelink != nil {
+		v.functionScopelink.addRecord(recordA)
+	}
 
 }
 func (v *memAllocVisitor) visitIntlit(n *intLitNode) {
@@ -78,7 +82,9 @@ func (v *memAllocVisitor) visitIntlit(n *intLitNode) {
 	recordA.setSize(size)
 	recordA.setTag(tag)
 	n.getTable().addRecord(recordA)
-	v.functionScopelink.addRecord(recordA)
+	if v.functionScopelink != nil {
+		v.functionScopelink.addRecord(recordA)
+	}
 }
 func (v *memAllocVisitor) visitFloatLit(n *floatNode) {
 	typeInfo := n.getTable().getSingleEntry().getType().String()
@@ -91,7 +97,9 @@ func (v *memAllocVisitor) visitFloatLit(n *floatNode) {
 	recordA.setSize(size)
 	recordA.setTag(tag)
 	n.getTable().addRecord(recordA)
-	v.functionScopelink.addRecord(recordA)
+	if v.functionScopelink != nil {
+		v.functionScopelink.addRecord(recordA)
+	}
 }
 func (v *memAllocVisitor) visitNot(n *notNode) {
 	typeInfo := n.getTable().getSingleEntry().getType().String()
@@ -104,7 +112,9 @@ func (v *memAllocVisitor) visitNot(n *notNode) {
 	recordA.setSize(size)
 	recordA.setTag(tag)
 	n.getTable().addRecord(recordA)
-	v.functionScopelink.addRecord(recordA)
+	if v.functionScopelink != nil {
+		v.functionScopelink.addRecord(recordA)
+	}
 
 }
 func (v *memAllocVisitor) visitSign(n *signNode) {
@@ -118,7 +128,9 @@ func (v *memAllocVisitor) visitSign(n *signNode) {
 	recordA.setSize(size)
 	recordA.setTag(tag)
 	n.getTable().addRecord(recordA)
-	v.functionScopelink.addRecord(recordA)
+	if v.functionScopelink != nil {
+		v.functionScopelink.addRecord(recordA)
+	}
 
 }
 func (v *memAllocVisitor) visitVar(n *varNode) {
@@ -132,7 +144,9 @@ func (v *memAllocVisitor) visitVar(n *varNode) {
 	recordA.setSize(size)
 	recordA.setTag(tag)
 	n.getTable().addRecord(recordA)
-	v.functionScopelink.addRecord(recordA)
+	if v.functionScopelink != nil {
+		v.functionScopelink.addRecord(recordA)
+	}
 
 }
 func (v *memAllocVisitor) visitIndiceList(n *indiceListNode) {
@@ -146,7 +160,9 @@ func (v *memAllocVisitor) visitIndiceList(n *indiceListNode) {
 	recordA.setSize(size)
 	recordA.setTag(tag)
 	n.getTable().addRecord(recordA)
-	v.functionScopelink.addRecord(recordA)
+	if v.functionScopelink != nil {
+		v.functionScopelink.addRecord(recordA)
+	}
 
 }
 func (v *memAllocVisitor) visitDot(n *dotNode) {
@@ -163,7 +179,9 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 		recordA.setSize(size)
 		recordA.setTag(tag)
 		n.getTable().addRecord(recordA)
-		v.functionScopelink.addRecord(recordA)
+		if v.functionScopelink != nil {
+			v.functionScopelink.addRecord(recordA)
+		}
 		// default:
 		// 	panic("not yet implemented functions")
 	}
@@ -171,6 +189,9 @@ func (v *memAllocVisitor) visitDot(n *dotNode) {
 }
 
 func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
+	if v.functionScopelink == nil {
+		return
+	}
 	switch n.getParent().getParent().(type) {
 	case *funcDeclNode:
 	default:
@@ -272,6 +293,9 @@ func (v *memAllocVisitor) visitFuncDef(n *funcDefNode) {
 	}
 }
 func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
+	if v.functionScopelink == nil {
+		return
+	}
 	switch n.getParent().(type) {
 	case *funcDefNode:
 		funcName := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_LINK: v.functionScopelink}).getName()
@@ -333,6 +357,9 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 
 func (v *memAllocVisitor) visitFuncCall(n *functionCall) {
 	tag := generateNamedTag("functioncall")
+	if v.functionScopelink == nil {
+		return
+	}
 	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
 		recordA := newRecord(tag, TEMP_VAR, "", n.getLineNumber(), newTypeRecord(TYPE_ERR), nil)
 		size, _ := sizeOf(TYPE_ERR)

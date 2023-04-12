@@ -1,1 +1,2 @@
-ERROR:function "print" not declared with such signature  :line 6
+ERROR:variable  "x" not declared in current scope:line 4
+ERROR:cannot assign mismatched types line:4

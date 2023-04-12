@@ -419,6 +419,9 @@ func (v *codeGenVisitor) visitIntlit(n *intLitNode) {
 
 func (v *codeGenVisitor) visitIndiceList(n *indiceListNode) {
 	//writeToCode(fmt.Sprintf("addi %s,r0,0\n", v.destReg))
+	if v.functionScopelink == nil {
+		return
+	}
 	callScope := v.scope
 	function := strings.Split(callScope, "~")[0]
 	functionNameParts := strings.Split(function, typeSepeator)
@@ -684,6 +687,9 @@ func (v *codeGenVisitor) visitAssign(n *assignStatNode) {
 }
 
 func (v *codeGenVisitor) visitVar(n *varNode) {
+	if v.functionScopelink == nil {
+		return
+	}
 	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
 		return
 	}
@@ -894,6 +900,9 @@ func (v *codeGenVisitor) visitFuncDef(n *funcDefNode) {
 }
 
 func (v *codeGenVisitor) visitLocalVarDecl(n *localVarNode) {
+	if v.functionScopelink == nil {
+		return
+	}
 	if n.getLeftMostChild() == nil || n.getLeftMostChild().getRightSibling() == nil {
 		return
 	}
