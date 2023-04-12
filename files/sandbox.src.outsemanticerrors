@@ -1,2 +1,3 @@
-ERROR:variable  "x" not declared in current scope:line 4
-ERROR:cannot assign mismatched types line:4
+ERROR:member "z" is being cyclicly delcared:line 4
+ERROR:member "y" is being cyclicly delcared:line 8
+ERROR:member "e" is being cyclicly delcared:line 12

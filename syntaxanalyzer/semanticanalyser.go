@@ -4,6 +4,7 @@ import (
 	"compiler/configmap"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"reflect"
 	"regexp"
@@ -112,6 +113,7 @@ var (
 	globalregisterPool *registerPool
 	outDataFile        io.Writer
 	outCodeFile        io.Writer
+	cyclicDepPresent   = map[string]bool{}
 )
 
 func generateNamedTag(s string) string {
@@ -252,6 +254,9 @@ func getDimensions(typeInfo string) int {
 	return accumulator
 }
 func CalculateClassSize(className string, symbTable *symbolTable) int {
+	if cyclicDepPresent[className] {
+		return 0
+	}
 	inheritedClassesSizes := 0
 	dataMemberSizes := 0
 	classEntry := symbTable.getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: className})
@@ -1332,6 +1337,22 @@ func (v *declarationVisitor) visitProgram(n *program) {
 }
 
 func (v *inheritVisitor) visitClassDecl(n *classDecl) {
+	curentClassEntry := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_LINK: n.getTable()})
+	if curentClassEntry == nil {
+		log.Println("something went wrong")
+	}
+	//adding var check
+	{
+		className := curentClassEntry.getName()
+		path := map[*symbolTable]bool{
+			n.getTable(): true,
+		}
+		switch cyclicCheckMembers(v.getGlobalTable(), n.getTable(), className, path) {
+		case true:
+			saveError(n.getLineNumber(), "ERROR:member \"%s\" is being cyclicly delcared:line %d", className)
+			cyclicDepPresent[curentClassEntry.getName()] = true
+		}
+	}
 	classInfo := n.getTable().getEntry(
 		map[int]interface{}{
 			FILTER_KIND: INHERITANCE,
@@ -1379,11 +1400,37 @@ func (v *inheritVisitor) visitClassDecl(n *classDecl) {
 				n.getTable().addRecord(inheritedClass)
 			case true:
 				saveError(n.getLineNumber(), cyclicDependencyError, inheritedClass)
+				cyclicDepPresent[curentClassEntry.getName()] = true
 
 			}
 
 		}
 	}
+
+}
+func cyclicCheckMembers(gloablTable *symbolTable, current *symbolTable, classToFind string, visited map[*symbolTable]bool) bool {
+	visited[current] = true
+	records := current.getRecords()
+	for _, record := range records {
+		if record.kind == VARIABLE && record.typeEntry.typeInfo != INTEGER && record.typeEntry.typeInfo != FLOAT {
+			className := record.typeEntry.typeInfo
+			if className == classToFind {
+				return true
+			}
+			entry := gloablTable.getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: className})
+			if entry == nil {
+				continue
+			}
+			if !visited[entry.getLink()] {
+				if cyclicCheckMembers(gloablTable, entry.getLink(), classToFind, visited) {
+					return true
+				}
+			}
+
+		}
+	}
+
+	return false
 
 }
 

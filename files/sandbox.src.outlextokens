@@ -1,10 +1,22 @@
-[invalidchar, @, 1][invalidchar, _, 1][invalidchar, _, 1][invalidchar, _, 1][invalidchar, _, 1][invalidchar, _, 1][id, error, 1]
-[invalidchar, @, 2][invalidchar, _, 2][invalidchar, _, 2][invalidchar, _, 2][invalidchar, _, 2][invalidchar, _, 2][id, error, 2]
-[function, function, 3][id, main, 3][lpar, (, 3][rpar, ), 3][arrow, =>, 3][void, void, 3][lcurbr, {, 3]
-[id, x, 4][equal, =, 4][intlit, 1, 4][equal, =, 4][intlit, 1, 4][equal, =, 4][intlit, 1, 4][semi, ;, 4]
-[write, write, 5][lpar, (, 5][intlit, 20, 5][rpar, ), 5]
-[rcurbr, }, 6]
 
-[id, func, 8][id, x, 8][lpar, (, 8][rpar, ), 8][arrow, =>, 8][integer, integer, 8][lcurbr, {, 8]
+[class, class, 2][id, z, 2][lcurbr, {, 2]
+[attribute, attribute, 3][id, x, 3][colon, :, 3][id, y, 3][semi, ;, 3]
+[rcurbr, }, 4][semi, ;, 4]
 
-[rcurbr, }, 10][semi, ;, 10]
+[class, class, 6][id, y, 6][lcurbr, {, 6]
+[attribute, attribute, 7][id, x, 7][colon, :, 7][id, e, 7][semi, ;, 7]
+[rcurbr, }, 8][semi, ;, 8]
+
+[class, class, 10][id, e, 10][lcurbr, {, 10]
+[attribute, attribute, 11][id, x, 11][colon, :, 11][id, z, 11][semi, ;, 11]
+[rcurbr, }, 12][semi, ;, 12]
+
+
+
+[function, function, 16][id, main, 16][lpar, (, 16][rpar, ), 16][arrow, =>, 16][void, void, 16][lcurbr, {, 16]
+[localvar, localvar, 17][id, x, 17][colon, :, 17][integer, integer, 17][semi, ;, 17]
+[id, x, 18][equal, =, 18][intlit, 313, 18][semi, ;, 18]
+[write, write, 19][lpar, (, 19][id, x, 19][rpar, ), 19][semi, ;, 19]
+[rcurbr, }, 20]
+
+
