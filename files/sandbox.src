@@ -1,14 +1,24 @@
 
 class z{
 attribute x:y;
-attribute x:y;
 };
 
 
 
 function main()=>void{
+  p();
+  p(22,11);
+}
+function main(i:integer)=>void{
     localvar x:integer;
     x=313;
     write(x);
+}
+
+function p(o:integer)=>void{
+    write(o);
+}
+function p(r:integer,o:integer)=>void{
+    write(r+o);
 }
 

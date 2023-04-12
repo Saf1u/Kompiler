@@ -1313,11 +1313,15 @@ type inheritVisitor struct {
 }
 
 func (v *declarationVisitor) visitProgram(n *program) {
+	mainCount := 0
 	entries := v.gloablTable.getRecords()
 	for _, entry := range entries {
 		if entry.getKind() == FUNCDEF {
 			name := entry.getName()
 			parts := strings.Split(name, typeSepeator)
+			if parts[0] == "" && parts[1] == "main" {
+				mainCount++
+			}
 			if parts[0] == "" {
 				continue
 			}
@@ -1332,6 +1336,9 @@ func (v *declarationVisitor) visitProgram(n *program) {
 			}
 
 		}
+	}
+	if mainCount <= 0 {
+		saveError(0, "ERROR:no main method defined:line%d")
 	}
 
 }
@@ -1806,6 +1813,10 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 		id = fmt.Sprint(scope, typeSepeator, id)
 		funcDefEntry.SetNameEntry(id)
 		funcDefEntry.SetTablelink(n.getTable())
+		if id=="|main"&&len(v.getGlobalTable().getEntries(map[int]interface{}{FILTER_NAME: id,FILTER_KIND:FUNCDEF}))>=1{
+			saveError(funcDefEntry.getLine(), "ERROR:multiple declration of main line:%d")
+			return
+		}
 		if !v.getGlobalTable().exist(id, funcDefEntry.getKind(), funcDefEntry.getType()) {
 			v.getGlobalTable().addRecord(funcDefEntry)
 		} else {

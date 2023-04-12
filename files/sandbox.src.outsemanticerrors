@@ -1,1 +1,3 @@
-ERROR:variable "x" aready declared:line 4
+ERROR:function "p" not declared with such signature  :line 9
+ERROR:multiple declration of main line:11
+WARN:function "p" is being overloaded line:23

@@ -274,7 +274,7 @@ func (v *memAllocVisitor) visitFuncDef(n *funcDefNode) {
 		},
 	)
 	if globalTableLink == nil {
-		panic("something went wrong")
+		return
 	}
 
 	records := n.getTable().getRecords()
@@ -299,7 +299,11 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 	}
 	switch n.getParent().(type) {
 	case *funcDefNode:
-		funcName := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_LINK: v.functionScopelink}).getName()
+		funcdef := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_LINK: v.functionScopelink})
+		if funcdef==nil{
+			return
+		}
+		funcName:=funcdef.getName()
 		nameParts := strings.Split(funcName, typeSepeator)
 		name := n.getTable().getSingleEntry().getName()
 		index := strings.IndexRune(name, ':')
