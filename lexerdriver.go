@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-
+	//log.SetOutput(io.Discard)
 	s := syntaxanalyzer.NewSyntaxAnalyzer()
 	astRoot := s.Parse()
 	visitors := syntaxanalyzer.NewTableVisitor()
