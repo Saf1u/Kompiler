@@ -1340,6 +1340,7 @@ func (v *inheritVisitor) visitClassDecl(n *classDecl) {
 	curentClassEntry := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_LINK: n.getTable()})
 	if curentClassEntry == nil {
 		log.Println("something went wrong")
+		return
 	}
 	//adding var check
 	{

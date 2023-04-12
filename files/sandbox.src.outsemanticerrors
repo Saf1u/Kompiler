@@ -1,3 +1,1 @@
-ERROR:member "z" is being cyclicly delcared:line 4
-ERROR:member "y" is being cyclicly delcared:line 8
-ERROR:member "e" is being cyclicly delcared:line 12
+ERROR:variable "x" aready declared:line 4

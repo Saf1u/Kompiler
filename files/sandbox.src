@@ -1,14 +1,7 @@
 
 class z{
 attribute x:y;
-};
-
-class y{
-attribute x:e;
-};
-
-class e{
-attribute x:z;
+attribute x:y;
 };
 
 
