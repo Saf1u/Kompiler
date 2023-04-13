@@ -45,7 +45,8 @@ const (
 	SCOPE_RES             = "sr"
 	INLINE_COMMENT        = "inlinecmt"
 	BLOCK_COMMENT         = "blockcmt"
-	INVALID_CHARACTER          = "invalidchar"
+	INVALID_CHARACTER     = "invalidchar"
+	UNTERMINATED_BLK      = "unterminatedCmntBlock"
 )
 
 var transitionTable map[int]map[string]StateInfo

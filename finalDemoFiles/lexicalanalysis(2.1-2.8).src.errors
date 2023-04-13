@@ -1,0 +1,6 @@
+Lexical error: Invalid Character: "@": line9.
+Lexical error: Invalid Character: "_": line9.
+Lexical error: Invalid Character: "_": line9.
+Lexical error: Invalid Character: "_": line9.
+Lexical error: Invalid Comment: "/*unterminated block comment\n\n    localvar z:integer;\n    localvar p:integer;\n}\n": line24.
+error at line number: 14 unexpected character: 0 expected either of: mult div and

@@ -120,7 +120,7 @@ func (s *SyntaxanalyzerParser) Parse() node {
 	s.errParse = true
 	s.stopSemantics = true
 	token := lexer.NextToken()
-	for token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT || token.TokenType == lexer.INVALID_CHARACTER {
+	for token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT || token.TokenType == lexer.INVALID_CHARACTER|| token.TokenType == lexer.UNTERMINATED_BLK {
 		token = lexer.NextToken()
 	}
 	realtype := replaceSelf(token.TokenType)
@@ -152,7 +152,7 @@ func (s *SyntaxanalyzerParser) Parse() node {
 				if realtype == x {
 					s.Pop(token.TokenValue)
 					token = lexer.NextToken()
-					for token != nil && (token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT || token.TokenType == lexer.INVALID_CHARACTER) {
+					for token != nil && (token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT || token.TokenType == lexer.INVALID_CHARACTER|| token.TokenType == lexer.UNTERMINATED_BLK) {
 						token = lexer.NextToken()
 					}
 					if token == nil {
