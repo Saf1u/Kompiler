@@ -319,6 +319,7 @@ func CalculateClassSize(className string, symbTable *symbolTable) int {
 }
 
 func saveError(lineNum int, err string, args ...any) {
+	err = fmt.Sprint("semantic ", err)
 	args = append(args, lineNum)
 	err = fmt.Sprintf(err, args...)
 	if _, ok := errorBin[lineNum]; !ok {
@@ -1813,7 +1814,7 @@ func (v *tableVisitor) visitFuncDef(n *funcDefNode) {
 		id = fmt.Sprint(scope, typeSepeator, id)
 		funcDefEntry.SetNameEntry(id)
 		funcDefEntry.SetTablelink(n.getTable())
-		if id=="|main"&&len(v.getGlobalTable().getEntries(map[int]interface{}{FILTER_NAME: id,FILTER_KIND:FUNCDEF}))>=1{
+		if id == "|main" && len(v.getGlobalTable().getEntries(map[int]interface{}{FILTER_NAME: id, FILTER_KIND: FUNCDEF})) >= 1 {
 			saveError(funcDefEntry.getLine(), "ERROR:multiple declration of main line:%d")
 			return
 		}

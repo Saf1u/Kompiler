@@ -3,6 +3,8 @@
 COVERS:
 syntaticanalysis(3.1-3.19)_astgeneration(4.1-4.3.1)_symbolTable(5.1-5.3.1)
 */
+
+//4.2.1 exercised by viewing .outast file
 //3&4.13
 class vehicle{
 private attribute tires:integer;

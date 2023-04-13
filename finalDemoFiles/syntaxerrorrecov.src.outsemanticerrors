@@ -1,0 +1,4 @@
+ERROR:variable  "z" not declared in current scope:line 10
+ERROR:cannot assign mismatched types line:10
+ERROR:variable  "z" not declared in current scope:line 11
+ERROR:cannot assign mismatched types line:12
