@@ -1,0 +1,93 @@
+//6.1.19
+
+class human{
+attribute x :integer;
+};
+class ruller{
+public  function goodBye: () => void;
+attribute kingdomSize :integer;
+};
+class king isa ruller{
+attribute reign:integer;
+};
+class superhuman isa human,king{
+attribute y :integer;
+};
+
+function ruller::goodBye()=>void{
+    write(20);
+}
+
+function main()=>void{
+    localvar h:human;
+    localvar n:superhuman;
+    write(h.x);
+    //6.1.19-.6.1.20
+    write(n.x);
+    write(n.reign);
+    write(n.kingdomSize);
+    write(n.none);
+    //6.1.21-6.1.22
+    n.goodBye();
+    n.hello();
+
+//6.1.24
+    localvar z:undeclaredclass;
+    
+    //6.1.23
+    noop();
+
+//6.1.25-6.1.26
+    test();
+    test(1.1);
+    //6.1.27
+    localvar arr:integer[5][5];
+    arr[1]=44;
+    //6.1.28
+    arr[1][1.1]=4;
+
+    //6.1.29
+    arrayAcceptor(arr);
+    
+}
+function main()=>void{
+    
+}
+
+function test(x:integer)=>void{
+    //6.1.33
+    x.age=33;
+}
+
+function arrayAcceptor(x:integer[5][5][5])=>void{
+
+}
+
+//6.1.30
+
+class a isa b{
+
+};
+
+
+class b isa c{
+
+};
+
+
+class c isa a{
+
+};
+
+//6.1.31
+class x{
+attribute p3:y;
+};
+
+class y{
+attribute p2:z;
+};
+
+class z{
+attribute p1:x;
+};

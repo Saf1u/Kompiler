@@ -199,7 +199,12 @@ func (v *memAllocVisitor) visitLocalVarDecl(n *localVarNode) {
 		names := strings.Split(v.scope, "~")
 		typeInfo := n.getTable().getSingleEntry().getType().String()
 		name := n.getTable().getSingleEntry().getName()
-		tag := getUniqueNameTag(fmt.Sprint(name, names[0]), names[1])
+		tag := ""
+		if len(names) > 1 {
+			tag = getUniqueNameTag(fmt.Sprint(name, names[0]), names[1])
+		} else {
+			tag = "trash"
+		}
 		entry := v.functionScopelink.getEntry(
 			map[int]interface{}{
 				FILTER_KIND: VARIABLE,
@@ -300,10 +305,10 @@ func (v *memAllocVisitor) visitReturnType(n *returnTypeNode) {
 	switch n.getParent().(type) {
 	case *funcDefNode:
 		funcdef := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_LINK: v.functionScopelink})
-		if funcdef==nil{
+		if funcdef == nil {
 			return
 		}
-		funcName:=funcdef.getName()
+		funcName := funcdef.getName()
 		nameParts := strings.Split(funcName, typeSepeator)
 		name := n.getTable().getSingleEntry().getName()
 		index := strings.IndexRune(name, ':')

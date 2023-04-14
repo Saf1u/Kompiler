@@ -2,5 +2,13 @@ semantic ERROR:no main method defined:line0
 semantic ERROR:function "ignore" declared in class "person" not defined:line 3
 semantic ERROR:variable "x" aready declared:line 10
 semantic ERROR:class "person" aready declared:line 12
-semantic ERROR:function "greet" not declared in class "person" :line 17
-semantic ERROR:function "call" aready declared:line 26
+semantic WARNING:function "greet" is being overloaded:line 17
+semantic Warning:shadowing class member with similar name:22
+semantic WARN:function "uperHuman|greet" is being overloaded line:27
+semantic WARNING:member "x" is being shadowed:line 31
+semantic WARNING:member "greet" is being overriden:line 32
+semantic ERROR:function "greet" not declared in class "person" :line 41
+semantic ERROR:variable "x" aready declared:line 47
+semantic ERROR:cannot access private class "human" member variable "x" outside of class line:50
+semantic ERROR:function "call" aready declared:line 55
+semantic WARN:function "call" is being overloaded line:60

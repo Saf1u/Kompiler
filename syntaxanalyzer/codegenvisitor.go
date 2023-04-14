@@ -1016,6 +1016,10 @@ func (v *codeGenVisitor) visitFuncCall(n *functionCall) {
 	case *dotNode:
 		methodName := n.getLeftMostChild().getTable().getRecords()[0].getName()
 		objectClass := n.getLeftMostChild().getTable().getRecords()[0].getType().typeInfo
+		tempclass:=v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: objectClass})
+		if tempclass==nil{
+			return
+		}
 		class := v.getGlobalTable().getEntry(map[int]interface{}{FILTER_KIND: CLASS, FILTER_NAME: objectClass}).getLink()
 		if class == nil {
 			log.Println("WARNING GENERATING USELESS CODE IN FUNC CALL")

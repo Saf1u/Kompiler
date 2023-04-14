@@ -1,0 +1,33 @@
+//6.1.13-6.1.18
+
+function side()=>integer{
+    localvar z:integer;
+    localvar y:float;
+    localvar x:integer;
+    //6.1.13
+    //6.1.14
+    x=y+z+10+200+2.3e10;
+    //6.1.15
+    return(1.1);
+}
+function sideb()=>integer{
+    //6.1.16
+    x=33;
+}
+class ogHuman{
+    attribute superage:integer;
+};
+
+class human isa ogHuman{
+    attribute age:integer;
+    public  function greet: () => void;
+};
+
+function human::greet()=>void{
+    //6.1.17
+    write(age);
+    //6.1.18
+    write(superage);
+    write(pasta);
+}
+
