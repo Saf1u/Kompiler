@@ -1,0 +1,106 @@
+ REPTSTART0
+ CLASSDECLORFUNCDEF REPTSTART0
+ CLASSDECL REPTSTART0
+ S45 class id S1 S3 OPTCLASSDECL2 S44 lcurbr REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class id S1 S3 OPTCLASSDECL2 S44 lcurbr REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person S1 S3 OPTCLASSDECL2 S44 lcurbr REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { VISIBILITY S41 MEMBERDECL REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public S41 MEMBERDECL REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public S41 MEMBERDECL REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public MEMBERFUNCDECL REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function id S1 colon S3 lpar FPARAMS rpar S35 arrow RETURNTYPE S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function id S1 colon S3 lpar FPARAMS rpar S35 arrow RETURNTYPE S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore S1 colon S3 lpar FPARAMS rpar S35 arrow RETURNTYPE S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : S3 lpar FPARAMS rpar S35 arrow RETURNTYPE S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( FPARAMS rpar S35 arrow RETURNTYPE S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) S35 arrow RETURNTYPE S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => RETURNTYPE S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => TYPE S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer S2E semi S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; S43 REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; CLASSDECLORFUNCDEF REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; CLASSDECL REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; S45 class id S1 S3 OPTCLASSDECL2 S44 lcurbr REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class id S1 S3 OPTCLASSDECL2 S44 lcurbr REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person S1 S3 OPTCLASSDECL2 S44 lcurbr REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { VISIBILITY S41 MEMBERDECL REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { MEMBERVARDECL REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute id S1 colon TYPE S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute id S1 colon TYPE S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x S1 colon TYPE S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : TYPE S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; VISIBILITY S41 MEMBERDECL REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; MEMBERVARDECL REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute id S1 colon TYPE S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute id S1 colon TYPE S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x S1 colon TYPE S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : TYPE S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer S2 S3 REPTMEMBERVARDECL4 S6 S42 semi REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; REPTCLASSDECL4 rcurbr semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } semi S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; S46 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; CLASSDECLORFUNCDEF REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; FUNCDEF REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; FUNCHEAD FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person sr FUNCCONSTRUCTORORMETHOD FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: FUNCCONSTRUCTORORMETHOD FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: id S1 FUNCMETHOD FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet S1 FUNCMETHOD FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet S3 lpar FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( id S1 colon TYPE S2 S3 REPTFPARAMS3 S6 S7 REPTFPARAMS4 S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x S1 colon TYPE S2 S3 REPTFPARAMS3 S6 S7 REPTFPARAMS4 S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : TYPE S2 S3 REPTFPARAMS3 S6 S7 REPTFPARAMS4 S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer S2 S3 REPTFPARAMS3 S6 S7 REPTFPARAMS4 S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer S2 S3 REPTFPARAMS3 S6 S7 REPTFPARAMS4 S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void lcurbr S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } S36 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } CLASSDECLORFUNCDEF REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } FUNCDEF REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } FUNCHEAD FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call S38 S3 lpar FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => TYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer lcurbr S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } S36 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } CLASSDECLORFUNCDEF REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } FUNCDEF REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } FUNCHEAD FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call S38 S3 lpar FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call ( FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call ( ) arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call ( ) => RETURNTYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call ( ) => TYPE S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call ( ) => integer S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call ( ) => integer S2E FUNCBODY REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call ( ) => integer lcurbr S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call ( ) => integer { S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+class person { public function ignore : ( ) => integer ; } ; class person { attribute x : integer ; attribute x : integer ; } ; function person :: greet ( x : integer ) => void { } function call ( ) => integer { } function call ( ) => integer { } S36 REPTSTART0

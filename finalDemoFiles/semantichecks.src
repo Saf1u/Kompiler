@@ -1,0 +1,26 @@
+class person{
+    //6.1.2
+public  function ignore: () => integer; 
+};
+
+//6.1.3
+class person{
+    //6.1.5
+attribute x:integer;
+attribute x:integer;
+
+};
+
+//6.1.1
+function person::greet(x:integer)=>void{
+
+}
+
+//6.1.3
+function call()=>integer{
+
+}
+
+function call()=>integer{
+
+}

@@ -1479,9 +1479,13 @@ func (i *funcDefNode) Accept(v visitor) {
 		case *programBlockNode:
 		default:
 			writeToCode("%funcdef begin\n")
+			if entry!=nil{
 			writeToCode(entry.getTag() + "\n")
+			}
+			if len(scope.getRecords())>1{
 			returnTypeOffset := scope.getRecords()[1].getOffset()
 			writeToCode(fmt.Sprintf("sw %d(r14),r15\n", returnTypeOffset))
+			}
 		}
 	}
 	v.propagateScope(typeinfo)

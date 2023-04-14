@@ -892,10 +892,12 @@ func (v *codeGenVisitor) visitFuncDef(n *funcDefNode) {
 	case *programBlockNode:
 		writeToCode("hlt\n")
 	default:
-		returnTypeOffset := scope.getRecords()[1].getOffset()
-		writeToCode(fmt.Sprintf("lw r15,%d(r14)\n", returnTypeOffset))
-		writeToCode("jr r15 \n")
-		writeToCode("%funcdef end\n")
+		if len(scope.getRecords()) > 1 {
+			returnTypeOffset := scope.getRecords()[1].getOffset()
+			writeToCode(fmt.Sprintf("lw r15,%d(r14)\n", returnTypeOffset))
+			writeToCode("jr r15 \n")
+			writeToCode("%funcdef end\n")
+		}
 	}
 
 }

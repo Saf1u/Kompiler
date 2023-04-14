@@ -1,0 +1,27 @@
+[class, class, 1][id, person, 1][lcurbr, {, 1]
+[inlinecmt, //6.1.2, 2]
+[public, public, 3][function, function, 3][id, ignore, 3][colon, :, 3][lpar, (, 3][rpar, ), 3][arrow, =>, 3][integer, integer, 3][semi, ;, 3]
+[rcurbr, }, 4][semi, ;, 4]
+
+[inlinecmt, //6.1.3, 6]
+[class, class, 7][id, person, 7][lcurbr, {, 7]
+[inlinecmt, //6.1.5, 8]
+[attribute, attribute, 9][id, x, 9][colon, :, 9][integer, integer, 9][semi, ;, 9]
+[attribute, attribute, 10][id, x, 10][colon, :, 10][integer, integer, 10][semi, ;, 10]
+
+[rcurbr, }, 12][semi, ;, 12]
+
+[inlinecmt, //6.1.1, 14]
+[function, function, 15][id, person, 15][sr, ::, 15][id, greet, 15][lpar, (, 15][id, x, 15][colon, :, 15][integer, integer, 15][rpar, ), 15][arrow, =>, 15][void, void, 15][lcurbr, {, 15]
+
+[rcurbr, }, 17]
+
+[inlinecmt, //6.1.3, 19]
+[function, function, 20][id, call, 20][lpar, (, 20][rpar, ), 20][arrow, =>, 20][integer, integer, 20][lcurbr, {, 20]
+
+[rcurbr, }, 22]
+
+[function, function, 24][id, call, 24][lpar, (, 24][rpar, ), 24][arrow, =>, 24][integer, integer, 24][lcurbr, {, 24]
+
+[rcurbr, }, 26]
+
