@@ -1,0 +1,130 @@
+ REPTSTART0
+ CLASSDECLORFUNCDEF REPTSTART0
+ FUNCDEF REPTSTART0
+ FUNCHEAD FUNCBODY REPTSTART0
+ function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+function main S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+function main S38 S3 lpar FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+function main ( FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+function main ( ) arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+function main ( ) => RETURNTYPE S2E FUNCBODY REPTSTART0
+function main ( ) => void S2E FUNCBODY REPTSTART0
+function main ( ) => void S2E FUNCBODY REPTSTART0
+function main ( ) => void lcurbr S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { LOCALVARDECLORSTMT REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { LOCALVARDECL REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar id S1 colon TYPE S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar id S1 colon TYPE S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x S1 colon TYPE S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : TYPE S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer S2 LOCALVARDECLPRIME S7 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer S3 REPTLOCALVARDECL4 S6 semi S7 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; S7 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; LOCALVARDECLORSTMT REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; STATEMENT REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; VARIABLEASSIGNORFUNCCALL REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; id S1 VARIABLEASSIGNORFUNCCALLPRIME REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x S1 VARIABLEASSIGNORFUNCCALLPRIME REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x S3 S9 S10 ASSIGNOP EXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x equal EXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = EXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = TERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = FACTOR RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = lpar ARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( ARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( TERM RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( FACTOR RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( VARIABLEORFUNC RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( id S1 VARIABLEORFUNCPRIME RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa S1 VARIABLEORFUNCPRIME RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa VARIABLEORFUNCPRIME1 RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa S3 lpar APARAMS rpar S22 S29 VARIABLEORFUNCPRIME3 RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( APARAMS rpar S22 S29 VARIABLEORFUNCPRIME3 RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) S22 S29 VARIABLEORFUNCPRIME3 RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) ADDOP S20 TERM S21 RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) plus S20 TERM S21 RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + S20 TERM S21 RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + FACTOR RIGHTRECTERM S21 RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + intlit S5 RIGHTRECTERM S21 RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 S5 RIGHTRECTERM S21 RIGHTRECARITHEXPR rpar RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) MULTOP S18 FACTOR S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) mult S18 FACTOR S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * S18 FACTOR S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * lpar ARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( ARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( TERM RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( FACTOR RIGHTRECTERM RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( intlit S5 RIGHTRECTERM RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 S5 RIGHTRECTERM RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 ADDOP S20 TERM S21 RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 plus S20 TERM S21 RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + S20 TERM S21 RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + FACTOR RIGHTRECTERM S21 RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + intlit S5 RIGHTRECTERM S21 RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 S5 RIGHTRECTERM S21 RIGHTRECARITHEXPR rpar S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) S19 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) ADDOP S20 TERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) plus S20 TERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + S20 TERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + FACTOR RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + lpar ARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( ARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( TERM RIGHTRECARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( FACTOR RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( VARIABLEORFUNC RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( id S1 VARIABLEORFUNCPRIME RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa S1 VARIABLEORFUNCPRIME RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa VARIABLEORFUNCPRIME1 RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa S3 lpar APARAMS rpar S22 S29 VARIABLEORFUNCPRIME3 RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( APARAMS rpar S22 S29 VARIABLEORFUNCPRIME3 RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) S22 S29 VARIABLEORFUNCPRIME3 RIGHTRECTERM RIGHTRECARITHEXPR rpar RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) RIGHTRECTERM S21 RIGHTRECARITHEXPR RELEXPR semi S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; S27 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; LOCALVARDECLORSTMT REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; STATEMENT REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write lpar EXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write lpar EXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( EXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( ARITHEXPR RELEXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( TERM RIGHTRECARITHEXPR RELEXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( FACTOR RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( VARIABLEORFUNC RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( id S1 VARIABLEORFUNCPRIME RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x S1 VARIABLEORFUNCPRIME RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x S3 S9 S10 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR rpar semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) semi S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; S30 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } CLASSDECLORFUNCDEF REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } FUNCDEF REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } FUNCHEAD FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function id S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa S40 FUNCSCOPEDFREE FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa S38 S3 lpar FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( FPARAMS S35 rpar arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) arrow RETURNTYPE S2E FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => RETURNTYPE S2E FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => TYPE S2E FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer S2E FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer S2E FUNCBODY REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer lcurbr S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { S3 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { LOCALVARDECLORSTMT REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { STATEMENT REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return lpar EXPR rpar semi S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return lpar EXPR rpar semi S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return ( EXPR rpar semi S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return ( ARITHEXPR RELEXPR rpar semi S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return ( TERM RIGHTRECARITHEXPR RELEXPR rpar semi S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return ( FACTOR RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR rpar semi S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return ( intlit S5 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR rpar semi S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return ( 1 S5 RIGHTRECTERM RIGHTRECARITHEXPR RELEXPR rpar semi S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return ( 1 ) semi S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return ( 1 ) ; S31 REPTFUNCBODY1 S32 rcurbr S36 REPTSTART0
+function main ( ) => void { localvar x : integer ; x = ( numa ( ) + 5 ) * ( 1 + 3 ) + ( numa ( ) ) ; write ( x ) ; } function numa ( ) => integer { return ( 1 ) ; } S36 REPTSTART0
