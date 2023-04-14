@@ -1,0 +1,19 @@
+
+
+function side()=>void{
+integer i=3;
+
+}
+
+funcion main()=>void{
+    //miss spelled function
+    class x{
+        localvar z:integer;
+    };
+    function c()=>integer{
+        attribute x:integer;
+    };
+    localVar x=33;
+    private localvar p:integer;
+};
+

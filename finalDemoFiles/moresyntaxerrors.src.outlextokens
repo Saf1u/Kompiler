@@ -1,0 +1,19 @@
+
+
+[function, function, 3][id, side, 3][lpar, (, 3][rpar, ), 3][arrow, =>, 3][void, void, 3][lcurbr, {, 3]
+[integer, integer, 4][id, i, 4][equal, =, 4][intlit, 3, 4][semi, ;, 4]
+[rcurbr, }, 5]
+
+[id, funcion, 7][id, main, 7][lpar, (, 7][rpar, ), 7][arrow, =>, 7][void, void, 7][lcurbr, {, 7]
+[inlinecmt, //miss spelled function, 8]
+[class, class, 9][id, x, 9][lcurbr, {, 9]
+[localvar, localvar, 10][id, z, 10][colon, :, 10][integer, integer, 10][semi, ;, 10]
+[rcurbr, }, 11][semi, ;, 11]
+[function, function, 12][id, c, 12][lpar, (, 12][rpar, ), 12][arrow, =>, 12][integer, integer, 12][lcurbr, {, 12]
+[attribute, attribute, 13][id, x, 13][colon, :, 13][integer, integer, 13][semi, ;, 13]
+[rcurbr, }, 14][semi, ;, 14]
+[id, localVar, 15][id, x, 15][equal, =, 15][intlit, 33, 15][semi, ;, 15]
+[private, private, 16][localvar, localvar, 16][id, p, 16][colon, :, 16][integer, integer, 16][semi, ;, 16]
+[rcurbr, }, 17][semi, ;, 17]
+
+

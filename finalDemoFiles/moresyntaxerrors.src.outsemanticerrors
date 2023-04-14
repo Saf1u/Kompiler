@@ -1,0 +1,3 @@
+semantic ERROR:no main method defined:line0
+semantic ERROR:variable  "attribute" not declared in current scope:line 8
+semantic ERROR:cannot assign mismatched types line:10
