@@ -1,6 +1,6 @@
 syntax error at line number: 3 unexpected character: func expected either of: class function
 syntax error at line number: 8 unexpected character: ; expected:colon
-syntax error at line number: 14 unexpected character: z expected either of: mult div and
+syntax error at line number: 14 unexpected character: z expected either of: and mult div
 syntax error at line number: 20 unexpected character: write expected:semi
 syntax error at line number: 24 unexpected character: { expected:arrow
 ERROR:variable  "z" not declared in current scope:line 10

@@ -1,0 +1,39 @@
+[function, function, 1][id, main, 1][lpar, (, 1][rpar, ), 1][arrow, =>, 1][void, void, 1][lcurbr, {, 1]
+[inlinecmt, //specifically 7.1.2.6, 2]
+[localvar, localvar, 3][id, z, 3][colon, :, 3][id, superHuman, 3][semi, ;, 3]
+[id, z, 4][dot, ., 4][id, setAge, 4][lpar, (, 4][intlit, 44, 4][rpar, ), 4][semi, ;, 4]
+[write, write, 5][lpar, (, 5][id, z, 5][dot, ., 5][id, age, 5][rpar, ), 5][semi, ;, 5]
+[localvar, localvar, 6][id, x, 6][colon, :, 6][integer, integer, 6][semi, ;, 6]
+[localvar, localvar, 7][id, res, 7][colon, :, 7][integer, integer, 7][semi, ;, 7]
+[read, read, 8][lpar, (, 8][id, x, 8][rpar, ), 8][semi, ;, 8]
+[while, while, 9][lpar, (, 9][id, x, 9][gt, >, 9][minus, -, 9][intlit, 1, 9][rpar, ), 9][lcurbr, {, 9]
+[id, res, 10][equal, =, 10][id, factorial, 10][lpar, (, 10][id, x, 10][rpar, ), 10][semi, ;, 10]
+[write, write, 11][lpar, (, 11][id, res, 11][rpar, ), 11][semi, ;, 11]
+[read, read, 12][lpar, (, 12][id, x, 12][rpar, ), 12][semi, ;, 12]
+[rcurbr, }, 13][semi, ;, 13]
+
+
+
+
+[rcurbr, }, 18]
+
+[function, function, 20][id, factorial, 20][lpar, (, 20][id, n, 20][colon, :, 20][integer, integer, 20][rpar, ), 20][arrow, =>, 20][integer, integer, 20][lcurbr, {, 20]
+[if, if, 21][lpar, (, 21][id, n, 21][eq, ==, 21][intlit, 0, 21][rpar, ), 21][then, then, 21][lcurbr, {, 21]
+[return, return, 22][lpar, (, 22][intlit, 1, 22][rpar, ), 22][semi, ;, 22]
+[rcurbr, }, 23][else, else, 23][lcurbr, {, 23]
+[return, return, 24][lpar, (, 24][id, n, 24][mult, *, 24][id, factorial, 24][lpar, (, 24][id, n, 24][minus, -, 24][intlit, 1, 24][rpar, ), 24][rpar, ), 24][semi, ;, 24]
+[rcurbr, }, 25][semi, ;, 25]
+[rcurbr, }, 26]
+
+[class, class, 28][id, human, 28][lcurbr, {, 28]
+[public, public, 29][attribute, attribute, 29][id, age, 29][colon, :, 29][integer, integer, 29][semi, ;, 29]
+[rcurbr, }, 30][semi, ;, 30]
+
+[class, class, 32][id, superHuman, 32][isa, isa, 32][id, human, 32][lcurbr, {, 32]
+[public, public, 33][attribute, attribute, 33][id, powerLevel, 33][colon, :, 33][integer, integer, 33][semi, ;, 33]
+[public, public, 34][function, function, 34][id, setAge, 34][colon, :, 34][lpar, (, 34][id, x, 34][colon, :, 34][integer, integer, 34][rpar, ), 34][arrow, =>, 34][void, void, 34][semi, ;, 34]
+[rcurbr, }, 35][semi, ;, 35]
+
+[function, function, 37][id, superHuman, 37][sr, ::, 37][id, setAge, 37][lpar, (, 37][id, x, 37][colon, :, 37][integer, integer, 37][rpar, ), 37][arrow, =>, 37][void, void, 37][lcurbr, {, 37]
+[id, age, 38][equal, =, 38][id, x, 38][semi, ;, 38]
+[rcurbr, }, 39]
