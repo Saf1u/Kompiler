@@ -1,0 +1,25 @@
+[inlinecmt, //7.1.4.1-objectTest.src, 1]
+[inlinecmt, //everything else -moreObjectMemTest.src, 2]
+[inlinecmt, //7.1.4.6, 3]
+
+[class, class, 5][id, grandFather, 5][lcurbr, {, 5]
+[public, public, 6][attribute, attribute, 6][id, restRate, 6][colon, :, 6][integer, integer, 6][semi, ;, 6]
+[rcurbr, }, 7][semi, ;, 7]
+
+[class, class, 9][id, father, 9][isa, isa, 9][id, grandFather, 9][lcurbr, {, 9]
+[public, public, 10][attribute, attribute, 10][id, workRate, 10][colon, :, 10][integer, integer, 10][semi, ;, 10]
+[rcurbr, }, 11][semi, ;, 11]
+
+[class, class, 13][id, son, 13][isa, isa, 13][id, father, 13][lcurbr, {, 13]
+[public, public, 14][attribute, attribute, 14][id, studyRate, 14][colon, :, 14][integer, integer, 14][semi, ;, 14]
+[rcurbr, }, 15][semi, ;, 15]
+
+[function, function, 17][id, main, 17][lpar, (, 17][rpar, ), 17][arrow, =>, 17][void, void, 17][lcurbr, {, 17]
+[localvar, localvar, 18][id, person, 18][colon, :, 18][id, son, 18][semi, ;, 18]
+[id, person, 19][dot, ., 19][id, restRate, 19][equal, =, 19][intlit, 200, 19][semi, ;, 19]
+[id, person, 20][dot, ., 20][id, workRate, 20][equal, =, 20][intlit, 500, 20][semi, ;, 20]
+[id, person, 21][dot, ., 21][id, studyRate, 21][equal, =, 21][intlit, 400, 21][semi, ;, 21]
+[write, write, 22][lpar, (, 22][id, person, 22][dot, ., 22][id, restRate, 22][rpar, ), 22][semi, ;, 22]
+[write, write, 23][lpar, (, 23][id, person, 23][dot, ., 23][id, workRate, 23][rpar, ), 23][semi, ;, 23]
+[write, write, 24][lpar, (, 24][id, person, 24][dot, ., 24][id, studyRate, 24][rpar, ), 24][semi, ;, 24]
+[rcurbr, }, 25]
