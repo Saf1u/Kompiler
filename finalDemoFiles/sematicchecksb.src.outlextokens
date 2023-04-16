@@ -1,4 +1,4 @@
-[inlinecmt, //6.1.13, 1]
+[inlinecmt, //6.1.13-6.1.18, 1]
 
 [function, function, 3][id, side, 3][lpar, (, 3][rpar, ), 3][arrow, =>, 3][integer, integer, 3][lcurbr, {, 3]
 [localvar, localvar, 4][id, z, 4][colon, :, 4][integer, integer, 4][semi, ;, 4]
@@ -26,8 +26,9 @@
 [function, function, 26][id, human, 26][sr, ::, 26][id, greet, 26][lpar, (, 26][rpar, ), 26][arrow, =>, 26][void, void, 26][lcurbr, {, 26]
 [inlinecmt, //6.1.17, 27]
 [write, write, 28][lpar, (, 28][id, age, 28][rpar, ), 28][semi, ;, 28]
-[write, write, 29][lpar, (, 29][id, superage, 29][rpar, ), 29][semi, ;, 29]
-[write, write, 30][lpar, (, 30][id, pasta, 30][rpar, ), 30][semi, ;, 30]
-[rcurbr, }, 31]
+[inlinecmt, //6.1.18, 29]
+[write, write, 30][lpar, (, 30][id, superage, 30][rpar, ), 30][semi, ;, 30]
+[write, write, 31][lpar, (, 31][id, pasta, 31][rpar, ), 31][semi, ;, 31]
+[rcurbr, }, 32]
 
 

@@ -6,9 +6,9 @@ semantic WARNING:function "greet" is being overloaded:line 17
 semantic Warning:shadowing class member with similar name:22
 semantic WARN:function "uperHuman|greet" is being overloaded line:27
 semantic WARNING:member "x" is being shadowed:line 31
-semantic WARNING:member "greet" is being overriden:line 32
-semantic ERROR:function "greet" not declared in class "person" :line 41
-semantic ERROR:variable "x" aready declared:line 47
-semantic ERROR:cannot access private class "human" member variable "x" outside of class line:50
-semantic ERROR:function "call" aready declared:line 55
-semantic WARN:function "call" is being overloaded line:60
+semantic WARNING:member "greet" is being overriden:line 33
+semantic ERROR:function "greet" not declared in class "person" :line 43
+semantic ERROR:variable "x" aready declared:line 49
+semantic ERROR:cannot access private class "human" member variable "x" outside of class line:52
+semantic ERROR:function "call" aready declared:line 57
+semantic WARN:function "call" is being overloaded line:62

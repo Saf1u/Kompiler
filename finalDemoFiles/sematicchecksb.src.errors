@@ -7,4 +7,4 @@ semantic ERROR:cannot assign mismatched types line:9
 semantic ERROR:wrong return type:11
 semantic ERROR:variable  "x" not declared in current scope:line 15
 semantic ERROR:cannot assign mismatched types line:15
-semantic ERROR:variable  "pasta" not declared in current scope:line 30
+semantic ERROR:variable  "pasta" not declared in current scope:line 31
