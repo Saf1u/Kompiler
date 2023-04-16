@@ -11,3 +11,7 @@
 
 - ```./compiler -file files/[file-name] -deriveOut [true|false]```
 - bool flag controls if left derivation is generated (makes thing slow a bit)
+
+## currently at final demo phase
+### To run in project root with option to generate derivation:
+- ```./run.sh filename [true|false]```
