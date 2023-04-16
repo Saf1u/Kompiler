@@ -1,5 +1,5 @@
  #!/bin/bash
- go build  .
+ #go build  .
  ./compiler -file $1 -deriveOut $2
  fname=$(basename  $1)
  cat  $1-data.m  $1-code.m>moonBin/$fname.m
