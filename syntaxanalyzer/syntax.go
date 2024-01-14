@@ -120,7 +120,10 @@ func (s *SyntaxanalyzerParser) Parse() node {
 	s.errParse = true
 	s.stopSemantics = true
 	token := lexer.NextToken()
-	for token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT || token.TokenType == lexer.INVALID_CHARACTER|| token.TokenType == lexer.UNTERMINATED_BLK {
+	for token.TokenType == lexer.BLOCK_COMMENT ||
+		token.TokenType == lexer.INLINE_COMMENT ||
+		token.TokenType == lexer.INVALID_CHARACTER ||
+		token.TokenType == lexer.UNTERMINATED_BLK {
 		token = lexer.NextToken()
 	}
 	realtype := replaceSelf(token.TokenType)
@@ -152,7 +155,10 @@ func (s *SyntaxanalyzerParser) Parse() node {
 				if realtype == x {
 					s.Pop(token.TokenValue)
 					token = lexer.NextToken()
-					for token != nil && (token.TokenType == lexer.BLOCK_COMMENT || token.TokenType == lexer.INLINE_COMMENT || token.TokenType == lexer.INVALID_CHARACTER|| token.TokenType == lexer.UNTERMINATED_BLK) {
+					for token != nil && (token.TokenType == lexer.BLOCK_COMMENT ||
+						token.TokenType == lexer.INLINE_COMMENT ||
+						token.TokenType == lexer.INVALID_CHARACTER ||
+						token.TokenType == lexer.UNTERMINATED_BLK) {
 						token = lexer.NextToken()
 					}
 					if token == nil {
@@ -201,7 +207,6 @@ func (s *SyntaxanalyzerParser) Parse() node {
 	}
 	if s.errParse && s.stopSemantics {
 		if s.Top() != "$" {
-			fmt.Println(s.stack.container)
 			panic("unexpected termination")
 		}
 		semanticActions["GROUPACTION"](s.semStack)
