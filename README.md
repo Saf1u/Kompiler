@@ -1,17 +1,20 @@
 # Kompiler
+A compiler for a statically typed oop language.
+
+## Langugae reference
+The Wiki page contains the grammar of the language and valid/invalid  language tokens
+
+## Building the compiler toolchain
+The compiler itself is written in go. To build it you need to install go and run go build in the directory's root to get a binary.
+To  run programs, you need to build the moon virtual machine as well.
+
+### The moon virtual machine
+The Moon Virtual Machine was written by a professor at my university and the source is provided as part of the [course](https://users.encs.concordia.ca/~paquet/wiki/index.php?title=COMP442/6421_-_winter_2023) the project was done for. 
+For convenience, it is in the virtual machine directory in the repo.
+
+### Running programs
+Assuming you have successfully built Kompiler and Moon, to run a program you need to write it based on the specified grammar rules in the wiki. It is a C-like language.
 
 
-## currently at lexer phasse
-- ```download go for your os and arch```
-- ```go build . in root of project```
-- ```./compiler -file files/[file-name]```
-- sample files+output+errors can be found in the file directory (AND THE DFA)
 
-## currently at syntax analyzer phase 
-
-- ```./compiler -file files/[file-name] -deriveOut [true|false]```
-- bool flag controls if left derivation is generated (makes thing slow a bit)
-
-## currently at final demo phase
-### To run in project root with option to generate derivation:
-- ```./run.sh filename [true|false]```
+ 
