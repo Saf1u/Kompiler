@@ -1,7 +1,0 @@
-syntax error at line number: 4 unexpected character: integer expected either of: write return id localVar if while read
-syntax error at line number: 8 unexpected character: funcion expected either of: class function
-syntax error at line number: 11 unexpected character: localvar expected either of: public private function constructor attribute
-syntax error at line number: 14 unexpected character: attribute expected either of: write return id localVar if while read
-syntax error at line number: 14 unexpected character: : expected either of: dot lpar equal lsqbr
-syntax error at line number: 17 unexpected character: private expected either of: localVar if while read write return id
-syntax error at line number: 17 unexpected character: : expected either of: lpar equal lsqbr dot

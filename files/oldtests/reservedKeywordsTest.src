@@ -1,4 +1,0 @@
-integer float void class self
-isa while if then else read write
-return localvar constructor attribute function
-public private  

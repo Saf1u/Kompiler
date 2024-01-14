@@ -1,8 +1,0 @@
-ERROR:function "evaluate" declared in class "POLYNOMIAL" not defined:line 3
-WARNING:function "evaluate" is being overloaded:line 5
-ERROR:function "evaluate" declared in class "POLYNOMIAL" not defined:line 5
-ERROR:function "evaluate2" declared in class "POLYNOMIAL" not defined:line 6
-ERROR:function "constructor" declared in class "QUADRATIC" not defined:line 15
-ERROR:function "evaluate" declared in class "QUADRATIC" not defined:line 16
-WARNING:member "evaluate" is being overriden:line 16
-ERROR:function "build2" not declared in class "QUADRATIC" :line 31

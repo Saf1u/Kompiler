@@ -1,8 +1,0 @@
-[inlinecmt, // main funtion to test above, 1]
-[inlinecmt, // main funtion to test above, 2]
-[inlinecmt, // main funtion to test above, 3]
-[inlinecmt, // main funtion to test above, 4]
-[function, function, 5][id, main, 5][lpar, (, 5][rpar, ), 5][arrow, =>, 5][void, void, 5]
-[lcurbr, {, 6]
-
-[rcurbr, }, 8]

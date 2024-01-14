@@ -3,3 +3,5 @@ compiler
 /.idea
 compiler
 run.sh
+files/
+finalDemoFiles/
